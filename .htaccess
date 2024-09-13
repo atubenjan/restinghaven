@@ -1,0 +1,17 @@
+# Enable URL rewriting
+RewriteEngine On
+
+# Remove .php extension from URLs
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([^/.]+)$ $1.php [L]
+
+# Redirect to home page if URL doesn't match any file or directory
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^$ /index.php [L]
+
+# Handle redirection for login/logout or other special cases
+# Uncomment and modify the following lines as needed:
+# RewriteRule ^login$ login.php [L]
+# RewriteRule ^logout$ logout.php [L]

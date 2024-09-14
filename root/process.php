@@ -37,10 +37,7 @@ if (isset($_POST['login_btn'])) {
             </script>
         ";
     }
-} 
-
-
-elseif (isset($_POST['register_btn'])) {
+} elseif (isset($_POST['register_btn'])) {
     trim(extract($_POST));
 
     $filename = trim($_FILES['photo']['name']);

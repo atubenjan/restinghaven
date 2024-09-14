@@ -20,26 +20,24 @@ switch(DB_URL){
 		defined ("DB_SERVER") or define("DB_SERVER", 'localhost');
 		defined ("DB_USER") or define("DB_USER", "root");
 		defined ("DB_PASS") or define("DB_PASS", "");
-		defined ("DB_NAME") or define("DB_NAME", "resting_haven");
-		defined ("SITE_URL") or define("SITE_URL", 'http://localhost/restinghaven');
-		// defined ("HOME_URL") or define("HOME_URL", 'http://localhost/api-flexi/users');
+		defined ("DB_NAME") or define("DB_NAME", "lsk_db");
+		defined ("SITE_URL") or define("SITE_URL", 'http://localhost/lskauth/');
 	break;
 
-	case 'https://mobileapi.flexigas.co/': 
+	case 'https://demo.vlearned.com/': 
 		defined ("DB_SERVER") or define("DB_SERVER", 'localhost');
-		defined ("DB_USER") or define("DB_USER", "flexiga_users");
-		defined ("DB_PASS") or define("DB_PASS", "M2eAqBlg64wG");
-		defined ("DB_NAME") or define("DB_NAME", "flexiga_db");
-		defined ("SITE_URL") or define("SITE_URL", "https://mobileapi.flexigas.co/");
+		defined ("DB_USER") or define("DB_USER", "vlearned_lsk_db");
+		defined ("DB_PASS") or define("DB_PASS", "Italianjob1992");
+		defined ("DB_NAME") or define("DB_NAME", "vlearned_lsk_db");
+		defined ("SITE_URL") or define("SITE_URL", "https://demo.vlearned.com/");
 	break;
 
 	default: 
-    defined ("DB_SERVER") or define("DB_SERVER", 'localhost');
-    defined ("DB_USER") or define("DB_USER", "root");
-    defined ("DB_PASS") or define("DB_PASS", "");
-    defined ("DB_NAME") or define("DB_NAME", "resting_haven");
-    defined ("SITE_URL") or define("SITE_URL", 'http://localhost/restinghaven');
-		// defined ("HOME_URL") or define("HOME_URL", 'http://localhost/api-flexi/users');
+			defined ("DB_SERVER") or define("DB_SERVER", 'localhost');
+		defined ("DB_USER") or define("DB_USER", "root");
+		defined ("DB_PASS") or define("DB_PASS", "");
+		defined ("DB_NAME") or define("DB_NAME", "lsk_db");
+		defined ("SITE_URL") or define("SITE_URL", 'http://localhost/lskauth/');
 	}
 	
  try{

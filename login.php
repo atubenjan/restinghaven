@@ -14,11 +14,46 @@
   <link rel="stylesheet" href="plugins/icheck-bootstrap/icheck-bootstrap.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="dist/css/adminlte.min.css">
+
+  <style>
+    /* Add the background image */
+    body {
+      background: url('logo.jpg') no-repeat center center fixed;
+      background-size: cover;
+    }
+    
+    /* Optional: To add a semi-transparent overlay */
+    .login-page::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5); /* Adjust opacity for overlay effect */
+      z-index: -1;
+    }
+
+    /* Make the logo round */
+    .login-logo img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%; /* Makes the logo round */
+      object-fit: cover;  /* Ensures the image scales properly */
+    }
+
+    /* Add border radius to the login box */
+    .card {
+      border-radius: 7px; /* Adds a 7px border radius to the login box */
+    }
+  </style>
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-logo">
-    <a href="<?=SITE_URL;?>"><b>LS</b>K</a>
+    <!-- Add your logo here -->
+    <img src="bg.jpg" alt="Logo">
+    
   </div>
   <!-- /.login-logo -->
   <div class="card">
@@ -43,22 +78,9 @@
           </div>
         </div>
         <div class="row">
-          <!-- <div class="col-8">
-            <div class="icheck-primary">
-              <input type="checkbox" id="remember">
-              <label for="remember">
-                Remember Me
-              </label>
-            </div>
-          </div> -->
-          <!-- /.col -->
-          <!-- <p class="mb-1">
-            <a href="forgot-password">I forgot my password</a>
-          </p> -->
           <div class="col-12">
             <button type="submit" class="btn btn-primary btn-block" name="login_btn">Sign In</button>
           </div>
-          <!-- /.col -->
         </div>
       </form>
     </div>

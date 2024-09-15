@@ -23,9 +23,8 @@
       <!-- Inventory table -->
       <div class="card">
         <div class="card-header">
-          <!-- Buttons to trigger modals and download -->
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addInventoryModal">
-            Add Inventory Item
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default">
+            <i class="fas fa-plus"></i> Add Inventory
           </button>
           <a href="download_inventory.php" class="btn btn-info float-right">
             Download Inventory
@@ -51,13 +50,38 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td colspan="11" style="text-align: center;">No data available</td>
-                <td>
-                  <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editInventoryModal">Edit</button>
-                  <a href="delete_inventory.html" class="btn btn-danger btn-sm">Delete</a>
-                </td>
-              </tr>
+              <?php
+              // Include database connection
+
+              // Fetch inventory items
+              try {
+                  $stmt = $dbh->query("SELECT * FROM inventory");
+                  $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                  // Display each item
+                  foreach ($items as $item) {
+                      echo "<tr>";
+                      echo "<td>" . htmlspecialchars($item['id'] ?? '', ENT_QUOTES, 'UTF-8') . "</td>";
+                      echo "<td>" . htmlspecialchars($item['product_name'] ?? '', ENT_QUOTES, 'UTF-8') . "</td>";
+                      echo "<td>" . htmlspecialchars($item['category'] ?? '', ENT_QUOTES, 'UTF-8') . "</td>";
+                      echo "<td>" . htmlspecialchars($item['description'] ?? '', ENT_QUOTES, 'UTF-8') . "</td>";
+                      echo "<td>" . htmlspecialchars($item['quantity'] ?? '', ENT_QUOTES, 'UTF-8') . "</td>";
+                      echo "<td>" . htmlspecialchars($item['unit_of_measurement'] ?? '', ENT_QUOTES, 'UTF-8') . "</td>";
+                      echo "<td>" . htmlspecialchars($item['reorder_level'] ?? '', ENT_QUOTES, 'UTF-8') . "</td>";
+                      echo "<td>" . htmlspecialchars($item['supplier_id'] ?? '', ENT_QUOTES, 'UTF-8') . "</td>";
+                      echo "<td>" . htmlspecialchars($item['cost_per_unit'] ?? '', ENT_QUOTES, 'UTF-8') . "</td>";
+                      echo "<td>" . htmlspecialchars($item['total_cost'] ?? '', ENT_QUOTES, 'UTF-8') . "</td>";
+                      echo "<td>" . htmlspecialchars($item['status'] ?? '', ENT_QUOTES, 'UTF-8') . "</td>";
+                      echo "<td>
+                            <button class='btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#editInventoryModal' data-id='" . htmlspecialchars($item['id'] ?? '', ENT_QUOTES, 'UTF-8') . "'>Edit</button>
+                            <a href='delete_inventory.php?id=" . htmlspecialchars($item['id'] ?? '', ENT_QUOTES, 'UTF-8') . "' class='btn btn-danger btn-sm'>Delete</a>
+                            </td>";
+                      echo "</tr>";
+                  }
+              } catch (PDOException $e) {
+                  echo "Error: " . $e->getMessage();
+              }
+              ?>
             </tbody>
           </table>
         </div>
@@ -71,35 +95,33 @@
 <!-- /.content-wrapper -->
 
 <!-- Add Inventory Modal -->
-<div class="modal fade" id="addInventoryModal" tabindex="-1" aria-labelledby="addInventoryModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
+<div class="modal fade" id="modal-default">
+  <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="addInventoryModalLabel">Add New Inventory Item</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h4 class="modal-title">Add Inventory</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
       <div class="modal-body">
-        <form id="addInventoryForm">
+        <form action="" method="post">
           <div class="row">
             <div class="col-md-4">
               <div class="mb-3">
-                <label for="addItemId" class="form-label">Item ID</label>
-                <input type="text" class="form-control" id="addItemId" name="item_id" required>
-              </div>
-              <div class="mb-3">
                 <label for="addItemName" class="form-label">Item Name</label>
-                <input type="text" class="form-control" id="addItemName" name="item_name" required>
+                <input type="text" class="form-control" id="addItemName" name="product_name" required>
               </div>
               <div class="mb-3">
                 <label for="addCategory" class="form-label">Category</label>
                 <input type="text" class="form-control" id="addCategory" name="category" required>
               </div>
-            </div>
-            <div class="col-md-4">
               <div class="mb-3">
                 <label for="addDescription" class="form-label">Description</label>
                 <textarea class="form-control" id="addDescription" name="description"></textarea>
               </div>
+            </div>
+            <div class="col-md-4">
               <div class="mb-3">
                 <label for="addQuantity" class="form-label">Quantity</label>
                 <input type="number" class="form-control" id="addQuantity" name="quantity" required>
@@ -108,15 +130,15 @@
                 <label for="addUnitOfMeasurement" class="form-label">Unit of Measurement</label>
                 <input type="text" class="form-control" id="addUnitOfMeasurement" name="unit_of_measurement" required>
               </div>
-            </div>
-            <div class="col-md-4">
               <div class="mb-3">
                 <label for="addReorderLevel" class="form-label">Reorder Level</label>
                 <input type="number" class="form-control" id="addReorderLevel" name="reorder_level" required>
               </div>
+            </div>
+            <div class="col-md-4">
               <div class="mb-3">
                 <label for="addSupplier" class="form-label">Supplier</label>
-                <input type="text" class="form-control" id="addSupplier" name="supplier">
+                <input type="text" class="form-control" id="addSupplier" name="supplier_id">
               </div>
               <div class="mb-3">
                 <label for="addCostPerUnit" class="form-label">Cost per Unit</label>
@@ -132,11 +154,11 @@
               </div>
               <div class="mb-3">
                 <label for="addDate" class="form-label">Date</label>
-                <input type="date" class="form-control" id="addDate" name="date">
+                <input type="date" class="form-control" id="addDate" name="date_added">
               </div>
             </div>
           </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="submit" name="add_invetory_btn" class="btn btn-primary">Submit</button>
         </form>
       </div>
     </div>
@@ -153,23 +175,23 @@
       </div>
       <div class="modal-body">
         <form id="editInventoryForm">
-          <input type="hidden" id="editItemId" name="item_id">
+          <input type="hidden" id="editItemId" name="id">
           <div class="row">
             <div class="col-md-4">
               <div class="mb-3">
                 <label for="editItemName" class="form-label">Item Name</label>
-                <input type="text" class="form-control" id="editItemName" name="item_name" required>
+                <input type="text" class="form-control" id="editItemName" name="product_name" required>
               </div>
               <div class="mb-3">
                 <label for="editCategory" class="form-label">Category</label>
                 <input type="text" class="form-control" id="editCategory" name="category" required>
               </div>
-            </div>
-            <div class="col-md-4">
               <div class="mb-3">
                 <label for="editDescription" class="form-label">Description</label>
                 <textarea class="form-control" id="editDescription" name="description"></textarea>
               </div>
+            </div>
+            <div class="col-md-4">
               <div class="mb-3">
                 <label for="editQuantity" class="form-label">Quantity</label>
                 <input type="number" class="form-control" id="editQuantity" name="quantity" required>
@@ -178,15 +200,15 @@
                 <label for="editUnitOfMeasurement" class="form-label">Unit of Measurement</label>
                 <input type="text" class="form-control" id="editUnitOfMeasurement" name="unit_of_measurement" required>
               </div>
-            </div>
-            <div class="col-md-4">
               <div class="mb-3">
                 <label for="editReorderLevel" class="form-label">Reorder Level</label>
                 <input type="number" class="form-control" id="editReorderLevel" name="reorder_level" required>
               </div>
+            </div>
+            <div class="col-md-4">
               <div class="mb-3">
                 <label for="editSupplier" class="form-label">Supplier</label>
-                <input type="text" class="form-control" id="editSupplier" name="supplier">
+                <input type="text" class="form-control" id="editSupplier" name="supplier_id">
               </div>
               <div class="mb-3">
                 <label for="editCostPerUnit" class="form-label">Cost per Unit</label>
@@ -209,35 +231,38 @@
   </div>
 </div>
 
-<?php include 'footer.php'; // Include footer and script tags ?>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- JavaScript to handle total cost calculation -->
 <script>
-  // JavaScript to populate edit modal with inventory data
-  function populateEditModal(item_id, item_name, category, description, quantity, unit_of_measurement, reorder_level, supplier, cost_per_unit, total_cost, status) {
-    document.getElementById('editItemId').value = item_id;
-    document.getElementById('editItemName').value = item_name;
-    document.getElementById('editCategory').value = category;
-    document.getElementById('editDescription').value = description;
-    document.getElementById('editQuantity').value = quantity;
-    document.getElementById('editUnitOfMeasurement').value = unit_of_measurement;
-    document.getElementById('editReorderLevel').value = reorder_level;
-    document.getElementById('editSupplier').value = supplier;
-    document.getElementById('editCostPerUnit').value = cost_per_unit;
-    document.getElementById('editTotalCost').value = total_cost;
-    document.getElementById('editStatus').value = status;
-  }
-  
-  // Handle form submissions (optional)
-  document.getElementById('addInventoryForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    // Handle add inventory form submission
-    alert('Add Inventory Form submitted');
-  });
+document.addEventListener('DOMContentLoaded', function() {
+    function updateTotalCost() {
+        var quantity = parseFloat(document.querySelector('#addQuantity').value) || 0;
+        var costPerUnit = parseFloat(document.querySelector('#addCostPerUnit').value) || 0;
+        document.querySelector('#addTotalCost').value = (quantity * costPerUnit).toFixed(2);
+    }
 
-  document.getElementById('editInventoryForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    // Handle edit inventory form submission
-    alert('Edit Inventory Form submitted');
-  });
+    function updateEditTotalCost() {
+        var quantity = parseFloat(document.querySelector('#editQuantity').value) || 0;
+        var costPerUnit = parseFloat(document.querySelector('#editCostPerUnit').value) || 0;
+        document.querySelector('#editTotalCost').value = (quantity * costPerUnit).toFixed(2);
+    }
+
+    // Event listeners for add form
+    document.querySelector('#addQuantity').addEventListener('input', updateTotalCost);
+    document.querySelector('#addCostPerUnit').addEventListener('input', updateTotalCost);
+
+    // Event listeners for edit form
+    document.querySelector('#editQuantity').addEventListener('input', updateEditTotalCost);
+    document.querySelector('#editCostPerUnit').addEventListener('input', updateEditTotalCost);
+
+    // Initialize total cost on modal show
+    $('#modal-default').on('shown.bs.modal', function () {
+        updateTotalCost();
+    });
+
+    $('#editInventoryModal').on('shown.bs.modal', function () {
+        updateEditTotalCost();
+    });
+});
 </script>
+
+<?php include 'footer.php'; // Include footer and script tags ?>

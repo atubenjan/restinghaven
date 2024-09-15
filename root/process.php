@@ -2,13 +2,11 @@
 include "config.php";
 include './root/vendor/autoload.php';
 
-
 $api_key = "TQx3th8uR2R8I8o8858HUos2f37c81Smw1I0DQ470a7b3rk4E3U33GN5cm7L3AHz";
 
-$errors = array();
-foreach ($errors as $error) {
-    echo $error;
-}
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 if (isset($_POST['login_btn'])) {
     trim(extract($_POST));
@@ -87,8 +85,7 @@ if (isset($_POST['login_btn'])) {
     $result = $dbh->query("UPDATE users SET username='$username', email='$email', national_id='$national_id', user_role='$user_role', photo='$url_img' WHERE id = '$id'");
     if ($result) {
         move_uploaded_file($_FILES['photo']['tmp_name'], $target_img);
-        $_SESSION['status'] = '<div class="alert alert-success text-center">You have Successfully registered</div>';
-        $_SESSION['loader'] = '<center><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></center>';
+        $_SESSION['status'] = '<div class="alert alert-success text-center">User edited successfully</div>';
         echo '
             <script>
                 alert("User edited successfully");
@@ -103,44 +100,113 @@ if (isset($_POST['login_btn'])) {
             </script>
         ';
     }
-} elseif (isset($_POST['add_product_btn'])) {
+} elseif (isset($_POST['add_appointment_btn'])) {
     trim(extract($_POST));
 
-    // id, product_id, product_name, batch_number, production_date, product_type, route, hardness, oven_setting, qr_img, created_at, updated_at, qr_code_path
-    $result = dbCreate("INSERT INTO products VALUES(NULL, '$product_id', '$product_name', '$batch_number', '$production_date', '$product_type', '$route', '$hardness', '$oven_setting', '$today', '$today', '9878')");
+    // Insert into appointments
+    $result = dbCreate("INSERT INTO appointments VALUES(NULL, '$fullname', '$date', '$time', '$reason', '$asigned_to')");
     if ($result == 1) {
         echo '
             <script>
-                alert("Product added successfully");
+                alert("Appointment added successfully");
                 window.location.href = window.location.href;
             </script>
         ';
     } else {
         echo '
             <script>
-                alert("Product addition failed");
+                alert("Appointment addition failed");
                 window.location.href = window.location.href;
             </script>
         ';
     }
-} elseif (isset($_POST['edit_product_btn'])) {
+} elseif (isset($_POST['add_supplier_btn'])) {
     trim(extract($_POST));
 
-    $result = $dbh->query("UPDATE products SET product_id='$product_id', product_name='$product_name', batch_number='$batch_number', production_date='$production_date', product_type='$product_type', route='$route', hardness='$hardness', oven_setting='$oven_setting' WHERE id='$id'");
+    // Insert data into the database
+    $result = dbCreate("INSERT INTO suppliers (id, supplier_name, contact_person, contact_email, contact_phone, address, status, date_added) VALUES (NULL, '$supplier_name', '$contact_person', '$contact_email', '$contact_phone', '$address', '$status', '$date_added')");
+
+    // Check the result and provide feedback
+    if ($result == 1) {
+        echo '
+            <script>
+                alert("Supplier added successfully");
+                window.location.href = window.location.href;
+            </script>
+        ';
+    } else {
+        echo '
+            <script>
+                alert("Supplier addition failed");
+                window.location.href = window.location.href;
+            </script>
+        ';
+    }
+} elseif (isset($_POST['add_inventory_btn'])) {
+    // Debugging: Display form data
+    echo '<pre>';
+    var_dump($_POST);
+    echo '</pre>';
+
+    // Trim and extract form values
+    trim(extract($_POST));
+
+    // Prepare SQL query
+    $query = "INSERT INTO inventory (id, product_name, product_code, category, description, quantity, unit_of_measurement, reorder_level, supplier_id, cost_per_unit, total_cost, status, date_added) 
+              VALUES (NULL, '$product_name', '$product_code', '$category', '$description', $quantity, '$unit_of_measurement', $reorder_level, $supplier_id, $cost_per_unit, $total_cost, '$status', '$date_added')";
+
+    // Insert into the inventory table
+    $result = dbCreate($query);
+
+    // Check the result and provide feedback
     if ($result) {
         echo '
             <script>
-                alert("Product edited successfully");
+                alert("Inventory item added successfully");
                 window.location.href = window.location.href;
             </script>
         ';
     } else {
         echo '
             <script>
-                alert("Product edit failed");
-                window.location.href = window.location.href;
+                alert("Failed to add inventory item");
             </script>
         ';
     }
-}
+
+
+} elseif (isset($_POST['edit_supplier_btn'])) {
+   
+    
+        trim(extract($_POST));
+        
+        
+        // Update query
+        $result = $dbh->query("UPDATE suppliers SET 
+            supplier_name='$supplier_name', 
+            contact_person='$contact_person', 
+            contact_email='$contact_email', 
+            contact_phone='$contact_phone', 
+            address='$address', 
+            status='$status', 
+            date_added='$date_added' 
+            WHERE id='$id'");
+        
+        if ($result) {
+            echo '
+                <script>
+                    alert("Supplier edited successfully");
+                    window.location.href = window.location.href;
+                </script>
+            ';
+        } else {
+            echo '
+                <script>
+                    alert("Supplier edit failed");
+                    window.location.href = window.location.href;
+                </script>
+            ';
+        }
+    }
+    
 ?>

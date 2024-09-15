@@ -20,38 +20,20 @@
   <!-- Main content -->
   <section class="content">
     <div class="container-fluid">
-      <!-- Action Buttons -->
-      <div class="mb-3">
-        <button id="printBtn" class="btn btn-info">Print</button>
-        <button id="pdfBtn" class="btn btn-danger">Download PDF</button>
-        <button id="excelBtn" class="btn btn-success">Download Excel</button>
-        <!-- Add additional margin if needed -->
-      </div>
-
-      <!-- Search and Filter -->
-      <div class="mb-3">
-        <input type="text" id="searchInput" class="form-control mb-2" placeholder="Search suppliers...">
-        <select id="statusFilter" class="form-control mb-2">
-          <option value="">All Statuses</option>
-          <option value="Active">Active</option>
-          <option value="Non-active">Non-active</option>
-        </select>
-      </div>
-
       <!-- Suppliers table -->
       <div class="card">
         <div class="card-header">
           <!-- Button to trigger modal -->
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default">
-            <i class="fas fa-plus"></i> Supplier
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSupplierModal">
+            Add Supplier
           </button>
         </div>
         <!-- /.card-header -->
         <div class="card-body">
-          <table id="example2" class="table table-bordered table-hover">
+          <table id="example1" class="table table-bordered table-striped">
             <thead>
               <tr>
-                <th>ID</th>
+                <th> ID</th>
                 <th>Supplier Name</th>
                 <th>Contact Person</th>
                 <th>Contact Email</th>
@@ -62,14 +44,15 @@
                 <th>Actions</th>
               </tr>
             </thead>
-            <tbody id="supplierTableBody">
+            <tbody>
               <!-- PHP code to fetch and display suppliers -->
               <?php
+              // Example PHP code to fetch suppliers from the database
               $stmt = $dbh->query("SELECT * FROM suppliers");
               while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
               ?>
                 <tr>
-                  <td><?= htmlspecialchars($row['id']); ?></td>
+                  <td><?= htmlspecialchars($row['?']); ?></td>
                   <td><?= htmlspecialchars($row['supplier_name']); ?></td>
                   <td><?= htmlspecialchars($row['contact_person']); ?></td>
                   <td><?= htmlspecialchars($row['contact_email']); ?></td>
@@ -78,20 +61,14 @@
                   <td><?= htmlspecialchars($row['status']); ?></td>
                   <td><?= htmlspecialchars($row['date_added']); ?></td>
                   <td>
-                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editSupplier"
-                      onclick="populateEditModal('<?= htmlspecialchars($row['id']); ?>', '<?= htmlspecialchars($row['supplier_name']); ?>', '<?= htmlspecialchars($row['contact_person']); ?>', '<?= htmlspecialchars($row['contact_email']); ?>', '<?= htmlspecialchars($row['contact_phone']); ?>', '<?= htmlspecialchars($row['address']); ?>', '<?= htmlspecialchars($row['status']); ?>', '<?= htmlspecialchars($row['date_added']); ?>')">
+                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editSupplierModal"
+                      onclick="populateEditModal('<?= htmlspecialchars($row['supplier_id']); ?>', '<?= htmlspecialchars($row['supplier_name']); ?>', '<?= htmlspecialchars($row['contact_person']); ?>', '<?= htmlspecialchars($row['contact_email']); ?>', '<?= htmlspecialchars($row['contact_phone']); ?>', '<?= htmlspecialchars($row['address']); ?>', '<?= htmlspecialchars($row['status']); ?>', '<?= htmlspecialchars($row['date_added']); ?>')">
                       Edit
                     </button>
-                    <a href="delete_supplier.php?id=<?= htmlspecialchars($row['id']); ?>" class="btn btn-danger btn-sm">Delete</a>
+                    <a href="delete_supplier.php?id=<?= htmlspecialchars($row['supplier_id']); ?>" class="btn btn-danger btn-sm">Delete</a>
                   </td>
                 </tr>
-              <?php
-           
-             include 'edit_supplier.php';
-             
-            
-            
-            } ?>
+              <?php } ?>
             </tbody>
           </table>
         </div>
@@ -103,31 +80,19 @@
   <!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
-<?php if (isset($_REQUEST['deleteProduct'])) {
-  $id = $_GET['deleteProduct'];
-  $sql = $dbh->query("DELETE FROM supplier WHERE id = '$id' ");
-  if ($sql) {
-    echo "
-          <script>
-            window.location.href = 'products';
-          </script>
-        ";
-  }
-}
-?>
+
 <!-- Add Supplier Modal -->
-<div class="modal fade" id="modal-default">
+<div class="modal fade" id="addSupplierModal" tabindex="-1" aria-labelledby="addSupplierModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Add Supplier</h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title" id="addSupplierModalLabel">Add New Supplier</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <form id="addSupplierForm" action="" method="post">
           <div class="row">
+      
             <div class="col-md-6">
               <div class="mb-3">
                 <label for="addSupplierName" class="form-label">Supplier Name</label>
@@ -161,10 +126,7 @@
             <div class="col-md-6">
               <div class="mb-3">
                 <label for="addStatus" class="form-label">Status</label>
-                <select id="addStatus" name="status" class="form-control">
-                  <option value="Active">Active</option>
-                  <option value="Non-active">Non-active</option>
-                </select>
+                <input type="text" class="form-control" id="addStatus" name="status">
               </div>
             </div>
             <div class="col-md-6">
@@ -181,52 +143,66 @@
   </div>
 </div>
 
-
-
-<!-- JavaScript to handle search, filter, and export functionalities -->
-<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jspdf@2.4.0/dist/jspdf.umd.min.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Search and Filter functionality
-    document.getElementById('searchInput').addEventListener('input', filterTable);
-    document.getElementById('statusFilter').addEventListener('change', filterTable);
-
-    function filterTable() {
-        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-        const statusFilter = document.getElementById('statusFilter').value;
-        const rows = document.querySelectorAll('#supplierTableBody tr');
-
-        rows.forEach(row => {
-            const cells = row.querySelectorAll('td');
-            const statusCell = row.cells[6].textContent.trim();
-            const matchesSearch = Array.from(cells).some(cell => cell.textContent.toLowerCase().includes(searchTerm));
-            const matchesStatus = statusFilter ? statusCell === statusFilter : true;
-            row.style.display = (matchesSearch && matchesStatus) ? '' : 'none';
-        });
-    }
-
-    // Print functionality
-    document.getElementById('printBtn').addEventListener('click', function() {
-        window.print();
-    });
-
-    // PDF functionality
-    document.getElementById('pdfBtn').addEventListener('click', function() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        doc.text('Suppliers List', 10, 10);
-        doc.autoTable({ html: 'table' });
-        doc.save('suppliers.pdf');
-    });
-
-    // Excel functionality
-    document.getElementById('excelBtn').addEventListener('click', function() {
-        const table = document.querySelector('table');
-        const wb = XLSX.utils.table_to_book(table, { sheet: 'Suppliers' });
-        XLSX.writeFile(wb, 'suppliers.xlsx');
-    });
-});
-</script>
+<!-- Edit Supplier Modal -->
+<div class="modal fade" id="editSupplierModal" tabindex="-1" aria-labelledby="editSupplierModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editSupplierModalLabel">Edit Supplier</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editSupplierForm" action="" method="post">
+          <input type="hidden" id="editSupplierId" name="supplier_id">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="editSupplierName" class="form-label">Supplier Name</label>
+                <input type="text" class="form-control" id="editSupplierName" name="supplier_name" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="editContactPerson" class="form-label">Contact Person</label>
+                <input type="text" class="form-control" id="editContactPerson" name="contact_person" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="editContactEmail" class="form-label">Contact Email</label>
+                <input type="email" class="form-control" id="editContactEmail" name="contact_email">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="editContactPhone" class="form-label">Contact Phone</label>
+                <input type="tel" class="form-control" id="editContactPhone" name="contact_phone">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="editAddress" class="form-label">Address</label>
+                <textarea class="form-control" id="editAddress" name="address"></textarea>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="editStatus" class="form-label">Status</label>
+                <input type="text" class="form-control" id="editStatus" name="status">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="editDateAdded" class="form-label">Date Added</label>
+                <input type="date" class="form-control" id="editDateAdded" name="date_added" disabled> <!-- Disabled date field for editing -->
+              </div>
+            </div>
+          </div>
+          <button type="submit" name="add_supplier_btn" class="btn btn-primary">Update</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 
 <?php include 'footer.php'; // Include footer ?>

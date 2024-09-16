@@ -4,9 +4,9 @@ include './root/vendor/autoload.php';
 
 $api_key = "TQx3th8uR2R8I8o8858HUos2f37c81Smw1I0DQ470a7b3rk4E3U33GN5cm7L3AHz";
 
-ini_set('display_errors', 1);
+/*ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+error_reporting(E_ALL);*/
 
 if (isset($_POST['login_btn'])) {
     trim(extract($_POST));

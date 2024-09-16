@@ -31,6 +31,12 @@
             <!-- /.card-header -->
            
             <div class="card-body">
+            <div class="card-header">
+          <!-- Button to trigger modal -->
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default">
+            <i class="fas fa-plus"></i> Appointment
+          </button>
+        </div>
               <table id="example2" class="table table-bordered table-hover">
                 <thead>
                   <tr>

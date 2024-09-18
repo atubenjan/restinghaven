@@ -2,17 +2,22 @@
 <?php
 include './root/process.php';
 
-if (empty($_SESSION['id'])) {
-  header("Location: login");
-} else {
-  //`userid`, `fullname`, `phone`, `token`, `status`, `role`, `date_registered`
-  $interface = $_SESSION['role'];
-  $fullname = $_SESSION['fullname'];
-  $phone = $_SESSION['phone'];
-  $userid = $_SESSION['userid'];
-  $date_registered = $_SESSION['date_registered'];
+if (session_status() === PHP_SESSION_NONE) {
+  session_start(); // Start session only if it's not already started
+}
 
-  // unset($_SESSION['status']);
+if (empty($_SESSION['id'])) {
+header("Location: login");
+exit(); // Always exit after a redirect to prevent further script execution
+} else {
+// Safely check if the session variables exist
+$interface = isset($_SESSION['role']) ? $_SESSION['role'] : 'Unknown Role';
+$fullname = isset($_SESSION['fullname']) ? $_SESSION['fullname'] : 'Guest';
+$phone = isset($_SESSION['phone']) ? $_SESSION['phone'] : 'No Phone Number';
+$userid = isset($_SESSION['userid']) ? $_SESSION['userid'] : 'Unknown User';
+$date_registered = isset($_SESSION['date_registered']) ? $_SESSION['date_registered'] : 'N/A';
+
+// unset($_SESSION['status']); // Optional, depending on your session usage
 }
 ?>
 
@@ -77,10 +82,10 @@ if (empty($_SESSION['id'])) {
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
   
-  <!-- Preloader -->
+  <!-- Preloader 
   <div id="preloader">
     <div class="loader"></div>
-  </div>
+  </div>-->
 
   <div class="wrapper">
     <!-- Navbar -->
@@ -155,9 +160,9 @@ if (empty($_SESSION['id'])) {
               </a>
             </li>
             <li class="nav-item">
-              <a href="plot_management" class="nav-link">
+              <a href="lot_management" class="nav-link">
                 <i class="nav-icon fas fa-map-marked-alt"></i>
-                <p>Plot Management</p>
+                <p>Lot Management</p>
               </a>
             </li>
             <li class="nav-item">

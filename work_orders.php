@@ -1,34 +1,42 @@
-<?php include 'header.php'; // Include header and navigation ?>
-
+<?php include('header.php'); ?>
 <div class="content-wrapper">
-  <div class="content-header">
+  <section class="content-header">
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1 class="m-0">Work Orders</h1>
-        </div><!-- /.col -->
+          <h1>Work Order</h1>
+        </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <li class="breadcrumb-item active">Work Orders</li>
+            <li class="breadcrumb-item active">Work Order</li>
           </ol>
-        </div><!-- /.col -->
-      </div><!-- /.row -->
-    </div><!-- /.container-fluid -->
-  </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- Main content -->
   <section class="content">
     <div class="container-fluid">
-      <!-- Work Orders table -->
-      <div class="card">
-        <div class="card-header">
-          <!-- Buttons to trigger modals -->
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addWorkOrderModal">
-            Add Work Order
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Work Order Management</h3>
+              <div class="card-tools">
+               
+              </div>
+            </div>
+            <!-- /.card-header -->
+           
+            <div class="card-body">
+            <div class="card-header">
+          <!-- Button to trigger modal -->
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default">
+            <i class="fas fa-plus"></i> Work Order
           </button>
         </div>
-        <!-- /.card-header -->
         <div class="card-body">
           <table id="workOrdersTable" class="table table-bordered table-striped">
             <thead>
@@ -60,65 +68,45 @@
             </tbody>
           </table>
         </div>
-        <!-- /.card-body -->
-      </div>
-      <!-- /.card -->
-
-      <!-- Add Work Order Modal -->
-      <div class="modal fade" id="addWorkOrderModal" tabindex="-1" aria-labelledby="addWorkOrderModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="addWorkOrderModalLabel">Add New Work Order</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-              <form id="addWorkOrderForm">
-                <div class="mb-3">
-                  <label for="addDescription" class="form-label">Description</label>
-                  <textarea class="form-control" id="addDescription" name="description" required></textarea>
-                </div>
-                <div class="mb-3">
-                  <label for="addStatus" class="form-label">Status</label>
-                  <select class="form-select" id="addStatus" name="status" required>
-                    <option value="Pending">Pending</option>
-                    <option value="In Progress">In Progress</option>
-                    <option value="Completed">Completed</option>
-                  </select>
-                </div>
-                <div class="mb-3">
-                  <label for="addPriority" class="form-label">Priority</label>
-                  <select class="form-select" id="addPriority" name="priority" required>
-                    <option value="Low">Low</option>
-                    <option value="Medium">Medium</option>
-                    <option value="High">High</option>
-                  </select>
-                </div>
-                <div class="mb-3">
-                  <label for="addAssignedTo" class="form-label">Assigned To</label>
-                  <input type="text" class="form-control" id="addAssignedTo" name="assigned_to">
-                </div>
-                <div class="mb-3">
-                  <label for="addDueDate" class="form-label">Due Date</label>
-                  <input type="date" class="form-control" id="addDueDate" name="due_date">
-                </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
-              </form>
-            </div>
+            <!-- /.card-body -->
           </div>
+          <!-- /.card -->
         </div>
+        <!-- /.col -->
       </div>
+      <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
+</div>
 
-      <!-- Edit Work Order Modal -->
-      <div class="modal fade" id="editWorkOrderModal" tabindex="-1" aria-labelledby="editWorkOrderModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="editWorkOrderModalLabel">Edit Work Order</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <form id="editWorkOrderForm">
+<?php if (isset($_REQUEST['deleteProduct'])) {
+  $id = $_GET['deleteProduct'];
+  $sql = $dbh->query("DELETE FROM products WHERE id = '$id' ");
+  if ($sql) {
+    echo "
+          <script>
+            window.location.href = 'products';
+          </script>
+        ";
+  }
+}
+?>
+
+<!-- Add Product Modal -->
+<div class="modal fade" id="modal-default">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Work Order</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <form action="" method>
                 <input type="hidden" id="editWorkOrderId" name="id">
                 <div class="mb-3">
                   <label for="editDescription" class="form-label">Description</label>
@@ -148,44 +136,17 @@
                   <label for="editDueDate" class="form-label">Due Date</label>
                   <input type="date" class="form-control" id="editDueDate" name="due_date">
                 </div>
-                <button type="submit" class="btn btn-primary">Save changes</button>
+                <button type="submit" name="add_work_btn" class="btn btn-primary">Save changes</button>
               </form>
-            </div>
-          </div>
-        </div>
-      </div>
 
-    </div><!-- /.container-fluid -->
-  </section>
-  <!-- /.content -->
+
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
 </div>
-<!-- /.content-wrapper -->
+<!-- /.modal -->
 
-<?php include 'footer.php'; // Include footer ?>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-  // JavaScript to populate edit modal with work order data
-  function populateEditModal(id, description, status, priority, assigned_to, due_date) {
-    document.getElementById('editWorkOrderId').value = id;
-    document.getElementById('editDescription').value = description;
-    document.getElementById('editStatus').value = status;
-    document.getElementById('editPriority').value = priority;
-    document.getElementById('editAssignedTo').value = assigned_to;
-    document.getElementById('editDueDate').value = due_date;
-  }
-  
-  // Handle form submissions (optional)
-  document.getElementById('addWorkOrderForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    // Handle add work order form submission
-    alert('Add Work Order Form submitted');
-  });
 
-  document.getElementById('editWorkOrderForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    // Handle edit work order form submission
-    alert('Edit Work Order Form submitted');
-  });
-</script>
-
+<?php include('footer.php'); ?>

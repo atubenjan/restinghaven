@@ -1,4 +1,6 @@
-<?php include 'header.php'; // Include header and navigation ?>
+<?php include 'header.php'; // Include header and navigation
+?>
+
 
 <div class="content-wrapper">
   <div class="content-header">
@@ -35,7 +37,7 @@
           <table id="example1" class="table table-bordered table-striped">
             <thead>
               <tr>
-                <th>Item ID</th>
+                <th>ID</th>
                 <th>Item Name</th>
                 <th>Category</th>
                 <th>Description</th>
@@ -105,61 +107,95 @@
         </button>
       </div>
       <div class="modal-body">
-        <form action="" method="post">
-          <div class="row">
-            <div class="col-md-4">
-              <div class="mb-3">
-                <label for="addItemName" class="form-label">Item Name</label>
-                <input type="text" class="form-control" id="addItemName" name="product_name" required>
-              </div>
-              <div class="mb-3">
+<form id="addInventoryForm" action="" method="post">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="addProductName" class="form-label">Product Name</label>
+                <input type="text" class="form-control" id="addProductName" name="product_name" required>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="addProductCode" class="form-label">Product Code</label>
+                <input type="text" class="form-control" id="addProductCode" name="product_code" required>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
                 <label for="addCategory" class="form-label">Category</label>
                 <input type="text" class="form-control" id="addCategory" name="category" required>
-              </div>
-              <div class="mb-3">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
                 <label for="addDescription" class="form-label">Description</label>
                 <textarea class="form-control" id="addDescription" name="description"></textarea>
-              </div>
             </div>
-            <div class="col-md-4">
-              <div class="mb-3">
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
                 <label for="addQuantity" class="form-label">Quantity</label>
                 <input type="number" class="form-control" id="addQuantity" name="quantity" required>
-              </div>
-              <div class="mb-3">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
                 <label for="addUnitOfMeasurement" class="form-label">Unit of Measurement</label>
                 <input type="text" class="form-control" id="addUnitOfMeasurement" name="unit_of_measurement" required>
-              </div>
-              <div class="mb-3">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
                 <label for="addReorderLevel" class="form-label">Reorder Level</label>
                 <input type="number" class="form-control" id="addReorderLevel" name="reorder_level" required>
-              </div>
             </div>
-            <div class="col-md-4">
-              <div class="mb-3">
-                <label for="addSupplier" class="form-label">Supplier</label>
-                <input type="text" class="form-control" id="addSupplier" name="supplier_id">
-              </div>
-              <div class="mb-3">
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                 <!-- Other form fields -->
+    <label for="supplier_id">Supplier:</label>
+    <select name="supplier_id" id="supplier_id" required>
+        <option value="">Select Supplier</option>
+        <option value="1">Supplier 1</option>
+        <option value="2">Supplier 2</option>
+        <!-- More supplier options -->
+    </select>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
                 <label for="addCostPerUnit" class="form-label">Cost per Unit</label>
                 <input type="number" step="0.01" class="form-control" id="addCostPerUnit" name="cost_per_unit" required>
-              </div>
-              <div class="mb-3">
-                <label for="addTotalCost" class="form-label">Total Cost</label>
-                <input type="number" step="0.01" class="form-control" id="addTotalCost" name="total_cost" readonly>
-              </div>
-              <div class="mb-3">
-                <label for="addStatus" class="form-label">Status</label>
-                <input type="text" class="form-control" id="addStatus" name="status">
-              </div>
-              <div class="mb-3">
-                <label for="addDate" class="form-label">Date</label>
-                <input type="date" class="form-control" id="addDate" name="date_added">
-              </div>
             </div>
-          </div>
-          <button type="submit" name="add_invetory_btn" class="btn btn-primary">Submit</button>
-        </form>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="addTotalCost" class="form-label">Total Cost</label>
+                <input type="number" step="0.01" class="form-control" id="addTotalCost" name="total_cost" required>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="addStatus" class="form-label">Status</label>
+                <select id="addStatus" name="status" class="form-control">
+                    <option value="Active">Active</option>
+                    <option value="Non-active">Non-active</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="addStatus" class="form-label">Date Added</label>
+                <input type="date" name="date_added" required>
+            </div>
+        </div>
+      
+
+    </div>
+    <button type="submit" name="add_inventory_btn" class="btn btn-primary">Submit</button>
+</form>
+
       </div>
     </div>
   </div>

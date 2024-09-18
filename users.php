@@ -77,8 +77,7 @@
                         </td>
                       </tr>
                     <?php 
-                      $count++;
-                      include 'edit-user.php';
+                     
                       }
                     ?>
                   </tbody>

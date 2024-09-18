@@ -24,7 +24,7 @@
       <div class="card">
         <div class="card-header">
           <!-- Button to trigger add modal -->
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addLotModal">
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-default">
             Add Lot
           </button>
           <!-- Download Button -->
@@ -70,7 +70,7 @@
 <!-- /.content-wrapper -->
 
 <!-- Add Lot Modal -->
-<div class="modal fade" id="addLotModal" tabindex="-1" aria-labelledby="addLotModalLabel" aria-hidden="true">
+<div class="modal fade" id="modal-default">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -78,25 +78,34 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form id="addLotForm">
-          <div class="mb-3">
-            <label for="addLotNumber" class="form-label">Lot Number</label>
-            <input type="text" class="form-control" id="addLotNumber" name="lot_number" required>
-          </div>
-          <div class="mb-3">
-            <label for="addLocation" class="form-label">Location</label>
-            <input type="text" class="form-control" id="addLocation" name="location" required>
-          </div>
-          <div class="mb-3">
-            <label for="addStatus" class="form-label">Status</label>
-            <select class="form-control" id="addStatus" name="status" required>
-              <option value="Available">Available</option>
-              <option value="Occupied">Occupied</option>
-              <option value="Reserved">Reserved</option>
-            </select>
-          </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+      <form id="addPlotForm">
+  <div class="mb-3">
+    <label for="addSection" class="form-label">Section</label>
+    <input type="text" class="form-control" id="addSection" name="section" required>
+  </div>
+  <div class="mb-3">
+    <label for="addLot" class="form-label">Lot</label>
+    <input type="text" class="form-control" id="addLot" name="lot" required>
+  </div>
+  <div class="mb-3">
+    <label for="addPlot" class="form-label">Plot</label>
+    <input type="text" class="form-control" id="addPlot" name="plot" required>
+  </div>
+  <div class="mb-3">
+    <label for="addLocation" class="form-label">Location</label>
+    <input type="text" class="form-control" id="addLocation" name="location" required>
+  </div>
+  <div class="mb-3">
+    <label for="addStatus" class="form-label">Status</label>
+    <select class="form-control" id="addStatus" name="status" required>
+      <option value="Available">Available</option>
+      <option value="Occupied">Occupied</option>
+      <option value="Reserved">Reserved</option>
+    </select>
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
       </div>
     </div>
   </div>
@@ -137,33 +146,3 @@
 </div>
 
 <?php include 'footer.php'; // Include footer ?>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-  // JavaScript to populate edit modal with lot data
-  function populateEditModal(id, lotNumber, location, status) {
-    document.getElementById('editLotId').value = id;
-    document.getElementById('editLotNumber').value = lotNumber;
-    document.getElementById('editLocation').value = location;
-    document.getElementById('editStatus').value = status;
-  }
-
-  // Handle form submissions (optional)
-  document.getElementById('addLotForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    // Handle add lot form submission
-    alert('Add Lot Form submitted');
-  });
-
-  document.getElementById('editLotForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    // Handle edit lot form submission
-    alert('Edit Lot Form submitted');
-  });
-
-  // Handle download button click (placeholder function)
-  document.getElementById('downloadButton').addEventListener('click', function() {
-    alert('Download button clicked');
-    // Implement download functionality here
-  });
-</script>

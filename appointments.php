@@ -77,9 +77,7 @@
                       </td>
                     </tr>
                   <?php
-                    $count++;
-                    include 'edit-product.php';
-                    include 'view-product.php';
+                 
                   }
                   ?>
                 </tbody>

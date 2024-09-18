@@ -87,7 +87,7 @@
                 </tr>
               <?php
            
-             include 'edit_supplier.php';
+
              
             
             

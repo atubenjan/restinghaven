@@ -1,7 +1,7 @@
 <?php
 ob_start();
 session_start(); 
-error_reporting(1);
+
 date_default_timezone_set('Africa/Nairobi');
 $dtime = date("Y-m-d H:i:s A", time());
 $now = date("Y-m-d H:i:s", time());
@@ -150,16 +150,20 @@ function dbDelete ($tbl='',$field='',$id=''){
 		return NULL;
 	}
 }
-
-function dbCreate($sql=''){
-	global $dbh;
-	if($sql ==''){
-		return -9;
-	}else {
-		$q = $dbh->prepare($sql);
-		return  $q->execute();
-	}
+function dbCreate($sql = '', $params = []) {
+    global $dbh;
+    if ($sql == '') {
+        return -9;
+    } else {
+        $q = $dbh->prepare($sql);
+        if ($q->execute($params)) {
+            return 1; // Success
+        } else {
+            return 0; // Failure
+        }
+    }
 }
+
 
 function dbSQL($q=''){
 	global $dbh;

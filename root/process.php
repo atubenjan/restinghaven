@@ -20,15 +20,10 @@ set_error_handler("customError");
 
 // Login process
 if (isset($_POST['login_btn'])) {
-    $email = trim($_POST['email']);
-    $password = trim($_POST['password']);
+    trim(extract($_POST));
+
     $encrypt_password = sha1($password);
-
-    $result = dbQuery("SELECT * FROM users WHERE email = :email AND password = :password", [
-        ':email' => $email,
-        ':password' => $encrypt_password
-    ]);
-
+    $result = $dbh->query("SELECT * FROM users WHERE email = '$email' AND password = '$encrypt_password'");
     if ($result->rowCount() == 1) {
         $rows = $result->fetch(PDO::FETCH_OBJ);
 
@@ -37,18 +32,21 @@ if (isset($_POST['login_btn'])) {
         $_SESSION['email'] = $rows->email;
         $_SESSION['user_role'] = $rows->user_role;
 
-        echo "<script>
-            alert('Login Successful...');
-            window.location.href = '".SITE_URL."';
-        </script>";
+        echo "
+            <script>
+                alert('Login Successful...');
+                window.location.href = '".SITE_URL."';
+            </script>
+        ";
     } else {
-        echo "<script>
-            alert('Invalid email or password');
-            window.location.href = window.location.href;
-        </script>";
+        echo "
+            <script>
+                alert('Invalid email or password');
+                window.location.href = window.location.href;
+            </script>
+        ";
     }
 }
-
 // User Registration
 elseif (isset($_POST['register_btn'])) {
     $username = trim($_POST['username']);

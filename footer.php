@@ -13,6 +13,14 @@
 <script>
   $.widget.bridge('uibutton', $.ui.button)
 </script>
+<!-- Bootstrap CSS -->
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Bootstrap Bundle with Popper -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
 <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="plugins/chart.js/Chart.min.js"></script>
 <script src="plugins/sparklines/sparkline.js"></script>

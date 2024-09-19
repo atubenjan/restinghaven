@@ -354,9 +354,36 @@ elseif (isset($_POST['add_deceased_btn'])) {
     }
 }
 
+// Add Expense
+elseif (isset($_POST['add_expense_btn'])) {
+    // Safely assign and trim POST values
+    $date = trim($_POST['date']);
+    $description = trim($_POST['description']);
+    $amount = trim($_POST['amount']);
+    $category = trim($_POST['category']);
+    $remarks = trim($_POST['remarks']);
 
-
-
+    // Proceed with the database query
+    $result = dbCreate ("INSERT INTO expenses (date, description, amount, category, remarks )VALUES (:date, :description, :amount, :category, :remarks)",[
+      
+            ':date' => $date,
+            ':description' => $description,
+            ':amount' => $amount,
+            ':category' => $category,
+            ':remarks' => $remarks
+        ]);
+        if ($result == 1) {
+        echo "<script>
+            alert('Expense added successfully');
+            window.location.href = window.location.href;
+        </script>";
+    } else {
+        echo "<script>
+            alert('Expense addition failed: " . htmlspecialchars($e->getMessage()) . "');
+            window.location.href = window.location.href;
+        </script>";
+    }
+}
 
 // Add Work Order
 elseif (isset($_POST['add_work_order_btn'])) {

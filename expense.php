@@ -1,5 +1,6 @@
 <?php
-  include 'header.php'; // Include header and navigation
+// Include header and navigation
+include 'header.php';
 ?>
 
 <div class="content-wrapper">
@@ -22,17 +23,28 @@
   <!-- Main content -->
   <section class="content">
     <div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Expenses</h3>
+              <div class="card-tools">
+               
+              </div>
+            </div>
       <!-- Expenses table -->
-      <div class="card">
-        <div class="card-header">
+      <div class="card-body">
+      <div class="card-header">
           <!-- Button to trigger modal -->
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addExpenseModal">
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default">
             Add Expense
           </button>
         </div>
         <!-- /.card-header -->
-        <div class="card-body">
-          <table id="expensesTable" class="table table-bordered table-striped">
+     
+      
+
+        <table id="example2" class="table table-bordered table-hover">
             <thead>
               <tr>
                 <th>ID</th>
@@ -45,20 +57,34 @@
               </tr>
             </thead>
             <tbody>
-              <!-- Example Row -->
-              <tr>
-                <td>1</td>
-                <td>2024-09-01</td>
-                <td>Office Supplies</td>
-                <td>$150.00</td>
-                <td>Office</td>
-                <td>Purchased pens and notebooks</td>
-                <td>
-                  <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editExpenseModal" onclick="populateEditModal(1, '2024-09-01', 'Office Supplies', 150.00, 'Office', 'Purchased pens and notebooks')">Edit</button>
-                  <a href="delete_expense.html" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this record?');">Delete</a>
-                </td>
-              </tr>
-              <!-- Add more rows as needed -->
+            <?php
+                  $expenses = $dbh->query("SELECT * FROM expenses");
+                  $count = 1;
+                  while ($row = $expenses->fetch(PDO::FETCH_OBJ)) {
+                  ?>
+                <tr>
+                <td><?= $count; ?></td>
+                      <th><?= $row->date ?></td>
+                      <td><?= $row->description ?></td>                  
+                      <td><?= $row->amount ?></td>
+                      <td><?= $row->category ?></td>
+                      <td><?= $row->remarks ?></td>
+                      <td>
+                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editProduct<?= $row->id ?>">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <a href="?deleteProduct=<?= $row->id ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this?')">
+                          <i class="fas fa-trash"></i>
+                        </a>
+                        <button type="button" class="btn btn-info btn-sm text-white" data-toggle="modal" data-target="#viewProduct<?= $row->id ?>">
+                          <i class="fas fa-eye"></i>
+                        </button>
+                      </td>
+                </tr>
+                <?php
+                 
+              }
+                ?>
             </tbody>
           </table>
         </div>
@@ -72,38 +98,36 @@
 <!-- /.content-wrapper -->
 
 <!-- Add Expense Modal -->
-<div class="modal fade" id="addExpenseModal" tabindex="-1" aria-labelledby="addExpenseModalLabel" aria-hidden="true">
+<div class="modal fade" id="modal-default">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="addExpenseModalLabel">Add New Expense</h5>
+        <h5 class="modal-title" id="addExpenseModalLabel">Add Expense</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form id="addExpenseForm">
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label for="addDate" class="form-label">Date</label>
-              <input type="date" class="form-control" id="addDate" name="date" required>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label for="addDescription" class="form-label">Description</label>
-              <input type="text" class="form-control" id="addDescription" name="description" required>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label for="addAmount" class="form-label">Amount</label>
-              <input type="number" class="form-control" id="addAmount" name="amount" step="0.01" required>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label for="addCategory" class="form-label">Category</label>
-              <input type="text" class="form-control" id="addCategory" name="category">
-            </div>
-            <div class="col-md-12 mb-3">
-              <label for="addRemarks" class="form-label">Remarks</label>
-              <textarea class="form-control" id="addRemarks" name="remarks"></textarea>
-            </div>
+        <form id="addExpenseForm" method="post" action="">
+          <div class="mb-3">
+            <label for="expenseDate" class="form-label">Date</label>
+            <input type="date" class="form-control" id="expenseDate" name="date" required>
           </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
+          <div class="mb-3">
+            <label for="expenseDescription" class="form-label">Description</label>
+            <input type="text" class="form-control" id="expenseDescription" name="description" required>
+          </div>
+          <div class="mb-3">
+            <label for="expenseAmount" class="form-label">Amount</label>
+            <input type="number" class="form-control" id="expenseAmount" name="amount" step="0.01" required>
+          </div>
+          <div class="mb-3">
+            <label for="expenseCategory" class="form-label">Category</label>
+            <input type="text" class="form-control" id="expenseCategory" name="category" required>
+          </div>
+          <div class="mb-3">
+            <label for="expenseRemarks" class="form-label">Remarks</label>
+            <textarea class="form-control" id="expenseRemarks" name="remarks"></textarea>
+          </div>
+          <button type="submit" name="add_expense_btn" class="btn btn-primary">Add Expense</button>
         </form>
       </div>
     </div>
@@ -115,35 +139,33 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="editExpenseModalLabel">Edit Expense Record</h5>
+        <h5 class="modal-title" id="editExpenseModalLabel">Edit Expense</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form id="editExpenseForm">
+        <form id="editExpenseForm" method="post" action="edit_expense.php">
           <input type="hidden" id="editExpenseId" name="id">
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label for="editDate" class="form-label">Date</label>
-              <input type="date" class="form-control" id="editDate" name="date" required>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label for="editDescription" class="form-label">Description</label>
-              <input type="text" class="form-control" id="editDescription" name="description" required>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label for="editAmount" class="form-label">Amount</label>
-              <input type="number" class="form-control" id="editAmount" name="amount" step="0.01" required>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label for="editCategory" class="form-label">Category</label>
-              <input type="text" class="form-control" id="editCategory" name="category">
-            </div>
-            <div class="col-md-12 mb-3">
-              <label for="editRemarks" class="form-label">Remarks</label>
-              <textarea class="form-control" id="editRemarks" name="remarks"></textarea>
-            </div>
+          <div class="mb-3">
+            <label for="editExpenseDate" class="form-label">Date</label>
+            <input type="date" class="form-control" id="editExpenseDate" name="date" required>
           </div>
-          <button type="submit" class="btn btn-primary">Save changes</button>
+          <div class="mb-3">
+            <label for="editExpenseDescription" class="form-label">Description</label>
+            <input type="text" class="form-control" id="editExpenseDescription" name="description" required>
+          </div>
+          <div class="mb-3">
+            <label for="editExpenseAmount" class="form-label">Amount</label>
+            <input type="number" class="form-control" id="editExpenseAmount" name="amount" step="0.01" required>
+          </div>
+          <div class="mb-3">
+            <label for="editExpenseCategory" class="form-label">Category</label>
+            <input type="text" class="form-control" id="editExpenseCategory" name="category" required>
+          </div>
+          <div class="mb-3">
+            <label for="editExpenseRemarks" class="form-label">Remarks</label>
+            <textarea class="form-control" id="editExpenseRemarks" name="remarks"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Update Expense</button>
         </form>
       </div>
     </div>
@@ -151,29 +173,3 @@
 </div>
 
 <?php include 'footer.php'; // Include footer ?>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-  // JavaScript to populate edit modal with expense record data
-  function populateEditModal(id, date, description, amount, category, remarks) {
-    document.getElementById('editExpenseId').value = id;
-    document.getElementById('editDate').value = date;
-    document.getElementById('editDescription').value = description;
-    document.getElementById('editAmount').value = amount;
-    document.getElementById('editCategory').value = category;
-    document.getElementById('editRemarks').value = remarks;
-  }
-
-  // Handle form submissions (optional)
-  document.getElementById('addExpenseForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    // Handle add expense record form submission
-    alert('Add Expense Form submitted');
-  });
-
-  document.getElementById('editExpenseForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    // Handle edit expense record form submission
-    alert('Edit Expense Form submitted');
-  });
-</script>

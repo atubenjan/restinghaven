@@ -232,7 +232,7 @@ $date_registered = isset($_SESSION['date_registered']) ? $_SESSION['date_registe
               </a>
             </li>
             <li class="nav-item">
-              <a href="security_access" class="nav-link">
+              <a href="security_access_control" class="nav-link">
                 <i class="nav-icon fas fa-lock"></i>
                 <p>Security & Access Control</p>
               </a>

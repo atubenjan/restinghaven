@@ -96,13 +96,13 @@
   <!-- /.content -->
 </div>
 
-<?php if (isset($_REQUEST['deleteProduct'])) {
-  $id = $_GET['deleteProduct'];
-  $sql = $dbh->query("DELETE FROM products WHERE id = '$id' ");
+<?php if (isset($_REQUEST['deleteAppointments'])) {
+  $id = $_GET['deleteAppointments'];
+  $sql = $dbh->query("DELETE FROM appointments WHERE id = '$id' ");
   if ($sql) {
     echo "
           <script>
-            window.location.href = 'products';
+            window.location.href = ' appointments';
           </script>
         ";
   }

@@ -58,7 +58,7 @@
                         <td><?=$row->email;?></td>
                         <td><?=$row->national_id;?></td>
                         <td><?=$row->user_role;?></td>
-                        <td><img src="<?=$row->photo;?>" alt="User Photo" class="img-thumbnail" width="100"></td>
+                        <td><img src="<?=$row->file;?>" alt="User Photo" class="img-thumbnail" width="100"></td>
                         <td>
                           <!-- Update Button with Icon -->
                           <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#deleteUser<?=$row->id?>">
@@ -150,7 +150,7 @@
             </div>
             <div class="form-group">
               <label for="photo" class="form-label">Photo</label>
-              <input type="file" class="form-control" id="photo" name="photo">
+              <input type="file" class="form-control" id="photo" name="file">
             </div>
             <div class="modal-footer justify-content-between">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

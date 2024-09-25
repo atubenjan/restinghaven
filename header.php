@@ -51,6 +51,12 @@ $date_registered = isset($_SESSION['date_registered']) ? $_SESSION['date_registe
   <link rel="stylesheet" href="plugins/summernote/summernote-bs4.min.css">
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
   
+  <!-- DataTables -->
+  <link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+  <link rel="stylesheet" href="plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+  <!-- Theme style -->
+
   <!-- Preloader CSS -->
   <style>
     /* Preloader Styles */

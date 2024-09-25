@@ -48,62 +48,42 @@ if (isset($_POST['login_btn'])) {
     }
 }
 // User Registration
-elseif (isset($_POST['register_btn'])) {
-    $username = trim($_POST['username']);
-    $email = trim($_POST['email']);
-    $national_id = trim($_POST['national_id']);
-    $user_role = trim($_POST['user_role']);
-    $password = trim($_POST['password']);
-    $encrypt_password = sha1($password);
 
-    $filename = isset($_FILES['photo']['name']) ? trim($_FILES['photo']['name']) : '';
-    $photo = '';
-    if ($filename) {
-        $chk = rand(1111111111111, 9999999999999);
-        $ext = strrchr($filename, ".");
-        $photo = $chk . $ext;
-        $target_img = "./uploads/" . $photo;
-        $url = SITE_URL . '/uploads/' . $photo;
-    }
+if (isset($_POST['register_btn'])) {
+    trim(extract($_POST));
+    $errors = []; // Initialize an array for errors if you haven't already
 
-    $check = dbQuery("SELECT username, email FROM users WHERE username = :username OR email = :email OR national_id = :national_id", [
-        ':username' => $username,
-        ':email' => $email,
-        ':national_id' => $national_id
-    ])->fetchColumn();
+    if (count($errors) == 0) {
+        $check = $dbh->query("SELECT email FROM users WHERE email='$email'")->fetchColumn();
 
-    if (!$check) {
-        
-        $result = dbCreate("INSERT INTO users (username, email, national_id, user_role, password, photo) VALUES (:username, :email, :national_id, :user_role, :password, :photo)", [
-            ':username' => $username,
-            ':email' => $email,
-            ':national_id' => $national_id,
-            ':user_role' => $user_role,
-            ':password' => $encrypt_password,
-            ':photo' => $photo ? $url : ''
-        ]);
+        if (!$check) {
+            $userid = mt_rand();
+            $encrypt_password = sha1($password);
 
-        if ($result == 1) {
-            if ($photo) {
-                move_uploaded_file($_FILES['photo']['tmp_name'], $target_img);
+            $result = dbCreate("INSERT INTO users (username, email, national_id, user_role, password, file) VALUES (:username, :email, :national_id, :user_role, :password, :file)", [
+                ':username' => $username,
+                ':email' => $email,
+                ':national_id' => $national_id,
+                ':user_role' => $user_role,
+                ':password' => $encrypt_password,
+                ':file' => isset($file) ? $file : null // Check if $file is set
+               
+            ]);
+
+            if ($result == 1) {
+                echo "<script>
+                    alert('User added successfully');
+                    window.location.href = window.location.href;
+                </script>";
+            } else {
+                echo "<script>
+                    alert('User addition failed');
+                    window.location.href = window.location.href;
+                </script>";
             }
-            $_SESSION['status'] = '<div class="alert alert-success text-center">You have Successfully registered</div>';
-            $_SESSION['loader'] = '<center><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></center>';
-            echo "<script>
-                alert('User registered successfully');
-                window.location.href = window.location.href;
-            </script>";
-        } else {
-            echo "<script>
-                alert('User registration failed');
-                window.location.href = window.location.href;
-            </script>";
-        }
-    } else {
-        $_SESSION['status'] = '<div class="alert alert-danger text-center">Username or email already exists</div>';
+}
     }
 }
-
 // Edit User
 elseif (isset($_POST['edit_user_btn'])) {
     $id = trim($_POST['id']);
@@ -227,23 +207,9 @@ elseif (isset($_POST['add_supplier_btn'])) {
 }
 
 // Add Inventory
-// Add Inventory
-elseif (isset($_POST['add_inventory_btn'])) {
-    // Safely assign and trim POST values
-    $product_name = trim($_POST['product_name']);
-    $product_code = trim($_POST['product_code']);
-    $category = trim($_POST['category']);
-    $description = trim($_POST['description']);
-    $quantity = trim($_POST['quantity']);
-    $unit_of_measurement = trim($_POST['unit_of_measurement']);
-    $reorder_level = trim($_POST['reorder_level']);
-    $supplier_id = isset($_POST['supplier_id']) ? trim($_POST['supplier_id']) : null; // Safe assignment
-    $cost_per_unit = trim($_POST['cost_per_unit']);
-    $total_cost = trim($_POST['total_cost']);
-    $status = trim($_POST['status']);
-    $date_added = isset($_POST['date_added']) ? trim($_POST['date_added']) : null; // Safe assignment
 
-    // Now proceed with the database query
+elseif (isset($_POST['add_inventory_btn'])) {
+    trim(extract($_POST));
     $result = dbCreate("INSERT INTO inventory (product_name, product_code, category, description, quantity, unit_of_measurement, reorder_level, supplier_id, cost_per_unit, total_cost, status, date_added) VALUES (:product_name, :product_code, :category, :description, :quantity, :unit_of_measurement, :reorder_level, :supplier_id, :cost_per_unit, :total_cost, :status, :date_added)", [
         ':product_name' => $product_name,
         ':product_code' => $product_code,
@@ -256,9 +222,8 @@ elseif (isset($_POST['add_inventory_btn'])) {
         ':cost_per_unit' => $cost_per_unit,
         ':total_cost' => $total_cost,
         ':status' => $status,
-        ':date_added' => $date_added // Use the safe assignment
+        ':date_added' => $date_added 
     ]);
-
     if ($result == 1) {
         echo "<script>
             alert('Inventory added successfully');

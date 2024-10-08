@@ -142,17 +142,16 @@ elseif (isset($_POST['add_appointment_btn'])) {
     $reason = trim($_POST['reason']);
     $assigned_to = trim($_POST['assigned_to']);
 
-    $sql = "INSERT INTO appointments (fullname, date, time, reason, assigned_to) VALUES (:fullname, :date, :time, :reason, :assigned_to)";
-    $params = [
+    $result = dbcreate("INSERT INTO appointments (fullname, date, time, reason, assigned_to) VALUES (:fullname, :date, :time, :reason, :assigned_to)",
+   [
         ':fullname' => $fullname,
         ':date' => $date,
         ':time' => $time,
         ':reason' => $reason,
         ':assigned_to' => $assigned_to
-    ];
+    ]);
 
-    try {
-        $result = dbCreate($sql, $params);
+  
 
         if ($result == 1) {
             echo "<script>
@@ -165,10 +164,10 @@ elseif (isset($_POST['add_appointment_btn'])) {
                 window.location.href = window.location.href;
             </script>";
         }
-    } catch (PDOException $e) {
-        echo "Error: " . $e->getMessage();
+  
+ 
     }
-}
+
 
 
 

@@ -51,13 +51,15 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <?php
-                  $appointments = $dbh->query("SELECT * FROM appointments");
-                  $count = 1;
-                  while ($row = $appointments->fetch(PDO::FETCH_OBJ)) {
-                  ?>
+                <?php
+                      $appointments = $dbh->query("SELECT * FROM appointments");
+                      $count = 1;
+                      while ($row = $appointments->fetch(PDO::FETCH_OBJ)) {
+                    ?>
                     <tr>
-                      <td><?= $count; ?></td>
+
+                    
+                    <td><?=$count;?></td>
                       <td><?= $row->fullname ?></td>
                       <td><?= $row->date ?></td>                  
                       <td><?= $row->time ?></td>

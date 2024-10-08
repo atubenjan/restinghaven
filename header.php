@@ -88,10 +88,10 @@ $date_registered = isset($_SESSION['date_registered']) ? $_SESSION['date_registe
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
   
-  <!-- Preloader 
+
   <div id="preloader">
     <div class="loader"></div>
-  </div>-->
+  </div>
 
   <div class="wrapper">
     <!-- Navbar -->

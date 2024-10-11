@@ -27,7 +27,7 @@ $date_registered = isset($_SESSION['date_registered']) ? $_SESSION['date_registe
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>LSkS | Dashboard</title>
+  <title>RSH | Dashboard</title>
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
   <!-- Google Font: Source Sans Pro -->
@@ -89,9 +89,9 @@ $date_registered = isset($_SESSION['date_registered']) ? $_SESSION['date_registe
 <body class="hold-transition sidebar-mini layout-fixed">
   
 
-  <div id="preloader">
+  <!-- <div id="preloader">
     <div class="loader"></div>
-  </div>
+  </div> -->
 
   <div class="wrapper">
     <!-- Navbar -->

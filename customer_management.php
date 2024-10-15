@@ -43,17 +43,23 @@
             </thead>
             <tbody>
               <!-- Example Row -->
+              <?php 
+              $stmt = $dbh->query("SELECT * FROM customers");
+              $count = 1;
+              while ($row = $stmt->fetch(PDO::FETCH_OBJ)) {
+              ?>
               <tr>
-                <td>1</td>
-                <td>John Doe</td>
-                <td>john@example.com</td>
-                <td>123-456-7890</td>
-                <td>Some remarks</td>
+                <td><?= $count; ?></td>
+                <td><?= $row->name; ?></td>
+                <td><?= $row->email; ?></td>
+                <td><?= $row->phone; ?></td>
+                <td><?= $row->remarks; ?></td>
                 <td>
                   <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editCustomerModal" onclick="populateEditModal(1, 'John Doe', 'john@example.com', '123-456-7890', 'Some remarks')">Edit</button>
                   <a href="delete_customer.html" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this customer?');">Delete</a>
                 </td>
               </tr>
+              <?php $count++; }?>
               <!-- Add more rows as needed -->
             </tbody>
           </table>
@@ -73,10 +79,12 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="addCustomerModalLabel">Add New Customer</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
       <div class="modal-body">
-        <form id="addCustomerForm">
+        <form action="" method="POST">
           <div class="mb-3">
             <label for="addCustomerName" class="form-label">Name</label>
             <input type="text" class="form-control" id="addCustomerName" name="name" required>
@@ -93,7 +101,7 @@
             <label for="addCustomerRemarks" class="form-label">Remarks/Notes</label>
             <textarea class="form-control" id="addCustomerRemarks" name="remarks" rows="3"></textarea>
           </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="submit" name="add_customer_btn" class="btn btn-primary">Submit</button>
         </form>
       </div>
     </div>

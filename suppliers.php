@@ -85,7 +85,7 @@
                     <a href="delete_supplier.php?id=<?= htmlspecialchars($row['id']); ?>" class="btn btn-danger btn-sm">Delete</a>
                   </td>
                 </tr>
-              <?php
+              <?php   
            
 
              

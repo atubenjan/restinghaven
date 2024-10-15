@@ -4,6 +4,44 @@ include './root/vendor/autoload.php';
 
 $api_key = "TQx3th8uR2R8I8o8858HUos2f37c81Smw1I0DQ470a7b3rk4E3U33GN5cm7L3AHz";
 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Retrieve posted username and password
+    $username = $_POST['username'] ?? ''; // Ensure it defaults to an empty string if not set
+    $password = $_POST['password'] ?? ''; // Ensure it defaults to an empty string if not set
+
+    // Fetch user from the database
+    $stmt = $dbh->prepare("SELECT * FROM users WHERE username = :username");
+    $stmt->bindParam(':username', $username);
+    $stmt->execute();
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($user && password_verify($password, $user['password'])) {
+        // Password is correct, log in the user
+        $_SESSION['id'] = $user['id'];
+        $_SESSION['role'] = $user['role']; // Ensure role is set
+        $_SESSION['fullname'] = $user['fullname']; // Any additional session variables
+        $_SESSION['phone'] = $user['phone'];
+        $_SESSION['userid'] = $user['userid'];
+        $_SESSION['date_registered'] = $user['date_registered'];
+
+        // Log the login event
+        $ip_address = $_SERVER['REMOTE_ADDR'];
+
+        // Insert log into the database
+        $logStmt = $dbh->prepare("INSERT INTO login_logs (username, ip_address, role) VALUES (:username, :ip_address, :role)");
+        $logStmt->bindParam(':username', $username);
+        $logStmt->bindParam(':ip_address', $ip_address);
+        $logStmt->bindParam(':role', $_SESSION['role']); // Ensure role is set
+        $logStmt->execute();
+
+        // Redirect to the dashboard or another page
+        header("Location: index.php"); // Change to your actual dashboard page
+        exit();
+    } else {
+        // Invalid credentials
+        echo "Invalid username or password.";
+    }
+}
 // Enable error reporting and set a custom error handler
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -16,6 +54,7 @@ function customError($errno, $errstr, $errfile, $errline) {
     exit();
 }
 set_error_handler("customError");
+
 
 
 // Login process
@@ -49,39 +88,40 @@ if (isset($_POST['login_btn'])) {
 }
 // User Registration
 
-if (isset($_POST['register_btn'])) {
+elseif (isset($_POST['register_btn'])) {
     trim(extract($_POST));
-    $errors = []; // Initialize an array for errors if you haven't already
 
-    if (count($errors) == 0) {
-        $check = $dbh->query("SELECT email FROM users WHERE email='$email'")->fetchColumn();
+    $filename = trim($_FILES['photo']['name']);
+    $chk = rand(1111111111111, 9999999999999);
+    $ext = strrchr($filename, ".");
+    $photo = $chk . $ext;
+    $target_img = "./uploads/" . $photo;
+    $url = SITE_URL . '/uploads/' . $photo;
 
-        if (!$check) {
-            $userid = mt_rand();
-            $encrypt_password = sha1($password);
-
-            $result = dbCreate("INSERT INTO users (username, email, national_id, user_role, password, file) VALUES (:username, :email, :national_id, :user_role, :password, :file)", [
-                ':username' => $username,
-                ':email' => $email,
-                ':national_id' => $national_id,
-                ':user_role' => $user_role,
-                ':password' => $encrypt_password,
-                ':file' => isset($file) ? $file : null // Check if $file is set
-               
-            ]);
-
-            if ($result == 1) {
-                echo "<script>
-                    alert('User added successfully');
+    $check = $dbh->query("SELECT username, email FROM users WHERE username = '$username' OR email ='$email' OR national_id = '$national_id'")->fetchColumn();
+    if (!$check) {
+        $encrypt_password = sha1($password);
+        $result = dbCreate("INSERT INTO users VALUES(NULL, '$username', '$email', '$national_id', '$user_role', '$encrypt_password', '$url', NULL, NULL)");
+        if ($result == 1) {
+            move_uploaded_file($_FILES['photo']['tmp_name'], $target_img);
+            $_SESSION['status'] = '<div class="alert alert-success text-center">You have Successfully registered</div>';
+            $_SESSION['loader'] = '<center><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></center>';
+            echo '
+                <script>
+                    alert("User registered successfully");
                     window.location.href = window.location.href;
-                </script>";
-            } else {
-                echo "<script>
-                    alert('User addition failed');
+                </script>
+            ';
+        } else {
+            echo '
+                <script>
+                    alert("User registration failed");
                     window.location.href = window.location.href;
-                </script>";
-            }
-}
+                </script>
+            ';
+        }
+    } else {
+        $_SESSION['status'] = '<div class="alert alert-danger text-center">Username already exists</div>';
     }
 }
 // Edit User
@@ -154,15 +194,11 @@ elseif (isset($_POST['add_appointment_btn'])) {
   
 
         if ($result == 1) {
-            echo "<script>
-                alert('Appointment added successfully');
-                window.location.href = window.location.href;
-            </script>";
+            header("Location: appointments.php?status=success&message=Appoitment added successfully.");
+            exit();
         } else {
-            echo "<script>
-                alert('Appointment addition failed');
-                window.location.href = window.location.href;
-            </script>";
+            header("Location: appointments.php?status=error&message=Appointment addition failed.");
+            exit();
         }
   
  
@@ -173,13 +209,7 @@ elseif (isset($_POST['add_appointment_btn'])) {
 
 // Add Supplier
 elseif (isset($_POST['add_supplier_btn'])) {
-    $supplier_name = trim($_POST['supplier_name']);
-    $contact_person = trim($_POST['contact_person']);
-    $contact_email = trim($_POST['contact_email']);
-    $contact_phone = trim($_POST['contact_phone']);
-    $address = trim($_POST['address']);
-    $status = trim($_POST['status']);
-    $date_added = trim($_POST['date_added']);
+    trim(extract($_POST));
   
     $result = dbCreate("INSERT INTO suppliers (supplier_name, contact_person, contact_email, contact_phone, address, status, date_added) 
                         VALUES (:supplier_name, :contact_person, :contact_email, :contact_phone, :address, :status, :date_added)", [
@@ -193,15 +223,11 @@ elseif (isset($_POST['add_supplier_btn'])) {
     ]);
 
     if ($result == 1) {
-        echo "<script>
-            alert('Supplier added successfully');
-            window.location.href = window.location.href;
-        </script>";
+        header("Location: suppliers.php?status=success&message=Supplier added successfully.");
+            exit();
     } else {
-        echo "<script>
-            alert('Supplier addition failed');
-            window.location.href = window.location.href;
-        </script>";
+        header("Location: supplier.php?status=error&message=Supplier addition failed.");
+        exit();
     }
 }
 
@@ -224,26 +250,16 @@ elseif (isset($_POST['add_inventory_btn'])) {
         ':date_added' => $date_added 
     ]);
     if ($result == 1) {
-        echo "<script>
-            alert('Inventory added successfully');
-            window.location.href = window.location.href;
-        </script>";
+        header("Location: inventory.php?status=success&message=Inventory added successfully.");
+        exit();
     } else {
-        echo "<script>
-            alert('Inventory addition failed');
-            window.location.href = window.location.href;
-        </script>";
+        header("Location: inventory.php?status=error&message=Inventory addition failed.");
+        exit();
     }
 }
 //Insert into Lot_ Managemt 
 elseif (isset($_POST['add_lot_btn'])) {
-    // Safely assign and trim POST values
-    $section = trim($_POST['section']);
-    $lot_number = trim($_POST['lot_number']);
-    $location = trim($_POST['location']);
-    $status = trim($_POST['status']);
-    $date_added = isset($_POST['date_added']) ? trim($_POST['date_added']) : null; // Safe assignment for date if provided
-
+    trim(extract($_POST));
     // Proceed with the database query
     $result = dbCreate("INSERT INTO lot_management (section, lot_number, location, status, date_added) VALUES (:section, :lot_number, :location, :status, :date_added)", [
         ':section' => $section,
@@ -254,18 +270,14 @@ elseif (isset($_POST['add_lot_btn'])) {
     ]);
 
     if ($result == 1) {
-        echo "<script>
-            alert('Lot added successfully');
-            window.location.href = window.location.href;
-        </script>";
+        header("Location: lot_management.php?status=success&message=Lot added successfully.");
+        exit();
     } else {
-        echo "<script>
-            alert('Lot addition failed');
-            window.location.href = window.location.href;
-        </script>";
+        header("Location: lot_management.php?status=error&message=Lot addition failed.");
+        exit();
     }
 }
-// add deceased recored
+// add deceased record
 elseif (isset($_POST['add_deceased_btn'])) {
     // Safely assign and trim POST values
     $name = trim($_POST['name']);
@@ -304,26 +316,51 @@ elseif (isset($_POST['add_deceased_btn'])) {
     ]);
 
     if ($result == 1) {
-        echo "<script>
-            alert('Deceased record added successfully');
-            window.location.href = window.location.href;
-        </script>";
+        header("Location: deceased_records.php?status=success&message=Deceased record added successfully.");
+        exit();
     } else {
-        echo "<script>
-            alert('Deceased record addition failed');
-            window.location.href = window.location.href;
-        </script>";
+        header("Location: deceased_records.php?status=error&message=Deceased record addition failed.");
+        exit();
+    }
+}
+
+if (isset($_POST['burial_record_btn'])) {
+    trim(extract($_POST));
+ 
+    // Automatically set the created_at variable to the current date and time
+    $created_at = date('Y-m-d H:i:s'); // Format: YYYY-MM-DD HH:MM:SS
+
+    // Proceed with the database query
+    $result = dbCreate("INSERT INTO burial_records 
+        (burial_date, grave_number, deceased_id, cemetery_id, plot_id, time_of_burial, burial_type, officiant, funeral_service_details, burial_status, remarks, created_at)
+        VALUES 
+        (:burial_date, :grave_number, :deceased_id, :cemetery_id, :plot_id, :time_of_burial, :burial_type, :officiant, :funeral_service_details, :burial_status, :remarks, :created_at)", [
+        ':burial_date' => $burial_date,
+        ':grave_number' => $grave_number,
+        ':deceased_id' => $deceased_id,
+        ':cemetery_id' => $cemetery_id,
+        ':plot_id' => $plot_id,
+        ':time_of_burial' => $time_of_burial,
+        ':burial_type' => $burial_type,
+        ':officiant' => $officiant,
+        ':funeral_service_details' => $funeral_service_details,
+        ':burial_status' => $burial_status,
+        ':remarks' => $remarks,
+        ':created_at' => $created_at
+    ]);
+
+    if ($result == 1) {
+        header("Location: burial_records.php?status=success&message=Burial record added successfully.");
+        exit();
+    } else {
+        header("Location: burial_records.php?status=error&message=Burial record addition failed.");
+        exit();
     }
 }
 
 // Add Expense
 elseif (isset($_POST['add_expense_btn'])) {
-    // Safely assign and trim POST values
-    $date = trim($_POST['date']);
-    $description = trim($_POST['description']);
-    $amount = trim($_POST['amount']);
-    $category = trim($_POST['category']);
-    $remarks = trim($_POST['remarks']);
+    trim(extract($_POST));
 
     // Proceed with the database query
     $result = dbCreate ("INSERT INTO expenses (date, description, amount, category, remarks )VALUES (:date, :description, :amount, :category, :remarks)",[
@@ -335,48 +372,105 @@ elseif (isset($_POST['add_expense_btn'])) {
             ':remarks' => $remarks
         ]);
         if ($result == 1) {
-        echo "<script>
-            alert('Expense added successfully');
-            window.location.href = window.location.href;
-        </script>";
+            header("Location: expense.php?status=success&message=Expense added successfully.");
+            exit();
     } else {
-        echo "<script>
-            alert('Expense addition failed: " . htmlspecialchars($e->getMessage()) . "');
-            window.location.href = window.location.href;
-        </script>";
+        header("Location: expense.php?status=error&message=Expense addition failed.");
+        exit();
     }
 }
 
 // Add Work Order
 elseif (isset($_POST['add_work_order_btn'])) {
-    $order_number = trim($_POST['order_number']);
-    $order_date = trim($_POST['order_date']);
-    $customer_name = trim($_POST['customer_name']);
-    $description = trim($_POST['description']);
-    $status = trim($_POST['status']);
-    $total_amount = trim($_POST['total_amount']);
-    $created_by = trim($_POST['created_by']);
+    trim(extract($_POST));
 
-    $result = dbCreate("INSERT INTO work_orders (order_number, order_date, customer_name, description, status, total_amount, created_by) VALUES (:order_number, :order_date, :customer_name, :description, :status, :total_amount, :created_by)", [
-        ':order_number' => $order_number,
-        ':order_date' => $order_date,
-        ':customer_name' => $customer_name,
+    $result = dbCreate("INSERT INTO work_orders (description, status, priority, assigned_to, due_date) VALUES (:description, :status, :priority, :assigned_to, :due_date)", [
         ':description' => $description,
         ':status' => $status,
-        ':total_amount' => $total_amount,
-        ':created_by' => $created_by
+        ':priority' => $priority,
+        ':assigned_to' => $assigned_to,
+        ':due_date' => $due_date
     ]);
 
-    if ($result == 1) {
-        echo "<script>
-            alert('Work order added successfully');
-            window.location.href = window.location.href;
-        </script>";
+     if ($result == 1) {
+            header("Location: work_orders.php?status=success&message=Work order added successfully.");
+            exit();
     } else {
-        echo "<script>
-            alert('Work order addition failed');
-            window.location.href = window.location.href;
-        </script>";
+        header("Location: work_orders.php?status=error&message=Work order addition failed.");
+        exit();
+    }
+}
+
+// add customer
+elseif (isset($_POST['add_customer_btn'])) {
+    $name = trim($_POST['name']);
+    $email = trim($_POST['email']);
+    $phone = trim($_POST['phone']);
+    $remarks = trim($_POST['remarks']);
+
+    $result = dbCreate("INSERT INTO customers (name, email, phone, remarks) VALUES (:name, :email, :phone, :remarks)", [
+        ':name' => $name,
+        ':email' => $email,
+        ':phone' => $phone,
+        ':remarks' => $remarks,
+    ]);
+
+     if ($result == 1) {
+            header("Location: customer_management.php?status=success&message=Customer added successfully.");
+            exit();
+    } else {
+        header("Location: customer_management.php?status=error&message=Customer addition failed.");
+        exit();
+    }
+}
+
+// add sales
+elseif (isset($_POST['add_sales_btn'])) {
+    $product_name = trim($_POST['product_name']);
+    $quantity = trim($_POST['quantity']);
+    $price = trim($_POST['price']);
+    $date = trim($_POST['date']);
+
+    $result = dbCreate("INSERT INTO sales (product_name, quantity, price, date) VALUES (:product_name, :quantity, :price, :date)", [
+        ':product_name' => $product_name,
+        ':quantity' => $quantity,
+        ':price' => $price,
+        ':date' => $date,
+    ]);
+
+     if ($result == 1) {
+            header("Location: sales.php?status=success&message=Sales added successfully.");
+            exit();
+    } else {
+        header("Location: sales.php?status=error&message=Sales addition failed.");
+        exit();
+    }
+}
+
+// add grave mappings
+elseif (isset($_POST['grave_mapping_btn'])) {
+    $grave_number = trim($_POST['grave_number']);
+    $location = trim($_POST['location']);
+    $lot_number = trim($_POST['lot_number']);
+    $size = trim($_POST['size']);
+    $status = trim($_POST['status']);
+    $remarks = trim($_POST['remarks']);
+
+    $result = dbCreate("INSERT INTO grave_mapping (grave_number, location, lot_number, size, status, remarks) VALUES (:grave_number, :location, :lot_number, :size, :status, :remarks)", [
+        ':grave_number' => $grave_number,
+        ':location' => $location,
+        ':lot_number' => $lot_number,
+        ':size' => $size,
+        ':status' => $status,
+        ':remarks' => $remarks,
+    ]);
+
+     if ($result == 1) {
+            header("Location: grave_mapping.php?status=success&message=Grave mapping added successfully.");
+            exit();
+    } else {
+        header("Location: grave_mapping.php?status=error&message=Grave mapping addition failed.");
+        exit();
     }
 }
 ?>

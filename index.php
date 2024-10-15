@@ -1,5 +1,6 @@
 <?php
   include 'header.php';
+  // require "./root/config.php";
 ?>
 
   <!-- Content Wrapper. Contains page content -->
@@ -35,9 +36,9 @@
                 <span class="info-box-text">Users</span>
                 <span class="info-box-number">
                 <?php
-                                    $countQuery = $dbh->query("SELECT COUNT(*) AS user_count FROM users");
-                                    $userCount = $countQuery->fetch(PDO::FETCH_ASSOC)['user_count'];
-                                    ?>
+                    $countQuery = $dbh->query("SELECT COUNT(*) AS user_count FROM users");
+                    $userCount = $countQuery->fetch(PDO::FETCH_ASSOC)['user_count'];
+                    ?>
                 <span class="right badge badge-info"><?= $userCount; ?></span>
                 </span>
               </div>

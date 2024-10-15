@@ -46,21 +46,26 @@
               </tr>
             </thead>
             <tbody>
-              <!-- Example Row -->
+              <?php
+              $stmt= $dbh->prepare("SELECT * FROM grave_mapping");
+              $stmt->execute();
+              $count = 1;
+              while($row = $stmt->fetch(PDO::FETCH_OBJ)){
+              ?>
               <tr>
-                <td>1</td>
-                <td>G-123</td>
-                <td>Section A, Row 3</td>
-                <td>L-45</td>
-                <td>4x6</td>
-                <td>Occupied</td>
-                <td>Reserved for family</td>
+                <td><?= $count;?></td>
+                <td><?= $row->grave_number;?></td>
+                <td><?= $row->location;?></td>
+                <td><?= $row->lot_number;?></td>
+                <td><?= $row->size;?></td>
+                <td><?= $row->status;?></td>
+                <td><?= $row->remarks;?></td>
                 <td>
                   <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editGraveMappingModal" onclick="populateEditModal(1, 'G-123', 'Section A, Row 3', 'L-45', '4x6', 'Occupied', 'Reserved for family')">Edit</button>
                   <a href="delete_grave_mapping.html" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this record?');">Delete</a>
                 </td>
               </tr>
-              <!-- Add more rows as needed -->
+              <?php $count++; } ?>
             </tbody>
           </table>
         </div>
@@ -74,7 +79,7 @@
 <!-- /.content-wrapper -->
 
 <!-- Add Grave Mapping Modal -->
-<div class="modal fade" id="addGraveMappingModal" tabindex="-1" aria-labelledby="addGraveMappingModalLabel" aria-hidden="true">
+<div class="modal fade" id="addGraveMappingModal">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -82,7 +87,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form id="addGraveMappingForm">
+        <form method="POST">
           <div class="row">
             <div class="col-md-6 mb-3">
               <label for="addGraveNumber" class="form-label">Grave Number</label>
@@ -109,7 +114,7 @@
               <textarea class="form-control" id="addRemarks" name="remarks"></textarea>
             </div>
           </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="submit" name="grave_mapping_btn" class="btn btn-primary">Submit</button>
         </form>
       </div>
     </div>
@@ -165,26 +170,26 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
   // JavaScript to populate edit modal with grave mapping record data
-  function populateEditModal(id, grave_number, location, lot_number, size, status, remarks) {
-    document.getElementById('editGraveMappingId').value = id;
-    document.getElementById('editGraveNumber').value = grave_number;
-    document.getElementById('editLocation').value = location;
-    document.getElementById('editLotNumber').value = lot_number;
-    document.getElementById('editSize').value = size;
-    document.getElementById('editStatus').value = status;
-    document.getElementById('editRemarks').value = remarks;
-  }
+  // function populateEditModal(id, grave_number, location, lot_number, size, status, remarks) {
+  //   document.getElementById('editGraveMappingId').value = id;
+  //   document.getElementById('editGraveNumber').value = grave_number;
+  //   document.getElementById('editLocation').value = location;
+  //   document.getElementById('editLotNumber').value = lot_number;
+  //   document.getElementById('editSize').value = size;
+  //   document.getElementById('editStatus').value = status;
+  //   document.getElementById('editRemarks').value = remarks;
+  // }
 
-  // Handle form submissions (optional)
-  document.getElementById('addGraveMappingForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    // Handle add grave mapping form submission
-    alert('Add Grave Mapping Form submitted');
-  });
+  // // Handle form submissions (optional)
+  // document.getElementById('addGraveMappingForm').addEventListener('submit', function(event) {
+  //   event.preventDefault();
+  //   // Handle add grave mapping form submission
+  //   alert('Add Grave Mapping Form submitted');
+  // });
 
-  document.getElementById('editGraveMappingForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    // Handle edit grave mapping form submission
-    alert('Edit Grave Mapping Form submitted');
-  });
+  // document.getElementById('editGraveMappingForm').addEventListener('submit', function(event) {
+  //   event.preventDefault();
+  //   // Handle edit grave mapping form submission
+  //   alert('Edit Grave Mapping Form submitted');
+  // });
 </script>

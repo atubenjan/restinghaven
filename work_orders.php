@@ -52,19 +52,26 @@
             </thead>
             <tbody>
               <!-- Example Row -->
+               <?php 
+                 $stmt = $dbh->query('SELECT * FROM work_orders');
+                 $count = 1;
+                 while ($row = $stmt->fetch(PDO::FETCH_OBJ)) {
+               ?>
               <tr>
-                <td>1</td>
-                <td>Repair broken gate</td>
-                <td>Pending</td>
-                <td>High</td>
-                <td>John Doe</td>
-                <td>2024-09-15</td>
+                <td><?= $count ?></td>
+                <td><?= $row->description?></td>
+                <td><?= $row->status?></td>
+                <td><?= $row->priority?></td>
+                <td><?= $row->assigned_to?></td>
+                <td><?= $row->due_date?></td>
                 <td>
                   <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editWorkOrderModal" onclick="populateEditModal(1, 'Repair broken gate', 'Pending', 'High', 'John Doe', '2024-09-15')">Edit</button>
                   <button class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this work order?');">Delete</button>
                 </td>
               </tr>
-              <!-- Add more rows as needed -->
+              <?php 
+              $count++;  }
+               ?>
             </tbody>
           </table>
         </div>
@@ -106,40 +113,49 @@
         </button>
       </div>
       <div class="modal-body">
-      <form action="" method>
-                <input type="hidden" id="editWorkOrderId" name="id">
-                <div class="mb-3">
-                  <label for="editDescription" class="form-label">Description</label>
-                  <textarea class="form-control" id="editDescription" name="description" required></textarea>
-                </div>
-                <div class="mb-3">
-                  <label for="editStatus" class="form-label">Status</label>
-                  <select class="form-select" id="editStatus" name="status" required>
-                    <option value="Pending">Pending</option>
-                    <option value="In Progress">In Progress</option>
-                    <option value="Completed">Completed</option>
-                  </select>
-                </div>
-                <div class="mb-3">
-                  <label for="editPriority" class="form-label">Priority</label>
-                  <select class="form-select" id="editPriority" name="priority" required>
-                    <option value="Low">Low</option>
-                    <option value="Medium">Medium</option>
-                    <option value="High">High</option>
-                  </select>
-                </div>
-                <div class="mb-3">
-                  <label for="editAssignedTo" class="form-label">Assigned To</label>
-                  <input type="text" class="form-control" id="editAssignedTo" name="assigned_to">
-                </div>
-                <div class="mb-3">
-                  <label for="editDueDate" class="form-label">Due Date</label>
-                  <input type="date" class="form-control" id="editDueDate" name="due_date">
-                </div>
-                <button type="submit" name="add_work_btn" class="btn btn-primary">Save changes</button>
-              </form>
+        <form action="" method = 'POST'>
+          <input type="hidden" id="editWorkOrderId" name="id">
+          <div class="mb-3">
+            <label for="addDescription" class="form-label">Description</label>
+            <textarea class="form-control" id="addDescription" name="description" required></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="addStatus" class="form-label">Status</label>
+            <select class="form-select" id="addStatus" name="status" required>
+              <option value="Pending">Pending</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="addPriority" class="form-label">Priority</label>
+            <select class="form-select" id="addPriority" name="priority" required>
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="userRole" class="form-label">Asigned To</label>
+            <select class="form-control" id="userRole" name="assigned_to" required>
+                <option value="" disabled selected>Select User Role</option>
+                <?php
+                // Fetch user roles from the database
+                $user_roles = ["Admin", "SuperAdmin", "Manager", "FuneralDirector", "CemeteryStaff", "Accounting", "Maintenance"];
+                foreach ($user_roles as $user_role) {
+                    echo "<option value=\"$user_role\">$user_role</option>";
+                }
+                ?>
+            </select>
+        </div>
+          <div class="mb-3">
+            <label for="addDueDate" class="form-label">Due Date</label>
+            <input type="date" class="form-control" id="addDueDate" name="due_date">
+          </div>
+          <button type="submit" name="add_work_order_btn" class="btn btn-primary">Save changes</button>
+        </form>
 
-
+      </div>
     </div>
     <!-- /.modal-content -->
   </div>

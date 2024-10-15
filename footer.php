@@ -1,5 +1,5 @@
 <footer class="main-footer">
-    <strong>Copyright &copy; 2024 <a href="https://adminlte.io">LSK</a>.</strong>
+    <strong>Copyright &copy; 2024 <a href="#>resting havens</a>.</strong>
     All rights reserved.
     <div class="float-right d-none d-sm-inline-block">
       <b>Version</b>1.0
@@ -215,6 +215,32 @@
       })
     });
   });
+
+  // for alerts , success and error headers
+  document.addEventListener('DOMContentLoaded', function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const status = urlParams.get('status');
+    const message = urlParams.get('message');
+
+    if (status && message) {
+        Swal.fire({
+            title: status === 'success' ? 'Success!' : 'Error!',
+            text: message,
+            icon: status === 'success' ? 'success' : 'error',
+            confirmButtonText: 'OK'
+        }).then(() => {
+            // Use history.replaceState to clear URL parameters after showing the alert
+            const cleanUrl = window.location.origin + window.location.pathname;
+            window.history.replaceState(null, null, cleanUrl);
+        });
+    }
+});
+
+    if ( window.history.replaceState ) {
+  window.history.replaceState( null, null, window.location.href );
+}
+
 </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> // alerts
 </body>
 </html>

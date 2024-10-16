@@ -93,7 +93,7 @@ if (isset($_REQUEST['deleteUser'])) {
                                                     </a>
                                                 <?php else: ?>
                                                     <button class="btn btn-danger btn-sm" disabled>
-                                                        <i class="fas fa-trash"></i> Delete
+                                                        <i class="fas fa-trash"></i>
                                                     </button>
                                                 <?php endif; ?>
                                             </td>

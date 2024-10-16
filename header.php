@@ -117,6 +117,12 @@ if (empty($_SESSION['id'])) {
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a href="branch.php" class="nav-link">
+                            <i class="nav-icon fas fa-users"></i>
+                            <p>Branch</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a href="customer_management" class="nav-link">
                             <i class="nav-icon fas fa-users"></i>
                             <p>Customer Management</p>
@@ -215,7 +221,7 @@ if (empty($_SESSION['id'])) {
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="security_access" class="nav-link">
+                        <a href="logout" class="nav-link">
                             <i class="nav-icon fas fa-lock"></i>
                             <p>LogOut</p>
                         </a>

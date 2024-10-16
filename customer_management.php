@@ -55,9 +55,13 @@
                 <td><?= $row->phone; ?></td>
                 <td><?= $row->remarks; ?></td>
                 <td>
-                  <button class="btn btn-info btn-sm text-white data-bs-toggle="modal" data-bs-target="#editCustomerModal" onclick="populateEditModal(1, 'John Doe', 'john@example.com', '123-456-7890', 'Some remarks')"><i class="fas fa-edit"></button>
-                  <a href="delete_customer.php?id=<?= $row->id; ?>" class="btn btn-info btn-sm text-white onclick="return confirm('Are you sure you want to delete this customer?');">
-                  <i class="fas fa-trash"></a>
+                <!--   <button class="btn btn-info btn-sm text-white data-bs-toggle="modal" data-bs-target="#editCustomerModal" onclick="populateEditModal(1, 'John Doe', 'john@example.com', '123-456-7890', 'Some remarks')"><i class="fas fa-edit"></button> -->
+                <a href="delete_customer.php?id=<?= $row->id; ?>" 
+   class="btn btn-info btn-sm btn-danger" 
+   onclick="return confirm('Are you sure you want to delete this customer?');">
+   <i class="fas fa-trash"></i>
+</a>
+
 
                 </td>
               </tr>
@@ -74,7 +78,6 @@
   <!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
-
 <!-- Add Customer Modal -->
 <div class="modal fade" id="addCustomerModal" tabindex="-1" aria-labelledby="addCustomerModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -109,7 +112,6 @@
     </div>
   </div>
 </div>
-
 <!-- Edit Customer Modal -->
 <div class="modal fade" id="editCustomerModal" tabindex="-1" aria-labelledby="editCustomerModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -145,7 +147,6 @@
 </div>
 
 <?php include 'footer.php'; // Include footer ?>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
   // JavaScript to populate edit modal with customer data

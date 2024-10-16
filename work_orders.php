@@ -89,18 +89,6 @@
   <!-- /.content -->
 </div>
 
-<?php if (isset($_REQUEST['deleteProduct'])) {
-  $id = $_GET['deleteProduct'];
-  $sql = $dbh->query("DELETE FROM products WHERE id = '$id' ");
-  if ($sql) {
-    echo "
-          <script>
-            window.location.href = 'products';
-          </script>
-        ";
-  }
-}
-?>
 
 <!-- Add Product Modal -->
 <div class="modal fade" id="modal-default">
@@ -113,31 +101,36 @@
         </button>
       </div>
       <div class="modal-body">
-        <form action="" method = 'POST'>
+        <form action="" method="POST">
           <input type="hidden" id="editWorkOrderId" name="id">
-          <div class="mb-3">
-            <label for="addDescription" class="form-label">Description</label>
-            <textarea class="form-control" id="addDescription" name="description" required></textarea>
-          </div>
-          <div class="mb-3">
-            <label for="addStatus" class="form-label">Status</label>
-            <select class="form-select" id="addStatus" name="status" required>
-              <option value="Pending">Pending</option>
-              <option value="In Progress">In Progress</option>
-              <option value="Completed">Completed</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="addPriority" class="form-label">Priority</label>
-            <select class="form-select" id="addPriority" name="priority" required>
-              <option value="Low">Low</option>
-              <option value="Medium">Medium</option>
-              <option value="High">High</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="userRole" class="form-label">Asigned To</label>
-            <select class="form-control" id="userRole" name="assigned_to" required>
+          
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="addDescription" class="form-label">Description</label>
+              <textarea class="form-control" id="addDescription" name="description" required></textarea>
+            </div>
+            
+            <div class="col-md-6 mb-3">
+              <label for="addStatus" class="form-label">Status</label>
+              <select class="form-control" id="addStatus" name="status" required>
+                <option value="Pending">Pending</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+              </select>
+            </div>
+            
+            <div class="col-md-6 mb-3">
+              <label for="addPriority" class="form-label">Priority</label>
+              <select class="form-control" id="addPriority" name="priority" required>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+              </select>
+            </div>
+            
+            <div class="col-md-6 mb-3">
+              <label for="userRole" class="form-label">Assigned To</label>
+              <select class="form-control" id="userRole" name="assigned_to" required>
                 <option value="" disabled selected>Select User Role</option>
                 <?php
                 // Fetch user roles from the database
@@ -146,21 +139,25 @@
                     echo "<option value=\"$user_role\">$user_role</option>";
                 }
                 ?>
-            </select>
-        </div>
-          <div class="mb-3">
-            <label for="addDueDate" class="form-label">Due Date</label>
-            <input type="date" class="form-control" id="addDueDate" name="due_date">
+              </select>
+            </div>
+            
+            <div class="col-md-6 mb-3">
+              <label for="addDueDate" class="form-label">Due Date</label>
+              <input type="date" class="form-control" id="addDueDate" name="due_date" required>
+            </div>
           </div>
+          
           <button type="submit" name="add_work_order_btn" class="btn btn-primary">Save changes</button>
         </form>
-
       </div>
+      <!-- /.modal-body -->
     </div>
     <!-- /.modal-content -->
   </div>
   <!-- /.modal-dialog -->
 </div>
+
 <!-- /.modal -->
 
 

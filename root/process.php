@@ -1,6 +1,6 @@
 <?php
 require "config.php";
-include './root/vendor/autoload.php';
+
 
 $api_key = "TQx3th8uR2R8I8o8858HUos2f37c81Smw1I0DQ470a7b3rk4E3U33GN5cm7L3AHz";
 
@@ -86,6 +86,122 @@ if (isset($_POST['login_btn'])) {
     }
 }
 // User Registration
+// add_branch
+elseif (isset($_POST['add_branch'])) {
+    // Sanitize input
+    $branch_name = addslashes(trim($_POST['branch_name']));
+    $location = addslashes(trim($_POST['location']));
+    $branch_manager = addslashes(trim($_POST['branch_manager']));
+    $contact = addslashes(trim($_POST['contact']));
+
+    // Check for existing branch_name
+    $check = $dbh->prepare("SELECT branch_name FROM branch WHERE branch_name = :branch_name");
+    $check->bindParam(':branch_name', $branch_name);
+    $check->execute();
+
+    if ($check->rowCount() == 0) {
+        // Insert new branch
+        $stmt = $dbh->prepare("INSERT INTO branch (branch_name, location, branch_manager, contact, date_created) VALUES (:branch_name, :location, :branch_manager, :contact, NOW())");
+        $stmt->bindParam(':branch_name', $branch_name);
+        $stmt->bindParam(':location', $location);
+        $stmt->bindParam(':branch_manager', $branch_manager);
+        $stmt->bindParam(':contact', $contact);
+
+        if ($stmt->execute()) {
+            echo " <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                showToast('Branch added successfully!', 'success');
+            });
+        </script>";
+        } else {
+            echo "<script>
+            document.addEventListener('DOMContentLoaded', function() {
+                showToast('Failed to Add Branch', 'success');
+            });
+        </script>";
+        }
+    } else {
+        echo "<script>
+            document.addEventListener('DOMContentLoaded', function() {
+                showToast('Branch Name Already Exists!', 'success');
+            });
+        </script>";
+    }
+}
+// edit_branch
+elseif (isset($_POST['edit_branch'])) {
+    // Extract and trim all POST variables
+    $branch_id = trim($_POST['branch_id']);
+    $branch_name = trim($_POST['branch_name']);
+    $branch_manager = trim($_POST['branch_manager']);
+    $location = trim($_POST['location']);
+    $contact = trim($_POST['contact']);
+
+    // Sanitize input
+    $branch_name = addslashes($branch_name);
+    $branch_manager = addslashes($branch_manager);
+    $location = addslashes($location);
+    $contact = addslashes($contact);
+
+    // Update the properties in the database
+    $sql = $dbh->prepare("UPDATE branch 
+                        SET 
+                           branch_name = ?, 
+                           branch_manager = ?, 
+                           location = ?, 
+                           contact = ? 
+                        WHERE 
+                            branch_id = ?");
+    $result = $sql->execute([
+        $branch_name,
+        $branch_manager,
+        $location,
+        $contact,
+        $branch_id
+    ]);
+
+    // Check if the SQL query was successful
+    if ($result) {
+        echo "<script>
+              alert('Branch Updated Successfully');
+              window.location.href = window.location.href;
+              </script>";
+    } else {
+        echo "<script>
+              alert('Branch Failed to Update');
+              window.location.href = window.location.href;
+              </script>";
+    }
+} elseif (isset($_REQUEST['delete-branch'])) {
+    $branch_id = $_REQUEST['delete-branch'];
+
+    // Check if branch exists
+    $stmt = $dbh->prepare("SELECT * FROM branch WHERE branch_id = :branch_id");
+    $stmt->bindParam(':branch_id', $branch_id);
+    $stmt->execute();
+    $branch = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($branch) {
+        // Delete the branch from the database
+        $stmt = $dbh->prepare("DELETE FROM branch WHERE branch_id = :branch_id");
+        $stmt->bindParam(':branch_id', $branch_id);
+        $stmt->execute();
+
+        if ($stmt->rowCount()) {
+            echo "<script>
+            document.addEventListener('DOMContentLoaded', function() {
+                showToast('Branch deleted successfully!', 'success');
+            });
+        </script>";
+        } else {
+            echo "<script>
+            document.addEventListener('DOMContentLoaded', function() {
+                showToast('Failed to delete branch.', 'error');
+            });
+        </script>";
+        }
+    }
+}
 
 elseif (isset($_POST['register_btn'])) {
     trim(extract($_POST));
@@ -402,10 +518,7 @@ elseif (isset($_POST['add_work_order_btn'])) {
 
 // add customer
 elseif (isset($_POST['add_customer_btn'])) {
-    $name = trim($_POST['name']);
-    $email = trim($_POST['email']);
-    $phone = trim($_POST['phone']);
-    $remarks = trim($_POST['remarks']);
+    trim(extract($_POST));
 
     $result = dbCreate("INSERT INTO customers (name, email, phone, remarks) VALUES (:name, :email, :phone, :remarks)", [
         ':name' => $name,
@@ -425,10 +538,7 @@ elseif (isset($_POST['add_customer_btn'])) {
 
 // add sales
 elseif (isset($_POST['add_sales_btn'])) {
-    $product_name = trim($_POST['product_name']);
-    $quantity = trim($_POST['quantity']);
-    $price = trim($_POST['price']);
-    $date = trim($_POST['date']);
+    trim(extract($_POST));
 
     $result = dbCreate("INSERT INTO sales (product_name, quantity, price, date) VALUES (:product_name, :quantity, :price, :date)", [
         ':product_name' => $product_name,
@@ -448,12 +558,7 @@ elseif (isset($_POST['add_sales_btn'])) {
 
 // add grave mappings
 elseif (isset($_POST['grave_mapping_btn'])) {
-    $grave_number = trim($_POST['grave_number']);
-    $location = trim($_POST['location']);
-    $lot_number = trim($_POST['lot_number']);
-    $size = trim($_POST['size']);
-    $status = trim($_POST['status']);
-    $remarks = trim($_POST['remarks']);
+    trim(extract($_POST));
 
     $result = dbCreate("INSERT INTO grave_mapping (grave_number, location, lot_number, size, status, remarks) VALUES (:grave_number, :location, :lot_number, :size, :status, :remarks)", [
         ':grave_number' => $grave_number,
@@ -472,4 +577,48 @@ elseif (isset($_POST['grave_mapping_btn'])) {
         exit();
     }
 }
+if (isset($_POST['add_grave_btn'])) { 
+    // Fetch and sanitize POST data
+    $cemetery_id = isset($_POST['Cemetery_id']) ? trim($_POST['Cemetery_id']) : null;
+    $plot_number = isset($_POST['Plot_number']) ? trim($_POST['Plot_number']) : null;
+    $size = isset($_POST['size']) ? trim($_POST['size']) : null;
+    $section_name = isset($_POST['section_name']) ? trim($_POST['section_name']) : null;
+    $availability_status = isset($_POST['Availability_Status']) ? trim($_POST['Availability_Status']) : null;
+    $price = isset($_POST['price']) ? trim($_POST['price']) : null;
+    $coordinates = isset($_POST['coordinates']) ? trim($_POST['coordinates']) : null;
+
+    // Ensure all required fields are available
+    if ($cemetery_id && $plot_number && $size && $section_name && $availability_status && $price && $coordinates) {
+        // Prepare the SQL statement with PDO
+        $stmt = $dbh->prepare("
+            INSERT INTO grave_management (cemetery_id, plot_number, size, section_name, availability_status, price, coordinates)
+            VALUES (:cemetery_id, :plot_number, :size, :section_name, :availability_status, :price, :coordinates)
+        ");
+
+        // Bind the parameters to the SQL query
+        $params = [
+            ':cemetery_id' => $cemetery_id,
+            ':plot_number' => $plot_number,
+            ':size' => $size,
+            ':section_name' => $section_name,
+            ':availability_status' => $availability_status,
+            ':price' => $price,
+            ':coordinates' => $coordinates,
+        ];
+
+        // Execute the query and check for success
+        if ($stmt->execute($params)) {
+            header("Location: your_page.php?message=Lot added successfully");
+            exit();
+        } else {
+            header("Location: your_page.php?error=Error adding lot");
+            exit();
+        }
+    } else {
+        // Handle the error where not all required fields are filled
+        header("Location: garave_management.php.php?error=Missing required fields");
+        exit();
+    }
+}
+
 ?>

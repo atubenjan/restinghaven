@@ -25,12 +25,9 @@
       <!-- Inventory table -->
       <div class="card">
         <div class="card-header">
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default">
+          <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-default">
             <i class="fas fa-plus"></i> Add Inventory
           </button>
-          <a href="download_inventory.php" class="btn btn-info float-right">
-            Download Inventory
-          </a>
         </div>
         <!-- /.card-header -->
         <div class="card-body">
@@ -193,7 +190,7 @@
       
 
     </div>
-    <button type="submit" name="add_inventory_btn" class="btn btn-primary">Submit</button>
+    <button type="submit" name="add_inventory_btn" class="btn btn-primary btn-sm">Submit</button>
 </form>
 
       </div>
@@ -260,7 +257,7 @@
               </div>
             </div>
           </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="submit" class="btn btn-primary btn-sm">Submit</button>
         </form>
       </div>
     </div>

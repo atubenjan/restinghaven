@@ -18,9 +18,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($user && password_verify($password, $user['password'])) {
         // Password is correct, log in the user
         $_SESSION['id'] = $user['id'];
-        $_SESSION['role'] = $user['role']; // Ensure role is set
+        $_SESSION['user_role'] = $user['user_role']; // Ensure role is set
         $_SESSION['fullname'] = $user['fullname']; // Any additional session variables
-        $_SESSION['phone'] = $user['phone'];
         $_SESSION['userid'] = $user['userid'];
         $_SESSION['date_registered'] = $user['date_registered'];
 
@@ -280,7 +279,7 @@ elseif (isset($_POST['add_lot_btn'])) {
 // add deceased record
 elseif (isset($_POST['add_deceased_btn'])) {
     // Safely assign and trim POST values
-    $name = trim($_POST['name']);
+    $full_name = trim($_POST['full_name']);
     $date_of_birth = trim($_POST['date_of_birth']);
     $date_of_death = trim($_POST['date_of_death']);
     $time_of_death = trim($_POST['time_of_death']);
@@ -297,8 +296,8 @@ elseif (isset($_POST['add_deceased_btn'])) {
     $files = isset($_FILES['file']['name']) ? $_FILES['file']['name'] : null; // Handle file uploads
 
     // Proceed with the database query
-    $result = dbCreate("INSERT INTO deceased_records (name, date_of_birth, date_of_death, time_of_death, cause_of_death, plot_number, family_lineage, spouse, origin, place_of_birth, place_of_death, nationality, occupation, remarks, files) VALUES (:name, :date_of_birth, :date_of_death, :time_of_death, :cause_of_death, :plot_number, :family_lineage, :spouse, :origin, :place_of_birth, :place_of_death, :nationality, :occupation, :remarks, :files)", [
-        ':name' => $name,
+    $result = dbCreate("INSERT INTO deceased_records (full_name, date_of_birth, date_of_death, time_of_death, cause_of_death, plot_number, family_lineage, spouse, origin, place_of_birth, place_of_death, nationality, occupation, remarks, files) VALUES (:full_name, :date_of_birth, :date_of_death, :time_of_death, :cause_of_death, :plot_number, :family_lineage, :spouse, :origin, :place_of_birth, :place_of_death, :nationality, :occupation, :remarks, :files)", [
+        ':full_name' => $full_name,
         ':date_of_birth' => $date_of_birth,
         ':date_of_death' => $date_of_death,
         ':time_of_death' => $time_of_death,

@@ -91,7 +91,6 @@
         <form method="POST">
           <div class="row">
             <div class="col-md-6 mb-3">
-<<<<<<< HEAD
               <label for="addBurialID" class="form-label">Burial ID</label>
               <input type="text" class="form-control" id="addBurialID" name="burial_id" required>
             </div>
@@ -125,9 +124,6 @@
 
             <div class="col-md-6 mb-3">
               <label for="addBurialDate" class="form-label">Date of Burial</label>
-=======
-              <label for="addBurialDate" class="form-label">Burial Date</label>
->>>>>>> parent of 28fea5c (Latest Upate)
               <input type="date" class="form-control" id="addBurialDate" name="burial_date" required>
             </div>
             <div class="col-md-6 mb-3">
@@ -146,13 +142,10 @@
               <label for="addRemarks" class="form-label">Remarks</label>
               <textarea class="form-control" id="addRemarks" name="remarks"></textarea>
             </div>
-<<<<<<< HEAD
             <div class="form-group">
     <label for="remarks">Remarks</label>
     <textarea class="form-control" id="remarks" name="remarks" placeholder="Enter any remarks or additional information here..." rows="4" required></textarea>
 </div>
-=======
->>>>>>> parent of 28fea5c (Latest Upate)
           </div>
           <button type="submit" name="burial_record_btn" class="btn btn-primary">Submit</button>
         </form>

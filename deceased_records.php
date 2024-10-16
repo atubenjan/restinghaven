@@ -55,17 +55,17 @@
 
                   // Display each record
                   foreach ($deceasedRecords as $record) {
-                      $id = htmlspecialchars($record['id'], ENT_QUOTES, 'UTF-8');
+                      $deceased_id = htmlspecialchars($record['deceased_id'], ENT_QUOTES, 'UTF-8');
                       echo "<tr>";
-                      echo "<td>$id</td>";
-                      echo "<td>" . htmlspecialchars($record['name'], ENT_QUOTES, 'UTF-8') . "</td>";
+                      echo "<td>$deceased_id</td>";
+                      echo "<td>" . htmlspecialchars($record['full_name'], ENT_QUOTES, 'UTF-8') . "</td>";
                       echo "<td>" . htmlspecialchars($record['date_of_birth'], ENT_QUOTES, 'UTF-8') . "</td>";
                       echo "<td>" . htmlspecialchars($record['date_of_death'], ENT_QUOTES, 'UTF-8') . "</td>";
                       echo "<td>" . htmlspecialchars($record['time_of_death'], ENT_QUOTES, 'UTF-8') . "</td>";
                       echo "<td>
-                           <button class='btn btn-info btn-sm' data-toggle='modal' data-target='#modal-success' data-id='$id'>View</button>
-                           <button class='btn btn-warning btn-sm' data-toggle='modal' data-target='#editDeceasedModal' data-id='$id'>Edit</button>
-                           <a href='delete_deceased.php?id=$id' class='btn btn-danger btn-sm'>Delete</a>
+                           <button class='btn btn-info btn-sm' data-toggle='modal' data-target='#modal-success' data-id='$deceased_id'>View</button>
+                           <button class='btn btn-warning btn-sm' data-toggle='modal' data-target='#editDeceasedModal' data-id='$deceased_id'>Edit</button>
+                           <a href='delete_deceased.php?id=$deceased_id' class='btn btn-danger btn-sm'>Delete</a>
                            </td>";
                       echo "</tr>";
                   }
@@ -101,8 +101,8 @@
             <div class="row">
               <!-- Column 1 -->
               <div class="col-md-4 mb-3">
-                <label for="addName" class="form-label">Name</label>
-                <input type="text" class="form-control" id="addName" name="name" required>
+                <label for="addName" class="form-label"> Full Name</label>
+                <input type="text" class="form-control" id="addName" name="full_name" required>
               </div>
               <div class="col-md-4 mb-3">
                 <label for="addDateOfBirth" class="form-label">Date of Birth</label>

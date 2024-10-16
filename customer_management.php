@@ -24,7 +24,7 @@
       <div class="card">
         <div class="card-header">
           <!-- Button to trigger the Add Customer modal -->
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
+          <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
             Add Customer
           </button>
         </div>
@@ -55,8 +55,10 @@
                 <td><?= $row->phone; ?></td>
                 <td><?= $row->remarks; ?></td>
                 <td>
-                  <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editCustomerModal" onclick="populateEditModal(1, 'John Doe', 'john@example.com', '123-456-7890', 'Some remarks')">Edit</button>
-                  <a href="delete_customer.html" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this customer?');">Delete</a>
+                  <button class="btn btn-info btn-sm text-white data-bs-toggle="modal" data-bs-target="#editCustomerModal" onclick="populateEditModal(1, 'John Doe', 'john@example.com', '123-456-7890', 'Some remarks')"><i class="fas fa-edit"></button>
+                  <a href="delete_customer.php?id=<?= $row->id; ?>" class="btn btn-info btn-sm text-white onclick="return confirm('Are you sure you want to delete this customer?');">
+                  <i class="fas fa-trash"></a>
+
                 </td>
               </tr>
               <?php $count++; }?>

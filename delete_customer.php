@@ -3,27 +3,27 @@ php
 <?php
 include './root/process.php';
 
-// Check if the ID is set in the URL
 if (isset($_GET['id'])) {
-    $customerId = intval($_GET['id']); // Get the customer ID from the query string
-
-    // Prepare a DELETE statement
-    $stmt = $dbh->prepare("DELETE FROM customers WHERE id = :id");
-    $stmt->bindParam(':id', $customerId, PDO::PARAM_INT);
+    // Get the customer ID from the URL
+    $customer_id = intval($_GET['id']);
     
-    // Execute the statement and check if the deletion was successful
+    // Prepare the SQL statement to delete the customer
+    $stmt = $dbh->prepare("DELETE FROM customers WHERE id = :id");
+    $stmt->bindParam(':id', $customer_id, PDO::PARAM_INT);
+    
+    // Execute the query
     if ($stmt->execute()) {
-        // Redirect to the customer management page with a success message
-        header("Location: customer_management.php?message=Customer+deleted+successfully");
+        // Redirect to customer management page with a success message
+        header("Location: customer_management.php?message=Customer deleted successfully");
         exit();
     } else {
-        // Redirect with an error message
-        header("Location: customer_management.php?error=Unable+to+delete+customer");
+        // Redirect to customer management page with an error message
+        header("Location: customer_management.php?message=Error deleting customer");
         exit();
     }
 } else {
-    // Redirect with an error message if no ID was provided
-    header("Location: customer_management.php?error=No+customer+ID+provided");
+    // Redirect if no ID is provided
+    header("Location: customer_management.php");
     exit();
 }
 ?>

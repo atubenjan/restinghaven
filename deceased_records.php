@@ -17,70 +17,96 @@
     </div><!-- /.container-fluid -->
   </div>
 
-  <!-- Main content -->
   <section class="content">
     <div class="container-fluid">
-      <!-- Deceased Management table -->
-      <div class="card">
-        <div class="card-header">
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default">
-            <i class="fas fa-plus"></i> Add Deceased Details
-          </button>
-          <a href="download_deceased.php" class="btn btn-info float-right">
-            Download Deceased Data
-          </a>
-        </div>
-        <!-- /.card-header -->
-        <div class="card-body">
-          <table id="example1" class="table table-bordered table-striped">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Date of Birth</th>
-                <th>Date of Death</th>
-                <th>Time of Death</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php
-              // Include database connection
-           
+        <!-- Deceased Management table -->
+        <div class="card">
+            <div class="card-header">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default">
+                    <i class="fas fa-plus"></i> Add Deceased Details
+                </button>
+                <a href="download_deceased.php" class="btn btn-info float-right">
+                    Download Deceased Data
+                </a>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <table id="example1" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Deceased_Id</th>
+                            <th>Full Name</th>
+                            <th>Date of Birth</th>
+                            <th>Date of Death</th>
+                            <th>Time of Death</th>
+                            <th>Cause of Death</th>
+                            <th>Plot Number</th>
+                            <th>Family Lineage</th>
+                            <th>Spouse</th>
+                            <th>Origin</th>
+                            <th>Age at Death</th>
+                            <th>Gender</th>
+                            <th>Place of Birth</th>
+                            <th>Place of Death</th>
+                            <th>Nationality/Ethnicity</th>
+                            <th>Occupation</th>
+                            <th>File Upload</th>
+                            <th>Remarks</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+    <?php
+    // Include database connection
+    // Fetch deceased records
+    try {
+        $stmt = $dbh->query("SELECT * FROM deceased_records");
+        $deceasedRecords = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-              // Fetch deceased records
-              try {
-                  $stmt = $dbh->query("SELECT * FROM deceased_records");
-                  $deceasedRecords = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // Display each record
+        foreach ($deceasedRecords as $record) {
+            $deceased_id = htmlspecialchars($record['deceased_id'] ?? '', ENT_QUOTES, 'UTF-8');
+            echo "<tr>";
+            echo "<td>$deceased_id</td>";
+            echo "<td>" . htmlspecialchars($record['full_name'] ?? 'N/A', ENT_QUOTES, 'UTF-8') . "</td>";
+            echo "<td>" . htmlspecialchars($record['date_of_birth'] ?? 'N/A', ENT_QUOTES, 'UTF-8') . "</td>";
+            echo "<td>" . htmlspecialchars($record['date_of_death'] ?? 'N/A', ENT_QUOTES, 'UTF-8') . "</td>";
+            echo "<td>" . htmlspecialchars($record['time_of_death'] ?? 'N/A', ENT_QUOTES, 'UTF-8') . "</td>";
+            echo "<td>" . htmlspecialchars($record['cause_of_death'] ?? 'N/A', ENT_QUOTES, 'UTF-8') . "</td>";
+            echo "<td>" . htmlspecialchars($record['plot_number'] ?? 'N/A', ENT_QUOTES, 'UTF-8') . "</td>";
+            echo "<td>" . htmlspecialchars($record['family_lineage'] ?? 'N/A', ENT_QUOTES, 'UTF-8') . "</td>";
+            echo "<td>" . htmlspecialchars($record['spouse'] ?? 'N/A', ENT_QUOTES, 'UTF-8') . "</td>";
+            echo "<td>" . htmlspecialchars($record['origin'] ?? 'N/A', ENT_QUOTES, 'UTF-8') . "</td>";
+            echo "<td>" . htmlspecialchars($record['age_at_death'] ?? 'N/A', ENT_QUOTES, 'UTF-8') . "</td>";
+            echo "<td>" . htmlspecialchars($record['gender'] ?? 'N/A', ENT_QUOTES, 'UTF-8') . "</td>";
+            echo "<td>" . htmlspecialchars($record['place_of_birth'] ?? 'N/A', ENT_QUOTES, 'UTF-8') . "</td>";
+            echo "<td>" . htmlspecialchars($record['place_of_death'] ?? 'N/A', ENT_QUOTES, 'UTF-8') . "</td>";
+            echo "<td>" . htmlspecialchars($record['nationality'] ?? 'N/A', ENT_QUOTES, 'UTF-8') . "</td>";
+            echo "<td>" . htmlspecialchars($record['occupation'] ?? 'N/A', ENT_QUOTES, 'UTF-8') . "</td>";
+            echo "<td>" . htmlspecialchars($record['file_upload'] ?? 'N/A', ENT_QUOTES, 'UTF-8') . "</td>";
+            echo "<td>" . htmlspecialchars($record['remarks'] ?? 'N/A', ENT_QUOTES, 'UTF-8') . "</td>";
+            echo "<td>
+                <button class='btn btn-info btn-sm' data-toggle='modal' data-target='#modal-success' data-id='$deceased_id'>View</button>
+                <button class='btn btn-warning btn-sm' data-toggle='modal' data-target='#editDeceasedModal' data-id='$deceased_id'>Edit</button>
+                <a href='delete_deceased.php?id=$deceased_id' class='btn btn-danger btn-sm'>Delete</a>
+                </td>";
+            echo "</tr>";
+        }
+    } catch (PDOException $e) {
+        echo "Error: " . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8');
+    }
+    ?>
+</tbody>
 
-                  // Display each record
-                  foreach ($deceasedRecords as $record) {
-                      $deceased_id = htmlspecialchars($record['deceased_id'], ENT_QUOTES, 'UTF-8');
-                      echo "<tr>";
-                      echo "<td>$deceased_id</td>";
-                      echo "<td>" . htmlspecialchars($record['full_name'], ENT_QUOTES, 'UTF-8') . "</td>";
-                      echo "<td>" . htmlspecialchars($record['date_of_birth'], ENT_QUOTES, 'UTF-8') . "</td>";
-                      echo "<td>" . htmlspecialchars($record['date_of_death'], ENT_QUOTES, 'UTF-8') . "</td>";
-                      echo "<td>" . htmlspecialchars($record['time_of_death'], ENT_QUOTES, 'UTF-8') . "</td>";
-                      echo "<td>
-                           <button class='btn btn-info btn-sm' data-toggle='modal' data-target='#modal-success' data-id='$deceased_id'>View</button>
-                           <button class='btn btn-warning btn-sm' data-toggle='modal' data-target='#editDeceasedModal' data-id='$deceased_id'>Edit</button>
-                           <a href='delete_deceased.php?id=$deceased_id' class='btn btn-danger btn-sm'>Delete</a>
-                           </td>";
-                      echo "</tr>";
-                  }
-              } catch (PDOException $e) {
-                  echo "Error: " . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8');
-              }
-              ?>
-            </tbody>
-          </table>
+                </table>
+            </div>
+            <!-- /.card-body -->
         </div>
-        <!-- /.card-body -->
-      </div>
-      <!-- /.card -->
+        <!-- /.card -->
     </div><!-- /.container-fluid -->
-  </section>
+</section>
+
+
   <!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
@@ -156,10 +182,30 @@
                 <label for="addPlaceOfDeath" class="form-label">Place of Death</label>
                 <input type="text" class="form-control" id="addPlaceOfDeath" name="place_of_death">
               </div>
-              <div class="col-md-4 mb-3">
-                <label for="addNationality" class="form-label">Nationality/Ethnicity</label>
-                <input type="text" class="form-control" id="addNationality" name="nationality">
-              </div>
+             <div class="col-md-4 mb-3">
+           
+        <label for="addNationality" class="form-label">Nationality/Ethnicity</label>
+        <input type="text" class="form-control" placeholder="Choose Nationaity" id="addNationality" name="nationality" list="nationalitiesList">
+        <datalist id="nationalitiesList">
+            <!-- Options will be populated dynamically via JavaScript -->
+        </datalist>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Fetch the nationalities JSON
+            fetch('./nationalities.json')
+                .then(response => response.json())
+                .then(data => {
+                    const nationalitiesList = document.getElementById('nationalitiesList');
+                    data.nationalities.forEach(nationality => {
+                        const option = document.createElement('option');
+                        option.value = nationality; // The value of the option
+                        nationalitiesList.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error loading nationalities:', error));
+        });
+    </script>
               <div class="col-md-4 mb-3">
                 <label for="addOccupation" class="form-label">Occupation</label>
                 <input type="text" class="form-control" id="addOccupation" name="occupation">

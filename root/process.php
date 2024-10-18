@@ -36,10 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Redirect to the dashboard or another page
         header("Location: index.php"); // Change to your actual dashboard page
         exit();
-    } else {
-        // Invalid credentials
-        echo "Invalid username or password.";
-    }
+    } 
 }
 // Enable error reporting and set a custom error handler
 ini_set('display_errors', 1);
@@ -87,12 +84,12 @@ if (isset($_POST['login_btn'])) {
 }
 // User Registration
 // add_branch
-elseif (isset($_POST['add_branch'])) {
+elseif (isset($_POST['add_branch_btn'])) { // Corrected the button name to match the form submission
     // Sanitize input
-    $branch_name = addslashes(trim($_POST['branch_name']));
-    $location = addslashes(trim($_POST['location']));
-    $branch_manager = addslashes(trim($_POST['branch_manager']));
-    $contact = addslashes(trim($_POST['contact']));
+    $branch_name = trim($_POST['branch_name']);
+    $location = trim($_POST['location']);
+    $branch_manager = trim($_POST['branch_manager']);
+    $contact = trim($_POST['contact']);
 
     // Check for existing branch_name
     $check = $dbh->prepare("SELECT branch_name FROM branch WHERE branch_name = :branch_name");
@@ -108,22 +105,22 @@ elseif (isset($_POST['add_branch'])) {
         $stmt->bindParam(':contact', $contact);
 
         if ($stmt->execute()) {
-            echo " <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                showToast('Branch added successfully!', 'success');
-            });
-        </script>";
+            echo "<script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    showToast('Branch added successfully!', 'success');
+                });
+            </script>";
         } else {
             echo "<script>
-            document.addEventListener('DOMContentLoaded', function() {
-                showToast('Failed to Add Branch', 'success');
-            });
-        </script>";
+                document.addEventListener('DOMContentLoaded', function() {
+                    showToast('Failed to Add Branch', 'error'); // Changed to 'error' for consistency
+                });
+            </script>";
         }
     } else {
         echo "<script>
             document.addEventListener('DOMContentLoaded', function() {
-                showToast('Branch Name Already Exists!', 'success');
+                showToast('Branch Name Already Exists!', 'warning'); // Changed to 'warning' for consistency
             });
         </script>";
     }
@@ -611,12 +608,12 @@ if (isset($_POST['add_grave_btn'])) {
             header("Location: your_page.php?message=Lot added successfully");
             exit();
         } else {
-            header("Location: your_page.php?error=Error adding lot");
+            header("Location: grave_management.php?error=Error adding lot");
             exit();
         }
     } else {
         // Handle the error where not all required fields are filled
-        header("Location: garave_management.php.php?error=Missing required fields");
+        header("Location: grave_management.php.php?error=Missing required fields");
         exit();
     }
 }

@@ -1,12 +1,13 @@
 <?php
 include './root/process.php';
+
 if (isset($_GET['id'])) {
-    $plotId = $_GET['id'];
+    $cemeteryId = $_GET['id'];  // Use 'cemetery_id' as the identifier
 
     try {
-        // Prepare the delete statement
-        $stmt = $dbh->prepare("DELETE FROM grave_management WHERE Plot_ID = :plotId");
-        $stmt->bindParam(':plotId', $plotId, PDO::PARAM_INT);
+        // Prepare the delete statement using the correct column name 'cemetery_id'
+        $stmt = $dbh->prepare("DELETE FROM grave_management WHERE cemetery_id = :cemeteryId");
+        $stmt->bindParam(':cemeteryId', $cemeteryId, PDO::PARAM_INT);
         
         // Execute the statement
         if ($stmt->execute()) {

@@ -24,9 +24,10 @@
       <div class="card">
         <div class="card-header">
           <!-- Button to trigger the Add Branch modal -->
-          <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addBranchModal">
-            Add Branch
-          </button>
+         
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default">
+                        <i class="fas fa-plus"></i>   Add Branch
+                    </button>
         </div>
         <!-- /.card-header -->
         <div class="card-body">
@@ -76,8 +77,7 @@
 <!-- /.content-wrapper -->
 
 <!-- Add Branch Modal -->
-<div class="modal fade" id="addBranchModal"  aria-labelledby="addBranchModalLabel" aria-hidden="true">
-<div class="modal fade" id="addCustomerModal" tabindex="-1" aria-labelledby="addCustomerModalLabel" 
+<div class="modal fade" id="modal-default">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -97,9 +97,19 @@
             <input type="text" class="form-control" id="addBranchLocation" name="location" required>
           </div>
           <div class="mb-3">
-            <label for="addBranchManager" class="form-label">Branch Manager</label>
-            <input type="text" class="form-control" id="addBranchManager" name="branch_manager" required>
-          </div>
+    <label for="addBranchManager" class="form-label">Branch Manager</label>
+    <select class="form-control" id="addBranchManager" name="branch_manager" required>
+        <option value="">Select a Manager</option>
+        <?php
+        // Fetch users with the role of 'manager'
+        $stmt = $dbh->query("SELECT id, username FROM users WHERE user_role = 'manager'");
+        while ($row = $stmt->fetch(PDO::FETCH_OBJ)) {
+            echo "<option value=\"{$row->id}\">{$row->username}</option>";
+        }
+        ?>
+    </select>
+</div>
+
           <div class="mb-3">
             <label for="addBranchContact" class="form-label">Contact</label>
             <input type="text" class="form-control" id="addBranchContact" name="contact" required>

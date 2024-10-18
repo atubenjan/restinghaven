@@ -1,6 +1,7 @@
 <?php
+include './root/init.php';
 include './root/process.php';
-
+include './root/counts.php';
 if (empty($_SESSION['id'])) {
     header("Location: login");
     exit(); // Always call exit after header redirection
@@ -18,7 +19,8 @@ if (empty($_SESSION['id'])) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>RHC | Dashboard</title>
-    <link rel="shortcut icon" href="./logo.png">
+    <link rel="shortcut icon" href="logo.jpg">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
     <link rel="stylesheet" href="dist/css/adminlte.min.css">
@@ -33,44 +35,11 @@ if (empty($_SESSION['id'])) {
     <link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
   <link rel="stylesheet" href="plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
   <link rel="stylesheet" href="plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
-  <!-- Theme style -->
-
-    <!-- Preloader CSS -->
-    <style>
-        .preloader {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease-out;
-        }
-
-        .preloader.hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        .spinner-border {
-            width: 3rem;
-            height: 3rem;
-            border-width: 0.4em;
-        }
-    </style>
+  <link rel="stylesheet" href="assets/style.css">
+ 
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
-    <div class="preloader">
-        <div class="spinner-border" role="status">
-            <span class="visually-hidden">RHC...</span>
-        </div>
-    </div>
-
     <div class="wrapper">
         <!-- Navbar -->
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -111,7 +80,7 @@ if (empty($_SESSION['id'])) {
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                     <!-- Add icons to the links using the .nav-icon class with font-awesome or any other icon font library -->
                     <li class="nav-item menu-open">
-                        <a href="#" class="nav-link active">
+                        <a href="index" class="nav-link active">
                             <i class="nav-icon fas fa-tachometer-alt"></i>
                             <p>Dashboard</p>
                         </a>
@@ -233,14 +202,6 @@ if (empty($_SESSION['id'])) {
 
        
            
-
-    <script>
-        // Preloader script
-        document.addEventListener('DOMContentLoaded', function () {
-            setTimeout(function () {
-                const preloader = document.querySelector('.preloader');
-                preloader.classList.add('hidden'); // Add hidden class to preloader
-            }, 4000); // Adjust the time as necessary
-        });
-    </script>
-    
+     
+                                 
+                                        

@@ -1,0 +1,38 @@
+/* General styles for the status badges */
+.status-badge {
+    display: inline-block;
+    padding: 10px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    text-transform: uppercase;
+    margin: 5px;
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.status-badge:hover {
+    transform: scale(1.05);
+}
+
+/* Specific styles for each status */
+.status-pending {
+    background-color: #f39c12; /* Orange */
+}
+
+.status-in-progress {
+    background-color: #007bff; /* Blue */
+}
+
+.status-completed {
+    background-color: #28a745; /* Green */
+}
+
+.status-canceled {
+    background-color: #dc3545; /* Red */
+}
+
+.status-on-hold {
+    background-color: #ffc107; /* Yellow */
+}

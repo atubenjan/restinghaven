@@ -1,7 +1,8 @@
 <?php
 ob_start();
-session_start(); 
-
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 date_default_timezone_set('Africa/Nairobi');
 $dtime = date("Y-m-d H:i:s A", time());
 $now = date("Y-m-d H:i:s", time());
@@ -49,153 +50,300 @@ catch(PDOException $e){
 	echo $e->getMessage(); 
 }
 
-function getUploadUrl($file){
-	return "uploads/".$file;
-}
 
+if (!function_exists('getUploadUrl')) {
+    function getUploadUrl($file) {
+        return "uploads/" . $file;
+    }
+}
+/* 
 function redirect_page($url){
 	header("Location: {$url}");
 	exit;
+} */
+
+if (!function_exists('redirect_page')) {
+    function redirect_page($url) {
+        header("Location: {$url}");
+        exit;
+    }
 }
 
-function log_message($msg=NULL){
-	if(!empty($msg)){
-		$_SESSION['msg'] = $msg;
-	}else{
-		$val = $_SESSION['msg'];
-		$_SESSION['msg'] = '';
-		return $val;
-	}
-}
+// config.php
 
-function Batch($numAlpha=8,$numNonAlpha=2){
-   $listAlpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-   return str_shuffle(
-      substr(str_shuffle($listAlpha),0,$numAlpha)
-    );
-}
-function getCode(){
-	//$st = Batch($num=5,$alt=2);
-	$st = rand(1000000,99999999);
-	return $st;
-}
-
-function process_curl($data){
-	global $api_url;
-	$curl = curl_init();
-	curl_setopt_array($curl, array(
-	  CURLOPT_URL => $api_url,
-	  CURLOPT_RETURNTRANSFER => true,
-	  CURLOPT_ENCODING => '',
-	  CURLOPT_MAXREDIRS => 10,
-	  CURLOPT_TIMEOUT => 0,
-	  CURLOPT_FOLLOWLOCATION => true,
-	  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-	  CURLOPT_CUSTOMREQUEST => 'POST',
-	  CURLOPT_POSTFIELDS => json_encode($data),
-	  CURLOPT_HTTPHEADER => array('Content-Type: application/json'),
-	));
-	$response = curl_exec($curl);
-	curl_close($curl);
-	return $response;
-}
-
-function getWeek(){
-	$result = date('Y-m-d',strtotime("-7 days"));
-	return $result;
-}
-
-function monthly(){
-	$result = date('Y-m-d',strtotime("-30 days"));
-	return $result;
-}
-
-// get monthy dates 
-function getMonth(){
-	$result = date('Y-m-d',strtotime("+30 days"));
-	return $result;
-}
-
-// calcuate extra days 
-function getExtra(){
-	$result = date('Y-m-d',strtotime("+33 days"));
-	return $result;
-}
-
-// calcuate new date 
-function get_next($day){
-	$result = date('Y-m-d', strtotime("+$day days"));
-	return $result;
-
-}
-
-function convert_date($date){
-	$result = date('d-m-Y', strtotime($date));
-	return $result;
-}
-
-function calcDays($start, $end){
-	$start_date = strtotime($start); 
-	$end_date = strtotime($end); 
-	return ($end_date - $start_date)/60/60/24;
-
-}
-
-function dbDelete ($tbl='',$field='',$id=''){
-	global $dbh;
-	if($tbl!='' && $field!='' && $id!=''){
-		$sql = 'DELETE FROM '.$tbl.' WHERE '.$field.' = '.$id. '';
-		return $dbh->exec($sql);
-	} else {
-		return NULL;
-	}
-}
-function dbCreate($sql = '', $params = []) {
-    global $dbh;
-    if ($sql == '') {
-        return -9;
-    } else {
-        $q = $dbh->prepare($sql);
-        if ($q->execute($params)) {
-            return 1; // Success
+// Log message function
+if (!function_exists('log_message')) {
+    function log_message($msg = NULL) {
+        if (!empty($msg)) {
+            $_SESSION['msg'] = $msg;
         } else {
-            return 0; // Failure
+            $val = $_SESSION['msg'];
+            $_SESSION['msg'] = '';
+            return $val;
         }
     }
 }
 
+if (!function_exists('Batch')) {
+    function Batch($numAlpha = 8, $numNonAlpha = 2) {
+        // Define the characters to use for the random string
+        $listAlpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; // Alphanumeric characters
+        $listNonAlpha = '!@#$%^&*()_+-=[]{}|;:,.<>?'; // Non-alphanumeric characters
 
-function dbSQL($q=''){
-	global $dbh;
-	if(empty($q)) return FALSE;
-	$r = $dbh->prepare($q);
-	$r->execute();
-	$results = array();
-	while($row = $r->fetch(PDO::FETCH_OBJ)){
-		$results[] = $row;
-	}
-	return $results;
+        // Shuffle and select the required number of characters
+        $alphaPart = substr(str_shuffle($listAlpha), 0, $numAlpha);
+        $nonAlphaPart = substr(str_shuffle($listNonAlpha), 0, $numNonAlpha);
+
+        // Combine the parts and shuffle the result for randomness
+        $combined = $alphaPart . $nonAlphaPart;
+        return str_shuffle($combined);
+    }
 }
 
-function dbRow($query=''){
-	global $dbh;
-	$r = $dbh->prepare($query);
-	$r->execute();
-	return $r->fetch(PDO::FETCH_OBJ);
+if (!function_exists('getCode')) {
+    function getCode() {
+        // Generate a random number between 1,000,000 and 99,999,999
+        $st = rand(1000000, 99999999);
+        return $st;
+    }
+}
+// config.php
+
+if (!function_exists('process_curl')) {
+    function process_curl($data) {
+        global $api_url;
+
+        if (empty($api_url)) {
+            throw new Exception('API URL is not defined.');
+        }
+
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $api_url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => json_encode($data),
+            CURLOPT_HTTPHEADER => array('Content-Type: application/json'),
+        ));
+
+        $response = curl_exec($curl);
+
+        if ($response === false) {
+            $error_msg = curl_error($curl);
+            curl_close($curl);
+            throw new Exception("cURL error: $error_msg");
+        }
+
+        curl_close($curl);
+        return json_decode($response, true);
+    }
 }
 
-function dbOne($query='', $field=''){
-	global $dbh;
-	$r = dbRow($query);
-	return $r? $r->$field:NULL;
+
+if (!function_exists('getWeek')) {
+    function getWeek() {
+        return date('Y-m-d', strtotime("-7 days"));
+    }
 }
 
-function get_url(){
-	$current = substr($_SERVER["SCRIPT_NAME"],strrpos($_SERVER["SCRIPT_NAME"],"/")+1);  
-    $result = explode('.', $current)[0];
-	return $result;
+if (!function_exists('monthly')) {
+    function monthly() {
+        return date('Y-m-d', strtotime("-30 days"));
+    }
 }
 
+if (!function_exists('getMonth')) {
+    function getMonth() {
+        return date('Y-m-d', strtotime("+30 days"));
+    }
+}
+
+if (!function_exists('getExtra')) {
+    function getExtra() {
+        return date('Y-m-d', strtotime("+33 days"));
+    }
+}
+
+if (!function_exists('get_next')) {
+    function get_next($day) {
+        return date('Y-m-d', strtotime("+$day days"));
+    }
+}
+
+if (!function_exists('convert_date')) {
+    function convert_date($date) {
+        return date('d-m-Y', strtotime($date));
+    }
+}
+
+if (!function_exists('calcDays')) {
+    function calcDays($start, $end) {
+        $start_date = strtotime($start);
+        $end_date = strtotime($end);
+        return ($end_date - $start_date) / 60 / 60 / 24; // Return the number of days
+    }
+}
+
+/**
+ * Database Operations
+ */
+if (!function_exists('dbDelete')) {
+    function dbDelete($tbl = '', $field = '', $id = '') {
+        global $dbh;
+        if ($tbl != '' && $field != '' && $id != '') {
+            $sql = 'DELETE FROM ' . $tbl . ' WHERE ' . $field . ' = :id';
+            $stmt = $dbh->prepare($sql);
+            return $stmt->execute([':id' => $id]);
+        } else {
+            return NULL;
+        }
+    }
+}
+
+if (!function_exists('dbCreate')) {
+    function dbCreate($sql = '', $params = []) {
+        global $dbh;
+        if ($sql == '') {
+            return -9; // SQL statement is empty
+        } else {
+            $q = $dbh->prepare($sql);
+            if ($q->execute($params)) {
+                return 1; // Success
+            } else {
+                return 0; // Failure
+            }
+        }
+    }
+}
+if (!function_exists('dbSQL')) {
+    function dbSQL($q = '') {
+        global $dbh;
+        if (empty($q)) return FALSE; // Return false if the query is empty
+        
+        $r = $dbh->prepare($q);
+        $r->execute();
+        $results = array();
+        
+        while ($row = $r->fetch(PDO::FETCH_OBJ)) {
+            $results[] = $row; // Fetch results as objects
+        }
+        
+        return $results; // Return the array of results
+    }
+}
+
+if (!function_exists('dbRow')) {
+    function dbRow($query = '') {
+        global $dbh;
+        $r = $dbh->prepare($query);
+        $r->execute();
+        return $r->fetch(PDO::FETCH_OBJ); // Fetch a single row as an object
+    }
+}
+
+if (!function_exists('dbOne')) {
+    function dbOne($query = '', $field = '') {
+        global $dbh;
+        $r = dbRow($query);
+        return $r ? $r->$field : NULL; // Return the value of the specified field or NULL
+    }
+}
+
+/**
+ * URL Functions
+ */
+if (!function_exists('get_url')) {
+    function get_url() {
+        $current = substr($_SERVER["SCRIPT_NAME"], strrpos($_SERVER["SCRIPT_NAME"], "/") + 1);  
+        $result = explode('.', $current)[0]; // Extract the file name without extension
+        return $result; // Return the file name
+    }
+}
+
+/**
+ * Date Functions
+ */
+if (!function_exists('getWeek')) {
+    function getWeek() {
+        return date('Y-m-d', strtotime("-7 days"));
+    }
+}
+
+if (!function_exists('monthly')) {
+    function monthly() {
+        return date('Y-m-d', strtotime("-30 days"));
+    }
+}
+
+if (!function_exists('getMonth')) {
+    function getMonth() {
+        return date('Y-m-d', strtotime("+30 days"));
+    }
+}
+
+if (!function_exists('getExtra')) {
+    function getExtra() {
+        return date('Y-m-d', strtotime("+33 days"));
+    }
+}
+
+if (!function_exists('get_next')) {
+    function get_next($day) {
+        return date('Y-m-d', strtotime("+$day days"));
+    }
+}
+
+if (!function_exists('convert_date')) {
+    function convert_date($date) {
+        return date('d-m-Y', strtotime($date));
+    }
+}
+
+if (!function_exists('calcDays')) {
+    function calcDays($start, $end) {
+        $start_date = strtotime($start);
+        $end_date = strtotime($end);
+        return ($end_date - $start_date) / 60 / 60 / 24; // Return the number of days
+    }
+}
+
+/**
+ * Database Operations
+ */
+if (!function_exists('dbDelete')) {
+    function dbDelete($tbl = '', $field = '', $id = '') {
+        global $dbh;
+        if ($tbl != '' && $field != '' && $id != '') {
+            $sql = 'DELETE FROM ' . $tbl . ' WHERE ' . $field . ' = :id';
+            $stmt = $dbh->prepare($sql);
+            return $stmt->execute([':id' => $id]);
+        } else {
+            return NULL;
+        }
+    }
+}
+
+if (!function_exists('dbCreate')) {
+    function dbCreate($sql = '', $params = []) {
+        global $dbh;
+        if ($sql == '') {
+            return -9; // SQL statement is empty
+        } else {
+            $q = $dbh->prepare($sql);
+            if ($q->execute($params)) {
+                return 1; // Success
+            } else {
+                return 0; // Failure
+            }
+        }
+    }
+
+/*
 function convert_number_to_words($number) {
     $hyphen      = '-';
     $conjunction = ' and ';
@@ -373,18 +521,48 @@ function convert_number_to_words($number) {
             break;
 
     }
+	 function numberToWords($number) {
+		// Dictionary for number to word conversion
+		$dictionary = [
+			'0' => 'zero', '1' => 'one', '2' => 'two', '3' => 'three',
+			'4' => 'four', '5' => 'five', '6' => 'six', '7' => 'seven',
+			'8' => 'eight', '9' => 'nine', '10' => 'ten', // Extend as needed
+		];
+		
+		// Split number into whole and fractional parts
+		$parts = explode('.', (string) $number);
+		$whole = $parts[0];
+		$fraction = isset($parts[1]) ? $parts[1] : null;
+	
+		// Convert whole number to words
+		$string = convertWholeToWords($whole, $dictionary);
+	
+		// Process fractional part if it exists
+		if (null !== $fraction && is_numeric($fraction)) {
+			$string .= ' and';
+			$words = array();
+			foreach (str_split((string) $fraction) as $digit) {
+				$words[] = $dictionary[$digit];
+			}
+			$string .= ' ' . implode(' ', $words);
+		}
+		return trim($string); // Return the final string in words
+	}
+	
 
-    if (null !== $fraction && is_numeric($fraction)) {
-        $string .= $decimal;
-        $words = array();
-        foreach (str_split((string) $fraction) as $number) {
-            $words[] = $dictionary[$number];
-        }
-        $string .= implode(' ', $words);
-    }
-    return $string;
+	function convertWholeToWords($whole, $dictionary) {
+		$words = array();
+		foreach (str_split((string) $whole) as $digit) {
+			$words[] = $dictionary[$digit];
+		}
+		return implode(' ', $words);
+	}
+	
+	// Example usage:
+	$number = 123.45; // Test number
+	echo numberToWords($number); 
 }
-
+ *//* 
 $countries = array
 (
 	'AF' => 'Afghanistan',
@@ -666,6 +844,7 @@ function test_input($data) {
 	return $data;
 }
 
+
 function get_time_difference_php($created_time){
     date_default_timezone_set('Africa/Kampala'); //Change as per your default time
     $str = strtotime($created_time);
@@ -794,25 +973,48 @@ function getIp() {
     return $ip;
 }
 
-function whatsapp_msg_api($message){
-	$curl = curl_init();
+function whatsapp_msg_api($message) {
+    $curl = curl_init();
 
-	curl_setopt_array($curl, array(
-	  CURLOPT_URL => 'http://api.textmebot.com/send.php?recipient=%2B256766356042&apikey=Q1jjSU8DfqTm&text='.$message,
-	  CURLOPT_RETURNTRANSFER => true,
-	  CURLOPT_ENCODING => '',
-	  CURLOPT_MAXREDIRS => 10,
-	  CURLOPT_TIMEOUT => 0,
-	  CURLOPT_FOLLOWLOCATION => true,
-	  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-	  CURLOPT_CUSTOMREQUEST => 'GET',
-	));
+    // Replace these with your own recipient number and API key
+    $recipient = urlencode('+256766356042'); // Ensure the recipient number is properly encoded
+    $apikey = 'Q1jjSU8DfqTm'; // Your API key
 
-	$response = curl_exec($curl);
+    // URL encode the message to ensure it is safe for the URL
+    $text = urlencode($message);
 
-	curl_close($curl);
-	return $response;
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => "http://api.textmebot.com/send.php?recipient={$recipient}&apikey={$apikey}&text={$text}",
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 30, // Increased timeout for slower responses
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'GET',
+    ));
 
+    $response = curl_exec($curl);
+
+    // Check for cURL errors
+    if ($response === false) {
+        $error_msg = curl_error($curl);
+        curl_close($curl);
+        throw new Exception("cURL error: $error_msg");
+    }
+
+    curl_close($curl);
+    
+    // Optionally decode the response if it is JSON
+    return json_decode($response, true); // Returns as an associative array
 }
 
+// Example usage
+try {
+    $response = whatsapp_msg_api('Hello, this is a test message!');
+    print_r($response); // Output the response from the API
+} catch (Exception $e) {
+    echo 'Error: ' . $e->getMessage();
+} */
+}
 ?>

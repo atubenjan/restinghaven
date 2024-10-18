@@ -1,5 +1,5 @@
-<?php
-  include 'header.php'; // Include header and navigation
+<?php 
+include 'header.php'; // Include header and navigation
 ?>
 
 <div class="content-wrapper">
@@ -19,68 +19,81 @@
     </div><!-- /.container-fluid -->
   </div>
 
-  <!-- Main content -->
   <section class="content">
-    <div class="container-fluid">
-      <!-- Burial records table -->
-      <div class="card">
-        <div class="card-header">
-          <!-- Button to trigger modal -->
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addBurialModal">
-            Add Burial Record
+  <div class="container-fluid">
+    <!-- Burial records table -->
+    <div class="card">
+      <div class="card-header">
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default">
+            <i class="fas fa-plus"></i>  Add Burial Record
           </button>
-        </div>
-        <!-- /.card-header -->
-        <div class="card-body">
-          <table id="burialTable" class="table table-bordered table-striped">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Burial Date</th>
-                <th>Grave Number</th>
-                <th>Deceased ID</th>
-                <th>Location</th>
-                <th>Remarks</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php 
-              $stmt = $dbh->prepare("SELECT * FROM burial_records");
-              $stmt->execute();
-              $count = 1; 
-              while ($row = $stmt->fetch(PDO::FETCH_OBJ)) {
-              ?>
-              <tr>
-                <td><?= $count;?></td>
-                <td><?= $row->burial_date;?></td>
-                <td><?= $row->grave_number;?></td>
-                <td><?= $row->deceased_id;?></td>
-                <td><?= $row->location;?></td>
-                <td><?= $row->remarks;?></td>
-                <td>
-                  <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#viewBurialModal" 
-                          onclick="viewBurialDetails(1, '2020-02-15', 'G-123', 1, 'Section A, Row 5', 'None')">View</button>
-                  <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editBurialModal" 
-                          onclick="populateEditModal(1, '2020-02-15', 'G-123', 1, 'Section A, Row 5', 'None')">Edit</button>
-                  <a href="delete_burial.html" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this record?');">Delete</a>
-                </td>
-              </tr>
-              <?php $count++; }?>
-            </tbody>
-          </table>
-        </div>
-        <!-- /.card-body -->
+       
       </div>
-      <!-- /.card -->
-    </div><!-- /.container-fluid -->
-  </section>
+      <!-- /.card-header -->
+      <div class="card-body">
+      <table id="example1" class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Burial Date</th>
+              <th>Time of Burial</th>
+              <th>Grave Number</th>
+              <th>Deceased ID</th>
+              <th>Plot ID</th>
+              <th>Burial Type</th>
+              <th>Officiant</th>
+              <th>Location</th>
+              <th>Burial Status</th>
+              <th>Cemetery</th>
+              <th>Remarks</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php 
+            $stmt = $dbh->prepare("SELECT burial_id, burial_date, time_of_burial, grave_number, deceased_id, plot_id, burial_type, officiant, location, burial_status, cemetery_id, remarks FROM burial_records");
+            $stmt->execute();
+            $count = 1; 
+            while ($row = $stmt->fetch(PDO::FETCH_OBJ)) {
+            ?>
+            <tr>
+              <td><?= $count; ?></td>
+              <td><?= $row->burial_date; ?></td>
+              <td><?= $row->time_of_burial; ?></td>
+              <td><?= $row->grave_number; ?></td>
+              <td><?= $row->deceased_id; ?></td>
+              <td><?= $row->plot_id; ?></td>
+              <td><?= $row->burial_type; ?></td>
+              <td><?= $row->officiant; ?></td>
+              <td><?= $row->location; ?></td>
+              <td><?= $row->burial_status; ?></td>
+              <td><?= $row->cemetery_id; ?></td>
+              <td><?= $row->remarks; ?></td>
+              <td>
+                <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#viewBurialModal" 
+                        onclick="viewBurialDetails(<?= $row->burial_id; ?>, '<?= $row->burial_date; ?>', '<?= $row->time_of_burial; ?>', '<?= $row->grave_number; ?>', <?= $row->deceased_id; ?>, '<?= $row->plot_id; ?>', '<?= $row->burial_type; ?>', '<?= $row->officiant; ?>', '<?= $row->location; ?>', '<?= $row->burial_status; ?>', '<?= $row->cemetery_id; ?>', '<?= $row->remarks; ?>')">View</button>
+                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editBurialModal" 
+                        onclick="populateEditModal(<?= $row->burial_id; ?>, '<?= $row->burial_date; ?>', '<?= $row->time_of_burial; ?>', '<?= $row->grave_number; ?>', <?= $row->deceased_id; ?>, '<?= $row->plot_id; ?>', '<?= $row->burial_type; ?>', '<?= $row->officiant; ?>', '<?= $row->location; ?>', '<?= $row->burial_status; ?>', '<?= $row->cemetery_id; ?>', '<?= $row->remarks; ?>')">Edit</button>
+                <a href="delete_burial.php?id=<?= $row->burial_id; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this record?');">Delete</a>
+              </td>
+            </tr>
+            <?php $count++; } ?>
+          </tbody>
+        </table>
+      </div>
+      <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+  </div><!-- /.container-fluid -->
+</section>
+
+
   <!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
 
 <!-- Add Burial Modal -->
-<div class="modal fade" id="addBurialModal" tabindex="-1" aria-labelledby="addBurialModalLabel" aria-hidden="true">
+<div class="modal fade" id="modal-default">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -88,116 +101,87 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form method="POST">
+        <form method="POST" action="">
           <div class="row">
             <div class="col-md-6 mb-3">
-              <label for="addBurialID" class="form-label">Burial ID</label>
-              <input type="text" class="form-control" id="addBurialID" name="burial_id" required>
+              <label for="grave_number" class="form-label">Grave Number</label>
+              <input type="text" class="form-control" id="grave_number" name="grave_number" placeholder="Enter Grave Number" required>
             </div>
+
             <div class="col-md-6 mb-3">
-    <label for="grave_number">Grave Number</label>
-    <input type="text" class="form-control" id="grave_number" name="grave_number" placeholder="Enter Grave Number" required>
-</div>
-            <div class="col-md-6 mb-3">
-              <label for="addCemeteryID" class="form-label">Cemetery ID</label>
-              <input type="text" class="form-control" id="addCemeteryID" name="cemetery_id" required>
+              <label for="addDeceasedID" class="form-label">Deceased ID</label>
+              <select class="form-control" id="addDeceasedID" name="deceased_id" required>
+                <option value="" disabled selected>Select Deceased ID</option>
+                <?php
+                // Fetch deceased records from the database
+                $deceasedStmt = $dbh->prepare("SELECT deceased_id, full_name FROM deceased_records");
+                $deceasedStmt->execute();
+                
+                while ($deceasedRow = $deceasedStmt->fetch(PDO::FETCH_OBJ)) {
+                    echo '<option value="' . htmlspecialchars($deceasedRow->deceased_id) . '">' . htmlspecialchars($deceasedRow->full_name) . ' (ID: ' . htmlspecialchars($deceasedRow->deceased_id) . ')</option>';
+                }
+                ?>
+              </select>
             </div>
-            <div class="col-md-6 mb-3">
-              <label for="addPlotID" class="form-label">Plot ID</label>
-              <input type="text" class="form-control" id="addPlotID" name="plot_id" required>
-            </div>
-            <div class="col-md-6 mb-3">
-    <label for="addDeceasedID" class="form-label">Deceased ID</label>
-    <select class="form-control" id="addDeceasedID" name="deceased_id" required>
-        <option value="" disabled selected>Select Deceased ID</option>
-        <?php
-        // Fetch deceased records from the database
-        $deceasedStmt = $dbh->prepare("SELECT deceased_id, full_name FROM deceased_records");
-        $deceasedStmt->execute();
-        
-        while ($deceasedRow = $deceasedStmt->fetch(PDO::FETCH_OBJ)) {
-            echo '<option value="' . $deceasedRow->deceased_id . '">' . $deceasedRow->full_name . ' (ID: ' . $deceasedRow->deceased_id . ')</option>';
-        }
-        ?>
-    </select>
-</div>
 
             <div class="col-md-6 mb-3">
               <label for="addBurialDate" class="form-label">Date of Burial</label>
               <input type="date" class="form-control" id="addBurialDate" name="burial_date" required>
             </div>
+
             <div class="col-md-6 mb-3">
-              <label for="addGraveNumber" class="form-label">Grave Number</label>
-              <input type="text" class="form-control" id="addGraveNumber" name="grave_number" required>
+              <label for="time_of_burial" class="form-label">Time of Burial</label>
+              <input type="time" class="form-control" id="time_of_burial" name="time_of_burial" required>
             </div>
             <div class="col-md-6 mb-3">
-              <label for="addDeceasedId" class="form-label">Deceased ID</label>
-              <input type="number" class="form-control" id="addDeceasedId" name="deceased_id" required>
+              <label for="addPlotID" class="form-label">Plot ID</label>
+              <input type="text" class="form-control" id="addPlotID" name="plot_id" placeholder="Enter Plot ID" required>
             </div>
             <div class="col-md-6 mb-3">
-              <label for="addLocation" class="form-label">Location</label>
-              <input type="text" class="form-control" id="addLocation" name="location">
+              <label for="burial_type" class="form-label">Burial Type</label>
+              <select class="form-control" id="burial_type" name="burial_type" required>
+                <option value="" disabled selected>Select Burial Type</option>
+                <option value="Traditional">Traditional</option>
+                <option value="Cremation">Cremation</option>
+                <option value="Natural">Natural</option>
+                <option value="Green Burial">Green Burial</option>
+                <option value="Above Ground">Above Ground</option>
+                <option value="Aquamation">Aquamation</option>
+                <option value="Burial at Sea">Burial at Sea</option>
+                <option value="Mausoleum">Mausoleum</option>
+                <option value="Community Burial">Community Burial</option>
+                <option value="Home Burial">Home Burial</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="officiant" class="form-label">Officiant</label>
+              <input type="text" class="form-control" id="officiant" name="officiant" placeholder="Enter Officiant Name" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="location" class="form-label">Location</label>
+              <input type="text" class="form-control" id="location" name="location" placeholder="Enter Location" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="burial_status" class="form-label">Burial Status</label>
+              <select class="form-control" id="burial_status" name="burial_status" required>
+                <option value="" disabled selected>Select Burial Status</option>
+                <option value="Completed">Completed</option>
+                <option value="Pending">Pending</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="cemetery" class="form-label">Cemetery</label>
+              <input type="text" class="form-control" id="cemetery" name="cemetery" placeholder="Enter Cemetery" required>
             </div>
             <div class="col-md-12 mb-3">
-              <label for="addRemarks" class="form-label">Remarks</label>
-              <textarea class="form-control" id="addRemarks" name="remarks"></textarea>
+              <label for="remarks" class="form-label">Remarks</label>
+              <textarea class="form-control" id="remarks" name="remarks" rows="3"></textarea>
             </div>
-            <div class="form-group">
-    <label for="remarks">Remarks</label>
-    <textarea class="form-control" id="remarks" name="remarks" placeholder="Enter any remarks or additional information here..." rows="4" required></textarea>
-</div>
           </div>
-          <button type="submit" name="burial_record_btn" class="btn btn-primary">Submit</button>
+          <button type="submit" class="btn btn-primary">Add Record</button>
         </form>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- View Burial Modal -->
-<div class="modal fade" id="viewBurialModal" tabindex="-1" aria-labelledby="viewBurialModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="viewBurialModalLabel">View Burial Record</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <table class="table table-bordered">
-          <tbody>
-            <tr>
-              <td><strong>Full Name:</strong></td>
-              <td id="viewFullName"></td>
-            </tr>
-            <tr>
-              <td><strong>Date of Birth:</strong></td>
-              <td id="viewDateOfBirth"></td>
-            </tr>
-            <tr>
-              <td><strong>Date of Death:</strong></td>
-              <td id="viewDateOfDeath"></td>
-            </tr>
-            <tr>
-              <td><strong>Date of Burial:</strong></td>
-              <td id="viewDateOfBurial"></td>
-            </tr>
-            <tr>
-              <td><strong>Grave Number:</strong></td>
-              <td id="viewGraveNumber"></td>
-            </tr>
-            <tr>
-              <td><strong>Location:</strong></td>
-              <td id="viewLocation"></td>
-            </tr>
-            <tr>
-              <td><strong>Remarks:</strong></td>
-              <td id="viewRemarks"></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -212,72 +196,108 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form id="editBurialForm">
-          <input type="hidden" id="editBurialId" name="id">
+        <form method="POST" action="">
+          <input type="hidden" id="editBurialID" name="burial_id">
           <div class="row">
-            <div class="col-md-6 mb-3">
-              <label for="editBurialDate" class="form-label">Burial Date</label>
-              <input type="date" class="form-control" id="editBurialDate" name="burial_date" required>
-            </div>
             <div class="col-md-6 mb-3">
               <label for="editGraveNumber" class="form-label">Grave Number</label>
               <input type="text" class="form-control" id="editGraveNumber" name="grave_number" required>
             </div>
             <div class="col-md-6 mb-3">
-              <label for="editDeceasedId" class="form-label">Deceased ID</label>
-              <input type="number" class="form-control" id="editDeceasedId" name="deceased_id" required>
+              <label for="editDeceasedID" class="form-label">Deceased ID</label>
+              <select class="form-control" id="editDeceasedID" name="deceased_id" required>
+                <option value="" disabled selected>Select Deceased ID</option>
+                <?php
+                // Fetch deceased records from the database
+                $deceasedStmt = $dbh->prepare("SELECT deceased_id, full_name FROM deceased_records");
+                $deceasedStmt->execute();
+                
+                while ($deceasedRow = $deceasedStmt->fetch(PDO::FETCH_OBJ)) {
+                    echo '<option value="' . htmlspecialchars($deceasedRow->deceased_id) . '">' . htmlspecialchars($deceasedRow->full_name) . ' (ID: ' . htmlspecialchars($deceasedRow->deceased_id) . ')</option>';
+                }
+                ?>
+              </select>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="editBurialDate" class="form-label">Date of Burial</label>
+              <input type="date" class="form-control" id="editBurialDate" name="burial_date" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="editTimeOfBurial" class="form-label">Time of Burial</label>
+              <input type="time" class="form-control" id="editTimeOfBurial" name="time_of_burial" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="editPlotID" class="form-label">Plot ID</label>
+              <input type="text" class="form-control" id="editPlotID" name="plot_id" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="editBurialType" class="form-label">Burial Type</label>
+              <select class="form-control" id="editBurialType" name="burial_type" required>
+                <option value="" disabled selected>Select Burial Type</option>
+                <option value="Traditional">Traditional</option>
+                <option value="Cremation">Cremation</option>
+                <option value="Natural">Natural</option>
+                <option value="Green Burial">Green Burial</option>
+                <option value="Above Ground">Above Ground</option>
+                <option value="Aquamation">Aquamation</option>
+                <option value="Burial at Sea">Burial at Sea</option>
+                <option value="Mausoleum">Mausoleum</option>
+                <option value="Community Burial">Community Burial</option>
+                <option value="Home Burial">Home Burial</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="editOfficiant" class="form-label">Officiant</label>
+              <input type="text" class="form-control" id="editOfficiant" name="officiant" required>
             </div>
             <div class="col-md-6 mb-3">
               <label for="editLocation" class="form-label">Location</label>
-              <input type="text" class="form-control" id="editLocation" name="location">
+              <input type="text" class="form-control" id="editLocation" name="location" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="editBurialStatus" class="form-label">Burial Status</label>
+              <select class="form-control" id="editBurialStatus" name="burial_status" required>
+                <option value="" disabled selected>Select Burial Status</option>
+                <option value="Completed">Completed</option>
+                <option value="Pending">Pending</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="editCemetery" class="form-label">Cemetery</label>
+              <input type="text" class="form-control" id="editCemetery" name="cemetery" required>
             </div>
             <div class="col-md-12 mb-3">
               <label for="editRemarks" class="form-label">Remarks</label>
-              <textarea class="form-control" id="editRemarks" name="remarks"></textarea>
+              <textarea class="form-control" id="editRemarks" name="remarks" rows="3"></textarea>
             </div>
           </div>
-          <button type="submit" class="btn btn-primary">Save changes</button>
+          <button type="submit" class="btn btn-warning">Update Record</button>
         </form>
       </div>
     </div>
   </div>
 </div>
 
-<?php include 'footer.php'; // Include footer ?>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  // JavaScript to populate edit modal with burial record data
-  // function populateEditModal(id, burial_date, grave_number, deceased_id, location, remarks) {
-  //   document.getElementById('editBurialId').value = id;
-  //   document.getElementById('editBurialDate').value = burial_date;
-  //   document.getElementById('editGraveNumber').value = grave_number;
-  //   document.getElementById('editDeceasedId').value = deceased_id;
-  //   document.getElementById('editLocation').value = location;
-  //   document.getElementById('editRemarks').value = remarks;
-  // }
-
-  // // JavaScript to populate view modal with burial record data
-  // function viewBurialDetails(id, burial_date, grave_number, deceased_id, location, remarks) {
-  //   document.getElementById('viewFullName').innerText = 'John Doe'; // Replace with actual data
-  //   document.getElementById('viewDateOfBirth').innerText = '1980-01-01'; // Replace with actual data
-  //   document.getElementById('viewDateOfDeath').innerText = burial_date; // Replace with actual data
-  //   document.getElementById('viewDateOfBurial').innerText = burial_date; // Replace with actual data
-  //   document.getElementById('viewGraveNumber').innerText = grave_number;
-  //   document.getElementById('viewLocation').innerText = location;
-  //   document.getElementById('viewRemarks').innerText = remarks;
-  // }
-
-  // // Handle form submissions (optional)
-  // document.getElementById('addBurialForm').addEventListener('submit', function(event) {
-  //   event.preventDefault();
-  //   // Handle add burial record form submission
-  //   alert('Add Burial Form submitted');
-  // });
-
-  // document.getElementById('editBurialForm').addEventListener('submit', function(event) {
-  //   event.preventDefault();
-  //   // Handle edit burial record form submission
-  //   alert('Edit Burial Form submitted');
-  // });
+  function populateEditModal(burialID, burialDate, timeOfBurial, graveNumber, deceasedID, plotID, burialType, officiant, location, burialStatus, cemetery, remarks) {
+    // Populate fields for editing
+    document.getElementById('editBurialID').value = burialID;
+    document.getElementById('editGraveNumber').value = graveNumber;
+    document.getElementById('editDeceasedID').value = deceasedID;
+    document.getElementById('editBurialDate').value = burialDate;
+    document.getElementById('editTimeOfBurial').value = timeOfBurial;
+    document.getElementById('editPlotID').value = plotID;
+    document.getElementById('editBurialType').value = burialType;
+    document.getElementById('editOfficiant').value = officiant;
+    document.getElementById('editLocation').value = location;
+    document.getElementById('editBurialStatus').value = burialStatus;
+    document.getElementById('editCemetery').value = cemetery;
+    document.getElementById('editRemarks').value = remarks;
+  }
 </script>
+
+<?php 
+include 'footer.php'; // Include footer
+?>

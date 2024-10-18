@@ -2,24 +2,21 @@
 // delete_work_order.php
 include './root/process.php';
 
+;
+
 if (isset($_GET['id'])) {
-    $id = intval($_GET['id']); // Get the ID from the URL
+    $id = $_GET['id'];
+    
+    // Delete query
+    $stmt = $dbh->prepare("DELETE FROM work_orders WHERE id = ?");
+    $stmt->execute([$id]);
 
-    // Prepare the delete statement
-    $stmt = $dbh->prepare("DELETE FROM work_orders WHERE id = :id");
-    $stmt->bindParam(':id', $id);
-
-    if ($stmt->execute()) {
-        // Redirect back to the work order management page with a success message
-        header("Location: work_orders.php?message=Deleted successfully");
-        exit;
+    if ($stmt->rowCount() > 0) {
+        // Success, redirect to work orders page
+        header('Location: work_orders.php?delete_success=1');
     } else {
-        // Redirect back with an error message
-        header("Location: work_orders.php?message=Error deleting work order");
-        exit;
+        // Failure, redirect with error
+        header('Location: work_orders.php?delete_error=1');
     }
-} else {
-    // Redirect back if ID is not set
-    header("Location: work_orders.php?message=Invalid ID");
-    exit;
 }
+?>

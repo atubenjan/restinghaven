@@ -216,6 +216,32 @@
     });
   });
 
+  // delete alert 
+  document.querySelectorAll('.deleteBtn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault(); // Prevent the default link action
+            
+            const deleteUrl = this.href; // Store the URL to the delete script
+            
+            // Show SweetAlert confirmation dialog
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This action cannot be undone!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // If confirmed, redirect to the delete URL
+                    window.location.href = deleteUrl;
+                }
+            });
+        });
+    });
+
   // for alerts , success and error headers
   document.addEventListener('DOMContentLoaded', function () {
     const urlParams = new URLSearchParams(window.location.search);

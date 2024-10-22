@@ -1,4 +1,9 @@
-<?php include 'header.php'; // Include header and navigation ?>
+<?php include 'header.php'; // Include header and navigation 
+
+$managerStmt = $dbh->query("SELECT id, username FROM users WHERE user_role = 'manager'");
+$managers = $managerStmt->fetchAll(PDO::FETCH_OBJ);
+
+?>
 
 <div class="content-wrapper">
   <div class="content-header">
@@ -33,7 +38,7 @@
           <table id="example1" class="table table-bordered table-striped">
             <thead style="background-color: #0b603a; color: white;">
               <tr>
-                <th>Branch ID</th>
+                <th>ID</th>
                 <th>Branch Name</th>
                 <th>Location</th>
                 <th>Branch Manager</th>
@@ -43,9 +48,9 @@
             </thead>
             <tbody>
               <?php 
-              $stmt = $dbh->query("SELECT * FROM branch");
+              $branchStmt = $dbh->query("SELECT * FROM branch");
               $count = 1;
-              while ($row = $stmt->fetch(PDO::FETCH_OBJ)) {
+              while ($row = $branchStmt->fetch(PDO::FETCH_OBJ)) {
               ?>
               <tr>
                 <td><?= $count; ?></td>
@@ -54,11 +59,53 @@
                 <td><?= $row->branch_manager; ?></td>
                 <td><?= $row->contact; ?></td>
                 <td>
-                  <a href="delete_branch.php?id=<?= $row->branch_id; ?>" class="btn btn-sm btn-danger" 
-                     onclick="return confirm('Are you sure you want to delete this branch?');" 
-                     style="background-color: #dc3545;">
+                  <a href="delete_branch.php?branch_id=<?= $row->branch_id; ?>" class="btn btn-sm btn-danger deleteBtn">
                     <i class="fas fa-trash"></i>
                   </a>
+                  <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#branchEdit">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <div class="modal fade" id="branchEdit">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header" style="background-color: #0b603a; color: white;">
+                          <h5 class="modal-title" id="editBranchModalLabel">Add New Branch</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <form method="POST">
+                            <input type="hidden" name="branch_id" value="<?= $row->branch_id; ?>">
+                            
+                            <div class="mb-3">
+                              <label for="editBranchName" class="form-label">Branch Name</label>
+                              <input type="text" class="form-control" id="editBranchName" name="branch_name" value="<?= $row->branch_name; ?>" required>
+                            </div>
+                            <div class="mb-3">
+                              <label for="editBranchLocation" class="form-label">Location</label>
+                              <input type="text" class="form-control" id="editBranchLocation" name="location" value="<?= $row->location; ?>" required>
+                            </div>
+                            <div class="mb-3">
+                              <label for="editBranchManager" class="form-label">Branch Manager</label>
+                              <select class="form-control" id="editBranchManager" name="branch_manager" required>
+                                <option value="" selected disabled>Select a Manager</option>
+                                <?php foreach ($managers as $manager): ?>
+                                    <option value="<?= $manager->username; ?>" <?= ($row->branch_manager == $manager->username) ? 'selected' : ''; ?>><?= htmlspecialchars($manager->username); ?></option>
+                                <?php endforeach; ?>
+                              </select>
+                            </div>
+
+                            <div class="mb-3">
+                              <label for="editBranchContact" class="form-label">Contact</label>
+                              <input type="text" class="form-control" id="editBranchContact" name="contact" value="<?= $row->contact; ?>" required>
+                            </div>
+                            <button type="submit" name="edit_branch" class="btn btn-primary" style="background-color: #0b603a;">Update Branch</button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </td>
               </tr>
               <?php $count++; } ?>

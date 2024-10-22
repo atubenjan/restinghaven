@@ -120,24 +120,15 @@ elseif (isset($_POST['add_branch_btn'])) { // Corrected the button name to match
         $stmt->bindParam(':contact', $contact);
 
         if ($stmt->execute()) {
-            echo "<script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    showToast('Branch added successfully!', 'success');
-                });
-            </script>";
+            header("Location: branch.php?status=success&message=Branch Added successfully.");
+            exit();
         } else {
-            echo "<script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    showToast('Failed to Add Branch', 'error'); // Changed to 'error' for consistency
-                });
-            </script>";
+            header("Location: branch.php?status=error&message=Branch addition failed.");
+            exit();
         }
     } else {
-        echo "<script>
-            document.addEventListener('DOMContentLoaded', function() {
-                showToast('Branch Name Already Exists!', 'warning'); // Changed to 'warning' for consistency
-            });
-        </script>";
+        header("Location: branch.php?status=error&message=Branch exists already.");
+        exit();
     }
 }
 
@@ -175,15 +166,11 @@ elseif (isset($_POST['edit_branch'])) {
 
     // Check if the SQL query was successful
     if ($result) {
-        echo "<script>
-              alert('Branch Updated Successfully');
-              window.location.href = window.location.href;
-              </script>";
+        header("Location: branch.php?status=success&message=Branch edited successfully.");
+        exit();
     } else {
-        echo "<script>
-              alert('Branch Failed to Update');
-              window.location.href = window.location.href;
-              </script>";
+        header("Location: branch.php?status=error&message=Branch edition failed.");
+        exit();
     }
 } elseif (isset($_REQUEST['delete-branch'])) {
     $branch_id = $_REQUEST['delete-branch'];

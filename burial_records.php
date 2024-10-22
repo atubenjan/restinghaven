@@ -24,7 +24,7 @@ include 'header.php'; // Include header and navigation
     <!-- Burial records table -->
     <div class="card">
       <div class="card-header">
-      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default">
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default" style="background-color: #0b603a; border-color: #0b603a;">
             <i class="fas fa-plus"></i>  Add Burial Record
           </button>
        
@@ -32,14 +32,13 @@ include 'header.php'; // Include header and navigation
       <!-- /.card-header -->
       <div class="card-body">
       <table id="example1" class="table table-bordered table-striped">
-          <thead>
+      <thead style="background-color: #0b603a; color: white;">
             <tr>
               <th>ID</th>
               <th>Burial Date</th>
               <th>Time of Burial</th>
-              <th>Grave Number</th>
               <th>Deceased ID</th>
-              <th>Plot ID</th>
+              <th>Plot Number</th>
               <th>Burial Type</th>
               <th>Officiant</th>
               <th>Location</th>
@@ -60,9 +59,8 @@ include 'header.php'; // Include header and navigation
               <td><?= $count; ?></td>
               <td><?= $row->burial_date; ?></td>
               <td><?= $row->time_of_burial; ?></td>
-              <td><?= $row->grave_number; ?></td>
               <td><?= $row->deceased_id; ?></td>
-              <td><?= $row->plot_id; ?></td>
+              <td><?= $row->plot_Number; ?></td>
               <td><?= $row->burial_type; ?></td>
               <td><?= $row->officiant; ?></td>
               <td><?= $row->location; ?></td>
@@ -71,7 +69,7 @@ include 'header.php'; // Include header and navigation
               <td><?= $row->remarks; ?></td>
               <td>
                 <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#viewBurialModal" 
-                        onclick="viewBurialDetails(<?= $row->burial_id; ?>, '<?= $row->burial_date; ?>', '<?= $row->time_of_burial; ?>', '<?= $row->grave_number; ?>', <?= $row->deceased_id; ?>, '<?= $row->plot_id; ?>', '<?= $row->burial_type; ?>', '<?= $row->officiant; ?>', '<?= $row->location; ?>', '<?= $row->burial_status; ?>', '<?= $row->cemetery_id; ?>', '<?= $row->remarks; ?>')">View</button>
+                        onclick="viewBurialDetails(<?= $row->burial_id; ?>, '<?= $row->burial_date; ?>', '<?= $row->time_of_burial; ?>', <?= $row->deceased_id; ?>, '<?= $row->plot_Number; ?>', '<?= $row->burial_type; ?>', '<?= $row->officiant; ?>', '<?= $row->location; ?>', '<?= $row->burial_status; ?>', '<?= $row->cemetery_id; ?>', '<?= $row->remarks; ?>')">View</button>
                 <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editBurialModal" 
                         onclick="populateEditModal(<?= $row->burial_id; ?>, '<?= $row->burial_date; ?>', '<?= $row->time_of_burial; ?>', '<?= $row->grave_number; ?>', <?= $row->deceased_id; ?>, '<?= $row->plot_id; ?>', '<?= $row->burial_type; ?>', '<?= $row->officiant; ?>', '<?= $row->location; ?>', '<?= $row->burial_status; ?>', '<?= $row->cemetery_id; ?>', '<?= $row->remarks; ?>')">Edit</button>
                 <a href="delete_burial.php?id=<?= $row->burial_id; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this record?');">Delete</a>

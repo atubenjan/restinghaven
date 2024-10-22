@@ -84,16 +84,16 @@ if (isset($_POST['update_supplier_btn'])) {
             <div class="card">
                 <div class="card-header">
                     <!-- Button to trigger modal -->
-                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-default">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default" style="background-color: #0b603a; border-color: #0b603a;">
                         <i class="fas fa-truck"></i> Add Supplier
                     </button>
                     
-                    <button id="pdfBtn" class="btn btn-danger btn-sm">Download PDF</button>
+                
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <table id="example2" class="table table-bordered table-hover">
-                        <thead>
+                <table id="example1" class="table table-bordered table-striped">
+                    <thead style="background-color: #0b603a; color: white;">
                             <tr>
                                 <th>ID</th>
                                 <th>Supplier Name</th>

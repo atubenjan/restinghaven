@@ -31,12 +31,12 @@
             <div class="card-body">
               <div class="card-header">
                 <!-- Button to trigger modal -->
-                <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal-default">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default" style="background-color: #0b603a; border-color: #0b603a;">
                   <i class="fas fa-plus"></i> Appointment
                 </button>
               </div>
-              <table id="example2" class="table table-bordered table-hover">
-                <thead>
+              <table id="example1" class="table table-bordered table-striped">
+              <thead style="background-color: #0b603a; color: white;">
                   <tr>
                     <th>ID</th>
                     <th>Full Name</th>

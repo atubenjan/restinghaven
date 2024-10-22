@@ -22,23 +22,21 @@
         <!-- Deceased Management table -->
         <div class="card">
             <div class="card-header">
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default" style="background-color: #0b603a; border-color: #0b603a;">
                     <i class="fas fa-plus"></i> Add Deceased Details
                 </button>
-                <a href="download_deceased.php" class="btn btn-info float-right">
-                    Download Deceased Data
-                </a>
+               
             </div>
             <!-- /.card-header -->
             <div class="card-body">
                 <table id="example1" class="table table-bordered table-striped">
-                    <thead>
+                <thead style="background-color: #0b603a; color: white;">
                         <tr>
                             <th>Deceased_Id</th>
                             <th>Full Name</th>
                             <th>Date of Birth</th>
                             <th>Date of Death</th>
-                            <th>Time of Death</th>
+                            <th>Place of Death</th>
                             <th>Cause of Death</th>
                             <th>Plot Number</th>
                             <th>Family Lineage</th>
@@ -71,7 +69,7 @@
             echo "<td>" . htmlspecialchars($record['full_name'] ?? 'N/A', ENT_QUOTES, 'UTF-8') . "</td>";
             echo "<td>" . htmlspecialchars($record['date_of_birth'] ?? 'N/A', ENT_QUOTES, 'UTF-8') . "</td>";
             echo "<td>" . htmlspecialchars($record['date_of_death'] ?? 'N/A', ENT_QUOTES, 'UTF-8') . "</td>";
-            echo "<td>" . htmlspecialchars($record['time_of_death'] ?? 'N/A', ENT_QUOTES, 'UTF-8') . "</td>";
+            echo "<td>" . htmlspecialchars($record['place_of_death'] ?? 'N/A', ENT_QUOTES, 'UTF-8') . "</td>";
             echo "<td>" . htmlspecialchars($record['cause_of_death'] ?? 'N/A', ENT_QUOTES, 'UTF-8') . "</td>";
             echo "<td>" . htmlspecialchars($record['plot_number'] ?? 'N/A', ENT_QUOTES, 'UTF-8') . "</td>";
             echo "<td>" . htmlspecialchars($record['family_lineage'] ?? 'N/A', ENT_QUOTES, 'UTF-8') . "</td>";
@@ -139,8 +137,8 @@
                 <input type="date" class="form-control" id="addDateOfDeath" name="date_of_death" required>
               </div>
               <div class="col-md-4 mb-3">
-                <label for="addTimeOfDeath" class="form-label">Time of Death</label>
-                <input type="time" class="form-control" id="addTimeOfDeath" name="time_of_death">
+                <label for="addTimeOfDeath" class="form-label">Place of Death</label>
+                <input type="time" class="form-control" id="addTimeOfDeath" name="Place_of_death">
               </div>
               <div class="col-md-4 mb-3">
                 <label for="addCauseOfDeath" class="form-label">Cause of Death</label>

@@ -29,6 +29,7 @@ if (empty($_SESSION['id'])) {
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <link rel="stylesheet" href="plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
     <link rel="stylesheet" href="plugins/toastr/toastr.min.css">
+
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <link rel="stylesheet" href="plugins/sweetalert2/sweetalert2.min.css">
     <link rel="shortcut icon" href="../images/whitelogo.png" type="image/x-icon">
@@ -36,7 +37,9 @@ if (empty($_SESSION['id'])) {
   <link rel="stylesheet" href="plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
   <link rel="stylesheet" href="plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
   <link rel="stylesheet" href="assets/style.css">
- 
+  <link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+  <link rel="stylesheet" href="plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -76,126 +79,132 @@ if (empty($_SESSION['id'])) {
                         <a href="#" class="d-block">Welcome <?php echo htmlspecialchars($_SESSION['user_role']); ?></a>
                     </div>
                 </div>
+                <?php $current_page = basename($_SERVER['PHP_SELF']); ?>
+<ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+    <li class="nav-item menu-open">
+        <a href="index.php" class="nav-link <?= ($current_page == 'index.php') ? 'active' : '' ?>"
+            style="<?= ($current_page == 'index.php') ? 'background-color: #0b603a; color: white;' : '' ?>">
+            <i class="nav-icon fas fa-tachometer-alt"></i>
+            <p>Dashboard</p>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="branch.php" class="nav-link <?= ($current_page == 'branch.php') ? 'active' : '' ?>"
+            style="<?= ($current_page == 'branch.php') ? 'background-color: #0b603a; color: white;' : '' ?>">
+            <i class="nav-icon fas fa-users"></i>
+            <p>Branch</p>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="customer_management.php" class="nav-link <?= ($current_page == 'customer_management.php') ? 'active' : '' ?>"
+            style="<?= ($current_page == 'customer_management.php') ? 'background-color: #0b603a; color: white;' : '' ?>">
+            <i class="nav-icon fas fa-users"></i>
+            <p>Customer Management</p>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="appointments.php" class="nav-link <?= ($current_page == 'appointments.php') ? 'active' : '' ?>"
+            style="<?= ($current_page == 'appointments.php') ? 'background-color: #0b603a; color: white;' : '' ?>">
+            <i class="nav-icon fas fa-calendar-check"></i>
+            <p>Appointments</p>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="deceased_records.php" class="nav-link <?= ($current_page == 'deceased_records.php') ? 'active' : '' ?>"
+            style="<?= ($current_page == 'deceased_records.php') ? 'background-color: #0b603a; color: white;' : '' ?>">
+            <i class="nav-icon fas fa-user-alt-slash"></i>
+            <p>Deceased Records</p>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="grave_management.php" class="nav-link <?= ($current_page == 'grave_management.php') ? 'active' : '' ?>"
+            style="<?= ($current_page == 'grave_management.php') ? 'background-color: #0b603a; color: white;' : '' ?>">
+            <i class="nav-icon fas fa-map-marked-alt"></i>
+            <p>Grave Management</p>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="burial_records.php" class="nav-link <?= ($current_page == 'burial_records.php') ? 'active' : '' ?>"
+            style="<?= ($current_page == 'burial_records.php') ? 'background-color: #0b603a; color: white;' : '' ?>">
+            <i class="nav-icon fas fa-file-alt"></i>
+            <p>Burial Records</p>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="work_orders.php" class="nav-link <?= ($current_page == 'work_orders.php') ? 'active' : '' ?>"
+            style="<?= ($current_page == 'work_orders.php') ? 'background-color: #0b603a; color: white;' : '' ?>">
+            <i class="nav-icon fas fa-tools"></i>
+            <p>Work Order Management</p>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="expense.php" class="nav-link <?= ($current_page == 'expense.php') ? 'active' : '' ?>"
+            style="<?= ($current_page == 'expense.php') ? 'background-color: #0b603a; color: white;' : '' ?>">
+            <i class="nav-icon fas fa-money-bill-wave"></i>
+            <p>Expenses</p>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="sales.php" class="nav-link <?= ($current_page == 'sales.php') ? 'active' : '' ?>"
+            style="<?= ($current_page == 'sales.php') ? 'background-color: #0b603a; color: white;' : '' ?>">
+            <i class="nav-icon fas fa-money-check-alt"></i>
+            <p>Sales</p>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="suppliers.php" class="nav-link <?= ($current_page == 'suppliers.php') ? 'active' : '' ?>"
+            style="<?= ($current_page == 'suppliers.php') ? 'background-color: #0b603a; color: white;' : '' ?>">
+            <i class="nav-icon fas fa-truck"></i>
+            <p>Suppliers</p>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="inventory.php" class="nav-link <?= ($current_page == 'inventory.php') ? 'active' : '' ?>"
+            style="<?= ($current_page == 'inventory.php') ? 'background-color: #0b603a; color: white;' : '' ?>">
+            <i class="nav-icon fas fa-layer-group"></i>
+            <p>Inventory</p>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="reporting_analytics.php" class="nav-link <?= ($current_page == 'reporting_analytics.php') ? 'active' : '' ?>"
+            style="<?= ($current_page == 'reporting_analytics.php') ? 'background-color: #0b603a; color: white;' : '' ?>">
+            <i class="nav-icon fas fa-chart-bar"></i>
+            <p>Reporting & Analytics</p>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="document_management.php" class="nav-link <?= ($current_page == 'document_management.php') ? 'active' : '' ?>"
+            style="<?= ($current_page == 'document_management.php') ? 'background-color: #0b603a; color: white;' : '' ?>">
+            <i class="nav-icon fas fa-file-archive"></i>
+            <p>Document Management</p>
+        </a>
+    </li>
+  
+    <li class="nav-item">
+        <a href="grave_mapping.php" class="nav-link <?= ($current_page == 'grave_mapping.php') ? 'active' : '' ?>"
+            style="<?= ($current_page == 'grave_mapping.php') ? 'background-color: #0b603a; color: white;' : '' ?>">
+            <i class="nav-icon fas fa-map-marked-alt"></i>
+            <p>Grave Mapping</p>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="users.php" class="nav-link <?= ($current_page == 'users.php') ? 'active' : '' ?>"
+            style="<?= ($current_page == 'users.php') ? 'background-color: #0b603a; color: white;' : '' ?>">
+            <i class="nav-icon fas fa-users"></i>
+            <p>User</p>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="logout.php" class="nav-link <?= ($current_page == 'logout.php') ? 'active' : '' ?>"
+            style="<?= ($current_page == 'logout.php') ? 'background-color: #0b603a; color: white;' : '' ?>">
+            <i class="nav-icon fas fa-lock"></i>
+            <p>LogOut</p>
+        </a>
+    </li>
+</ul>
 
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                    <!-- Add icons to the links using the .nav-icon class with font-awesome or any other icon font library -->
-                    <li class="nav-item menu-open">
-                        <a href="index" class="nav-link active">
-                            <i class="nav-icon fas fa-tachometer-alt"></i>
-                            <p>Dashboard</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="branch.php" class="nav-link">
-                            <i class="nav-icon fas fa-users"></i>
-                            <p>Branch</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="customer_management" class="nav-link">
-                            <i class="nav-icon fas fa-users"></i>
-                            <p>Customer Management</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="appointments" class="nav-link">
-                            <i class="nav-icon fas fa-calendar-check"></i>
-                            <p>Appointments</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="deceased_records" class="nav-link">
-                            <i class="nav-icon fas fa-user-alt-slash"></i>
-                            <p>Deceased Records</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="grave_management" class="nav-link">
-                            <i class="nav-icon fas fa-map-marked-alt"></i>
-                            <p>Grave Management</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="burial_records" class="nav-link">
-                            <i class="nav-icon fas fa-file-alt"></i>
-                            <p>Burial Records</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="work_orders" class="nav-link">
-                            <i class="nav-icon fas fa-tools"></i>
-                            <p>Work Order Management</p>
-                        </a>
-                    </li>
-                    
-                   
-                    <li class="nav-item">
-                        <a href="expense" class="nav-link">
-                            <i class="nav-icon fas fa-money-bill-wave"></i>
-                            <p>Expenses</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="sales" class="nav-link">
-                            <i class="nav-icon fas fa-money-check-alt"></i>
-                            <p>Sales</p>
-                        </a>
-                    </li>
-                    
-                    <li class="nav-item">
-                        <a href="suppliers" class="nav-link">
-                            <i class="nav-icon fas fa-truck"></i>
-                            <p>Suppliers</p>
-                        </a>
-                    </li>
-                   
-                   
-                    <li class="nav-item">
-                        <a href="inventory" class="nav-link">
-                            <i class="nav-icon fas fa-layer-group"></i>
-                            <p>Inventory</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="reporting_analytics" class="nav-link">
-                            <i class="nav-icon fas fa-chart-bar"></i>
-                            <p>Reporting & Analytics</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="document_management" class="nav-link">
-                            <i class="nav-icon fas fa-file-archive"></i>
-                            <p>Document Management</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="plotNumber" class="nav-link">
-                            <i class="nav-icon fas fa-file-archive"></i>
-                            <p>PlotS</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="grave_mapping" class="nav-link">
-                            <i class="nav-icon fas fa-map-marked-alt"></i>
-                            <p>Grave Mapping</p>
-                        </a>
-                    </li>
-                   
-                   
-                  
-                    <li class="nav-item">
-                        <a href="users" class="nav-link">
-                            <i class="nav-icon fas fa-users"></i>
-                            <p>User</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="logout" class="nav-link">
-                            <i class="nav-icon fas fa-lock"></i>
-                            <p>LogOut</p>
-                        </a>
-                    </li>
-                </ul>
+
+
             </div>
             <!-- /.sidebar -->
         </aside>

@@ -92,8 +92,8 @@
           Uploaded Documents
         </div>
         <div class="card-body">
-          <table class="table table-bordered table-striped">
-            <thead>
+        <table id="example1" class="table table-bordered table-striped">
+          <thead style="background-color: #0b603a; color: white;">
               <tr>
                 <th>File Name</th>
                 <th>Size</th>

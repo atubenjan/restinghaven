@@ -31,15 +31,15 @@
             <div class="card-body">
               <div class="card-header">
                 <!-- Button to trigger modal -->
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default" style="background-color: #0b603a; border-color: #0b603a;">
                   <i class="fas fa-plus"></i> Work Order
                 </button>
               </div>
 
 
               <div class="card-body">
-                <table id="workOrdersTable" class="table table-bordered table-striped">
-                  <thead>
+              <table id="example1" class="table table-bordered table-striped">
+                <thead style="background-color: #0b603a; color: white;">
                     <tr>
                       <th>ID</th>
                       <th>Description</th>
@@ -208,6 +208,10 @@
       background-color: #5cb85c; /* Success color for Completed */
       color: white; /* White text */
   }
+  .btn-primary {
+    background-color: #0b603a;
+    border-color: #0b603a;
+}
 
  
  

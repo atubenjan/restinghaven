@@ -38,7 +38,7 @@ $branchCount = $row['branch_count']; // Get the count of branches
         <div class="info-box-content">
           
             <span class="info-box-number"><?= $branchCount ?></span> <!-- Display the count here -->
-            <span class="info-box-text">Branchs</span>
+            <span class="info-box-text">Branches</span>
         </div>
     </a>
 </div>

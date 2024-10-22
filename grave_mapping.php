@@ -26,14 +26,14 @@
       <div class="card">
         <div class="card-header">
           <!-- Button to trigger modal -->
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addGraveMappingModal">
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default" style="background-color: #0b603a; border-color: #0b603a;">
             Add Grave Mapping
           </button>
         </div>
         <!-- /.card-header -->
         <div class="card-body">
           <table id="graveMappingTable" class="table table-bordered table-striped">
-            <thead>
+          <thead style="background-color: #0b603a; color: white;">
               <tr>
                 <th>ID</th>
                 <th>Grave Number</th>

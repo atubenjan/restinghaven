@@ -97,8 +97,23 @@ elseif (isset($_POST['add_branch_btn'])) { // Corrected the button name to match
     $check->execute();
 
     if ($check->rowCount() == 0) {
-        // Insert new branch
-        $stmt = $dbh->prepare("INSERT INTO branch (branch_name, location, branch_manager, contact, date_created) VALUES (:branch_name, :location, :branch_manager, :contact, NOW())");
+        // Fetch the last branch_id and generate a new one
+        $stmt = $dbh->query("SELECT branch_id FROM branch ORDER BY branch_id DESC LIMIT 1");
+        $last_branch = $stmt->fetch(PDO::FETCH_OBJ);
+
+        if ($last_branch) {
+            // Extract numeric part from last branch_id and increment it
+            $last_id_num = (int) substr($last_branch->branch_id, 4); // Get the number part after 'BRHC'
+            $new_id_num = $last_id_num + 1;
+            $new_branch_id = 'BRHC' . str_pad($new_id_num, 4, '0', STR_PAD_LEFT); // Create new branch_id
+        } else {
+            // If no branch exists, start with 'BRHC0001'
+            $new_branch_id = 'BRHC0001';
+        }
+
+        // Insert new branch with generated branch_id
+        $stmt = $dbh->prepare("INSERT INTO branch (branch_id, branch_name, location, branch_manager, contact, date_created) VALUES (:branch_id, :branch_name, :location, :branch_manager, :contact, NOW())");
+        $stmt->bindParam(':branch_id', $new_branch_id);
         $stmt->bindParam(':branch_name', $branch_name);
         $stmt->bindParam(':location', $location);
         $stmt->bindParam(':branch_manager', $branch_manager);
@@ -125,6 +140,7 @@ elseif (isset($_POST['add_branch_btn'])) { // Corrected the button name to match
         </script>";
     }
 }
+
 // edit_branch
 elseif (isset($_POST['edit_branch'])) {
     // Extract and trim all POST variables

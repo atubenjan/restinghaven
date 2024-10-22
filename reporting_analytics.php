@@ -70,8 +70,8 @@
         </div>
         <!-- /.card-header -->
         <div class="card-body">
-          <table id="reportTable" class="table table-bordered table-striped">
-            <thead>
+        <table id="example1" class="table table-bordered table-striped">
+          <thead style="background-color: #0b603a; color: white;">
               <tr>
                 <th>ID</th>
                 <th>Report Type</th>

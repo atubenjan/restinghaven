@@ -23,7 +23,7 @@
       <!-- Lot Management table -->
       <div class="card">
         <div class="card-header">
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default" style="background-color: #0b603a; border-color: #0b603a;">
             <i class="fas fa-plus"></i> Add Lot
           </button>
           <a href="download_lot.php" class="btn btn-info float-right">
@@ -33,7 +33,7 @@
         <!-- /.card-header -->
         <div class="card-body">
           <table id="example1" class="table table-bordered table-striped">
-            <thead>
+          <thead style="background-color: #0b603a; color: white;">
               <tr>
                 <th>ID</th>
                 <th>Section</th>

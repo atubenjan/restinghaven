@@ -12,7 +12,7 @@ include 'header.php';
       <div class="card-header">Sales Records</div>
       <div class="card-body">
         <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#salesModal">Add New Sale</button>
-        <table class="table table-bordered">
+        <table id="example1" class="table table-bordered table-striped">
           <thead>
             <tr>
               <th>ID</th>

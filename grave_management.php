@@ -25,21 +25,23 @@ include 'header.php';
         <div class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default" style="background-color: #0b603a; border-color: #0b603a;">
                         <i class="fas fa-plus"></i> Grave Management
                     </button>
                    
                 </div>
 
                 <div class="card-body">
-                    <table id="example1" class="table table-bordered table-striped">
-                        <thead>
+                <table id="example1" class="table table-bordered table-striped">
+                    <thead style="background-color: #0b603a; color: white;">
                             <tr>
                                 <th>ID</th>
                                 <th>Cemetery</th>
-                                <th>Section</th>
                                 <th>Plot Number</th>
-                                <th>Size</th>
+                                <th>Lot Number</th>
+                                <th>Section</th>
+                            
+                                <th>Category</th>
                                 <th>Status</th>
                                 <th>Price</th>
                                 <th>Coordinates</th>
@@ -60,7 +62,7 @@ include 'header.php';
                                 <td><?= htmlspecialchars($row->cemetery_id); ?></td>
                                 <td><?= htmlspecialchars($row->section_name); ?></td>
                                 <td><?= htmlspecialchars($row->plot_number); ?></td>
-                                <td><?= htmlspecialchars($row->size); ?></td>
+                                <td><?= htmlspecialchars($row->category); ?></td>
                                 <td><?= htmlspecialchars($row->availability_status); ?></td>
                                 <td><?= htmlspecialchars($row->price); ?></td>
                                 <td><?= htmlspecialchars($row->coordinates); ?></td>
@@ -109,13 +111,16 @@ include 'header.php';
                                 <input type="text" class="form-control" id="addPlotNumber" name="Plot_number" required>
                             </div>
                             <div class="mb-3">
-                                <label for="addSize" class="form-label">Size</label>
-                                <select class="form-control" id="addSize" name="size" required>
-                                    <option value="Single">Single</option>
-                                    <option value="Double">Double</option>
-                                    <option value="Family">Family</option>
-                                </select>
-                            </div>
+    <label for="addCategories" class="form-label">Categories</label>
+    <select class="form-control" id="addCategories" name="categories" required>
+        <option value="Resident - Adult">Resident - Adult</option>
+        <option value="Resident - Child">Resident - Child</option>
+        <option value="Resident - Infant">Resident - Infant</option>
+        <option value="Non Resident - Adult">Non Resident - Adult</option>
+        <option value="Non Resident - Child">Non Resident - Child</option>
+        <option value="Non Resident - Infant">Non Resident - Infant</option>
+    </select>
+</div>
                         </div>
 
                         <div class="col-md-6">

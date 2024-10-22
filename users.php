@@ -52,14 +52,14 @@ if (isset($_REQUEST['deleteUser'])) {
                         <div class="card-header">
                             <h3 class="card-title">User Management</h3>
                             <div class="card-tools">
-                                <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal-default">
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default" style="background-color: #0b603a; border-color: #0b603a;">
                                     <i class="fas fa-user-plus"></i> Add System User
                                 </button>
                             </div>
                         </div>
                         <div class="card-body">
-                            <table id="example2" class="table table-bordered table-hover">
-                                <thead>
+                        <table id="example1" class="table table-bordered table-striped">
+                            <thead style="background-color: #0b603a; color: white;">
                                     <tr>
                                         <th>ID</th>
                                         <th>User Name</th>

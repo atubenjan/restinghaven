@@ -536,6 +536,31 @@ elseif (isset($_POST['add_customer_btn'])) {
     }
 }
 
+// edit customer
+elseif (isset($_POST['edit_customer_btn'])) {
+    $id = trim($_POST['id']);
+    $name = trim($_POST['name']);
+    $email = trim($_POST['email']);
+    $phone = trim($_POST['phone']);
+    $remarks = trim($_POST['remarks']);
+
+    // Update the properties in the database
+    $stmt = $dbh->prepare("UPDATE customers SET name = :name, email = :email, phone = :phone, remarks = :remarks WHERE id = :id");
+    $stmt->bindParam(':id', $id);
+    $stmt->bindParam(':name', $name);
+    $stmt->bindParam(':email', $email);
+    $stmt->bindParam(':phone', $phone);
+    $stmt->bindParam(':remarks', $remarks);
+
+    // Check if the SQL query was successful
+    if ($stmt->execute()) {
+        header("Location: customer_management.php?status=success&message=customer edited successfully.");
+        exit();
+    } else {
+        header("Location: customer_management.php?status=error&message=customer edition failed.");
+        exit();
+    }
+}
 // add sales
 elseif (isset($_POST['add_sales_btn'])) {
     trim(extract($_POST));

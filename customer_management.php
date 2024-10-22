@@ -24,7 +24,7 @@
       <div class="card">
         <div class="card-header">
           <!-- Button to trigger the Add Customer modal -->
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default" style="background-color: #0b603a; border-color: #0b603a;">
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addCustomerModal" style="background-color: #0b603a; border-color: #0b603a;">
             Add Customer
           </button>
         </div>
@@ -44,7 +44,7 @@
             <tbody>
               <!-- Example Row -->
               <?php 
-              $stmt = $dbh->query("SELECT * FROM customers");
+              $stmt = $dbh->query("SELECT * FROM customers"); 
               $count = 1;
               while ($row = $stmt->fetch(PDO::FETCH_OBJ)) {
               ?>
@@ -57,12 +57,46 @@
                 <td>
                 <!--   <button class="btn btn-info btn-sm text-white data-bs-toggle="modal" data-bs-target="#editCustomerModal" onclick="populateEditModal(1, 'John Doe', 'john@example.com', '123-456-7890', 'Some remarks')"><i class="fas fa-edit"></button> -->
                 <a href="delete_customer.php?id=<?= $row->id; ?>" 
-   class="btn btn-info btn-sm btn-danger" 
-   onclick="return confirm('Are you sure you want to delete this customer?');">
-   <i class="fas fa-trash"></i>
-</a>
-
-
+                  class="btn btn-info btn-sm btn-danger deleteBtn">
+                  <i class="fas fa-trash"></i>
+                </a>
+                <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#customerEdit<?= $row->id?>">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <div class="modal fade" id="customerEdit<?= $row->id?>" tabindex="-1" aria-labelledby="editCustomerModalLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header" style="background-color: #0b603a; color: white;">
+                        <h5 class="modal-title" id="editCustomerModalLabel">Edit Customer</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span arial-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <form method="POST">
+                          <input type="hidden" id="<?=$row->id?>" name="id">
+                          <div class="mb-3">
+                            <label for="editCustomerName" class="form-label">Name</label>
+                            <input type="text" class="form-control" value="<?= $row->name; ?>" id="editCustomerName" name="name" required>
+                          </div>
+                          <div class="mb-3">
+                            <label for="editCustomerEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" value="<?= $row->email; ?>" id="editCustomerEmail" name="email" required>
+                          </div>
+                          <div class="mb-3">
+                            <label for="editCustomerPhone" class="form-label">Phone</label>
+                            <input type="text" class="form-control" id="editCustomerPhone" value="<?= $row->phone; ?>" name="phone" required>
+                          </div>
+                          <div class="mb-3">
+                            <label for="editCustomerRemarks" class="form-label">Remarks/Notes</label>
+                            <textarea class="form-control" id="editCustomerRemarks" name="remarks" rows="3"><?= $row->remarks; ?></textarea>
+                          </div>
+                          <button type="submit" name="edit_customer_btn" class="btn" style="background-color: #0b603a; color: white;">Save changes</button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 </td>
               </tr>
               <?php $count++; }?>
@@ -82,9 +116,9 @@
 <div class="modal fade" id="addCustomerModal" tabindex="-1" aria-labelledby="addCustomerModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header">
+      <div class="modal-header" style="background-color: #0b603a; color: white;">
         <h5 class="modal-title" id="addCustomerModalLabel">Add New Customer</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -106,7 +140,7 @@
             <label for="addCustomerRemarks" class="form-label">Remarks/Notes</label>
             <textarea class="form-control" id="addCustomerRemarks" name="remarks" rows="3"></textarea>
           </div>
-          <button type="submit" name="add_customer_btn" class="btn btn-primary">Submit</button>
+          <button type="submit" name="add_customer_btn" class="btn btn-primary" style="background-color: #0b603a; color: white;">Submit</button>
         </form>
       </div>
     </div>

@@ -1,29 +1,25 @@
-php
-
 <?php
-include './root/process.php';
+include './root/process.php'; // Include your database connection
 
 if (isset($_GET['id'])) {
-    // Get the customer ID from the URL
-    $customer_id = intval($_GET['id']);
+    $id = $_GET['id'];
     
-    // Prepare the SQL statement to delete the customer
+    // Prepare the delete statement
     $stmt = $dbh->prepare("DELETE FROM customers WHERE id = :id");
-    $stmt->bindParam(':id', $customer_id, PDO::PARAM_INT);
-    
-    // Execute the query
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+    // Execute the statement
     if ($stmt->execute()) {
-        // Redirect to customer management page with a success message
-        header("Location: customer_management.php?message=Customer deleted successfully");
-        exit();
+        // Redirect back to the burial records page
+        header("Location: customer_management.php?status=success&message=customer deleted successfully.");
+        exit;
     } else {
-        // Redirect to customer management page with an error message
-        header("Location: customer_management.php?message=Error deleting customer");
-        exit();
+        // Redirect back with error message
+        header("Location: customer_management.php?status=error&Error+deleting+customer");
+        exit;
     }
 } else {
-    // Redirect if no ID is provided
     header("Location: customer_management.php");
-    exit();
+    exit;
 }
 ?>

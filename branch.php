@@ -62,15 +62,15 @@ $managers = $managerStmt->fetchAll(PDO::FETCH_OBJ);
                   <a href="delete_branch.php?branch_id=<?= $row->branch_id; ?>" class="btn btn-sm btn-danger deleteBtn">
                     <i class="fas fa-trash"></i>
                   </a>
-                  <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#branchEdit">
+                  <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#branchEdit<?= $row->branch_id?>">
                     <i class="fas fa-edit"></i>
                   </button>
-                  <div class="modal fade" id="branchEdit">
+                  <div class="modal fade" id="branchEdit<?= $row->branch_id?>">
                     <div class="modal-dialog">
                       <div class="modal-content">
                         <div class="modal-header" style="background-color: #0b603a; color: white;">
-                          <h5 class="modal-title" id="editBranchModalLabel">Add New Branch</h5>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                          <h5 class="modal-title" id="editBranchModalLabel">Edit New Branch</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                           </button>
                         </div>
@@ -100,7 +100,7 @@ $managers = $managerStmt->fetchAll(PDO::FETCH_OBJ);
                               <label for="editBranchContact" class="form-label">Contact</label>
                               <input type="text" class="form-control" id="editBranchContact" name="contact" value="<?= $row->contact; ?>" required>
                             </div>
-                            <button type="submit" name="edit_branch" class="btn btn-primary" style="background-color: #0b603a;">Update Branch</button>
+                            <button type="submit" name="edit_branch" class="btn btn-primary" style="background-color: #0b603a; color: white;">Update Branch</button>
                           </form>
                         </div>
                       </div>
@@ -127,7 +127,7 @@ $managers = $managerStmt->fetchAll(PDO::FETCH_OBJ);
     <div class="modal-content">
       <div class="modal-header" style="background-color: #0b603a; color: white;">
         <h5 class="modal-title" id="addBranchModalLabel">Add New Branch</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>

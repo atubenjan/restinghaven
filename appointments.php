@@ -65,7 +65,7 @@
                         <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editModal<?= $row->id ?>" onclick="populateEditModal(<?= $row->id ?>)">
                           <i class="fas fa-edit"></i>
                         </button>
-                        <a href="?deleteAppointments=<?= $row->id ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this?')">
+                        <a href="?deleteAppointments=<?= $row->id ?>" class="btn btn-danger btn-sm deleteBtn">
                           <i class="fas fa-trash"></i>
                         </a>
                         <button type="button" class="btn btn-info btn-sm text-white" data-toggle="modal" data-target="#viewProduct<?= $row->id ?>">
@@ -76,48 +76,48 @@
 
                  
                    <!-- Edit Modal -->
-<div class="modal fade" id="editModal<?= $row->id ?>" tabindex="-1" role="dialog" aria-labelledby="editModalLabel<?= $row->id ?>" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="editModalLabel<?= $row->id ?>">Edit Appointment</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form method="post" action="">
-          <input type="hidden" name="id" value="<?= $row->id ?>">
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label for="editFullname<?= $row->id ?>" class="form-label">Full Name</label>
-              <input type="text" class="form-control" id="editFullname<?= $row->id ?>" name="fullname" value="<?= $row->fullname ?>" required>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label for="editAssignedTo<?= $row->id ?>" class="form-label">Assigned to</label>
-              <input type="text" class="form-control" id="editAssignedTo<?= $row->id ?>" name="assigned_to" value="<?= $row->assigned_to ?>" required>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label for="editDate<?= $row->id ?>" class="form-label">Date</label>
-              <input type="date" class="form-control" id="editDate<?= $row->id ?>" name="date" value="<?= $row->date ?>" required>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label for="editTime<?= $row->id ?>" class="form-label">Time</label>
-              <input type="time" class="form-control" id="editTime<?= $row->id ?>" name="time" value="<?= $row->time ?>" required>
-            </div>
-          </div>
-          <div class="mb-3">
-            <label for="editReason<?= $row->id ?>" class="form-label">Reason</label>
-            <textarea class="form-control" id="editReason<?= $row->id ?>" name="reason" rows="3" required><?= $row->reason ?></textarea>
-          </div>
-          <button type="submit" name="update_appointment_btn" class="btn btn-primary">Update</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
+                  <div class="modal fade" id="editModal<?= $row->id ?>" tabindex="-1" role="dialog" aria-labelledby="editModalLabel<?= $row->id ?>" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="editModalLabel<?= $row->id ?>">Edit Appointment</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <form method="post" action="">
+                            <input type="hidden" name="id" value="<?= $row->id ?>">
+                            <div class="row">
+                              <div class="col-md-6 mb-3">
+                                <label for="editFullname<?= $row->id ?>" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="editFullname<?= $row->id ?>" name="fullname" value="<?= $row->fullname ?>" required>
+                              </div>
+                              <div class="col-md-6 mb-3">
+                                <label for="editAssignedTo<?= $row->id ?>" class="form-label">Assigned to</label>
+                                <input type="text" class="form-control" id="editAssignedTo<?= $row->id ?>" name="assigned_to" value="<?= $row->assigned_to ?>" required>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-6 mb-3">
+                                <label for="editDate<?= $row->id ?>" class="form-label">Date</label>
+                                <input type="date" class="form-control" id="editDate<?= $row->id ?>" name="date" value="<?= $row->date ?>" required>
+                              </div>
+                              <div class="col-md-6 mb-3">
+                                <label for="editTime<?= $row->id ?>" class="form-label">Time</label>
+                                <input type="time" class="form-control" id="editTime<?= $row->id ?>" name="time" value="<?= $row->time ?>" required>
+                              </div>
+                            </div>
+                            <div class="mb-3">
+                              <label for="editReason<?= $row->id ?>" class="form-label">Reason</label>
+                              <textarea class="form-control" id="editReason<?= $row->id ?>" name="reason" rows="3" required><?= $row->reason ?></textarea>
+                            </div>
+                            <button type="submit" name="update_appointment_btn" class="btn btn-primary">Update</button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
 
                     <?php
@@ -147,12 +147,12 @@ if (isset($_GET['deleteAppointments'])) {
   $stmt = $dbh->prepare("DELETE FROM appointments WHERE id = :id");
   $stmt->bindParam(':id', $id, PDO::PARAM_INT);
   if ($stmt->execute()) {
-    echo "<script>
-            alert('Appointment deleted successfully.');
-            window.location.href = 'appointments'; // Redirect to the same page
-          </script>";
+    header("Location: appointments.php?status=success&message=Appointment deleted successfully.");
+    exit;
   } else {
-    echo "<script>alert('Error deleting appointment.');</script>";
+      // Redirect back with error message
+      header("Location: appointments.php?status&error=Appointment deletion failed.");
+      exit;
   }
 }
 
@@ -174,12 +174,12 @@ if (isset($_POST['update_appointment_btn'])) {
   $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
   if ($stmt->execute()) {
-    echo "<script>
-            alert('Appointment updated successfully.');
-            window.location.href = 'appointments'; // Redirect to the same page
-          </script>";
+    header("Location: appointments.php?status=success&message=Appointment added successfully.");
+    exit;
   } else {
-    echo "<script>alert('Error updating appointment.');</script>";
+      // Redirect back with error message
+      header("Location: appointments.php?status&error=Appointment addition failed.");
+      exit;
   }
 }
 ?>

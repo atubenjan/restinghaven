@@ -11,11 +11,11 @@ if (isset($_GET['id'])) {
     // Execute the statement
     if ($stmt->execute()) {
         // Redirect back to the burial records page
-        header("Location: burial_records.php?message=Record+deleted+successfully");
+        header("Location: burial_records.php?status=success&message=Record+deleted+successfully");
         exit;
     } else {
         // Redirect back with error message
-        header("Location: burial_records.php?error=Error+deleting+record");
+        header("Location: burial_records.php?status=error&message=Error+deleting+record");
         exit;
     }
 } else {

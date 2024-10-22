@@ -440,16 +440,30 @@ elseif (isset($_POST['add_deceased_btn'])) {
 }
 
 if (isset($_POST['burial_record_btn'])) {
-    trim(extract($_POST));
- 
+    // Extract and trim POST variables
+    $burial_date = trim($_POST['burial_date']);
+    $grave_number = trim($_POST['grave_number']);
+    $deceased_id = trim($_POST['deceased_id']);
+    $cemetery_id = trim($_POST['cemetery_id']);
+    $plot_id = trim($_POST['plot_id']);
+    $time_of_burial = trim($_POST['time_of_burial']);
+    $burial_type = trim($_POST['burial_type']);
+    $officiant = trim($_POST['officiant']);
+    $funeral_service_details = trim($_POST['funeral_service_details']);
+    $burial_status = trim($_POST['burial_status']);
+    $remarks = trim($_POST['remarks']);
+
     // Automatically set the created_at variable to the current date and time
     $created_at = date('Y-m-d H:i:s'); // Format: YYYY-MM-DD HH:MM:SS
 
-    // Proceed with the database query
-    $result = dbCreate("INSERT INTO burial_records 
+    // Prepare the SQL query
+    $sql = "INSERT INTO burial_records 
         (burial_date, grave_number, deceased_id, cemetery_id, plot_id, time_of_burial, burial_type, officiant, funeral_service_details, burial_status, remarks, created_at)
         VALUES 
-        (:burial_date, :grave_number, :deceased_id, :cemetery_id, :plot_id, :time_of_burial, :burial_type, :officiant, :funeral_service_details, :burial_status, :remarks, :created_at)", [
+        (:burial_date, :grave_number, :deceased_id, :cemetery_id, :plot_id, :time_of_burial, :burial_type, :officiant, :funeral_service_details, :burial_status, :remarks, :created_at)";
+
+    // Execute the database query
+    $result = dbCreate($sql, [
         ':burial_date' => $burial_date,
         ':grave_number' => $grave_number,
         ':deceased_id' => $deceased_id,
@@ -464,13 +478,13 @@ if (isset($_POST['burial_record_btn'])) {
         ':created_at' => $created_at
     ]);
 
+    // Check the result and redirect
     if ($result == 1) {
         header("Location: burial_records.php?status=success&message=Burial record added successfully.");
-        exit();
     } else {
         header("Location: burial_records.php?status=error&message=Burial record addition failed.");
-        exit();
     }
+    exit();
 }
 
 // Add Expense

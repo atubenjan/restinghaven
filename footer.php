@@ -46,6 +46,14 @@
 <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
 <script src="plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- AdminLTE CSS -->
+<link rel="stylesheet" href="path/to/adminlte.min.css">
+
+<!-- jQuery and Bootstrap JS -->
+<script src="path/to/jquery.min.js"></script>
+<script src="path/to/bootstrap.bundle.min.js"></script>
+<script src="path/to/adminlte.min.js"></script>
 
 <script>
   $(function () {
@@ -267,6 +275,5 @@
 }
 
 </script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> // alerts
 </body>
 </html>

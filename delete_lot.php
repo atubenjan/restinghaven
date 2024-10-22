@@ -1,26 +1,25 @@
 <?php
-include './root/process.php';
+include './root/process.php'; // Include your database connection
 
 if (isset($_GET['id'])) {
-    $cemeteryId = $_GET['id'];  // Use 'cemetery_id' as the identifier
+    $id = $_GET['id'];
+    
+    // Prepare the delete statement
+    $stmt = $dbh->prepare("DELETE FROM grave_management WHERE id = :id");
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
-    try {
-        // Prepare the delete statement using the correct column name 'cemetery_id'
-        $stmt = $dbh->prepare("DELETE FROM grave_management WHERE cemetery_id = :cemeteryId");
-        $stmt->bindParam(':cemeteryId', $cemeteryId, PDO::PARAM_INT);
-        
-        // Execute the statement
-        if ($stmt->execute()) {
-            // Redirect to the grave management page with a success message
-            header("Location: grave_management.php?message=Lot deleted successfully");
-            exit();
-        } else {
-            echo "Error: Unable to delete the lot.";
-        }
-    } catch (PDOException $e) {
-        echo "Error: " . $e->getMessage();
+    // Execute the statement
+    if ($stmt->execute()) {
+        // Redirect back to the burial records page
+        header("Location: grave_management.php?status=success&message=grave-details deleted successfully.");
+        exit;
+    } else {
+        // Redirect back with error message
+        header("Location: grave_management.php?status=error&Error+deleting+grave-details");
+        exit;
     }
 } else {
-    echo "Error: No ID specified.";
+    header("Location: grave_management.php");
+    exit;
 }
 ?>

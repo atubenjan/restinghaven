@@ -633,10 +633,10 @@ if (isset($_POST['add_grave_btn'])) {
 
         // Execute the query and check for success
         if ($stmt->execute($params)) {
-            header("Location: your_page.php?message=Lot added successfully");
+            header("Location: grave_management.php?status=success&message=Lot added successfully");
             exit();
         } else {
-            header("Location: grave_management.php?error=Error adding lot");
+            header("Location: grave_management.php?status=error&message=Error adding lot");
             exit();
         }
     } else {

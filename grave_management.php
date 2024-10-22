@@ -1,6 +1,51 @@
 <?php
 // Include header and navigation
 include 'header.php';
+
+if (isset($_POST['edit_grave_btn'])) {
+    $id = trim($_POST['id']); // Assuming the form sends the auto-incrementing id
+    $cemetery_id = trim($_POST['cemetery_id']);
+    $plot_number = trim($_POST['plot_number']);
+    $size = trim($_POST['size']);
+    $availability_status = trim($_POST['availability_status']);
+    $section_name = trim($_POST['section_name']);
+    $price = trim($_POST['price']);
+    $coordinates = trim($_POST['coordinates']);
+
+    // Prepare SQL update statement
+    $stmt = $dbh->prepare("UPDATE grave_management SET 
+        cemetery_id = ?, 
+        plot_number = ?, 
+        size = ?, 
+        availability_status = ?, 
+        section_name = ?, 
+        price = ?, 
+        coordinates = ? 
+        WHERE id = ?"); // Use id for the condition
+
+    // Bind parameters
+    $stmt->bindParam(1, $cemetery_id);
+    $stmt->bindParam(2, $plot_number);
+    $stmt->bindParam(3, $size);
+    $stmt->bindParam(4, $availability_status);
+    $stmt->bindParam(5, $section_name);
+    $stmt->bindParam(6, $price);
+    $stmt->bindParam(7, $coordinates);
+    $stmt->bindParam(8, $id); // Bind the id for the WHERE clause
+
+    // Execute the statement
+    if ($stmt->execute()) {
+        header("Location: grave_management.php?status=success&message=Grave details updated successfully");
+        exit();
+    } else {
+        header("Location: grave_management.php?status=error&message=Error updating grave details");
+        exit();
+    }
+}
+
+
+
+
 ?>
 
 <div class="content-wrapper">
@@ -38,10 +83,8 @@ include 'header.php';
                                 <th>ID</th>
                                 <th>Cemetery</th>
                                 <th>Plot Number</th>
-                                <th>Lot Number</th>
                                 <th>Section</th>
-                            
-                                <th>Category</th>
+                                <th>Size</th>
                                 <th>Status</th>
                                 <th>Price</th>
                                 <th>Coordinates</th>
@@ -51,7 +94,7 @@ include 'header.php';
                         <tbody>
                             <?php 
                             // Prepare SQL Query
-                            $stmt = $dbh->query("SELECT cemetery_id, plot_number, size, section_name, availability_status, price, coordinates FROM grave_management");
+                            $stmt = $dbh->query("SELECT * FROM grave_management");
                             $count = 1;
 
                             // Fetch and display rows
@@ -60,18 +103,73 @@ include 'header.php';
                             <tr>
                                 <td><?= $count; ?></td>
                                 <td><?= htmlspecialchars($row->cemetery_id); ?></td>
-                                <td><?= htmlspecialchars($row->section_name); ?></td>
                                 <td><?= htmlspecialchars($row->plot_number); ?></td>
-                                <td><?= htmlspecialchars($row->category); ?></td>
+                                <td><?= htmlspecialchars($row->section_name); ?></td>
+                                <td><?= htmlspecialchars($row->size); ?></td>
                                 <td><?= htmlspecialchars($row->availability_status); ?></td>
                                 <td><?= htmlspecialchars($row->price); ?></td>
                                 <td><?= htmlspecialchars($row->coordinates); ?></td>
                                 <td>
-                                    <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#edit-modal-<?= $row->cemetery_id; ?>">
+                                    <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#edit-modal<?= $row->id; ?>">
                                         <i class="fas fa-edit"></i>
                                     </button>
-
-                                    <a href="delete_lot.php?id=<?= $row->cemetery_id; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this lot?');">
+                                    <div class="modal fade" id="edit-modal<?= $row->id ?>">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header" style="background-color: #0b603a; color: white;">
+                                                    <h5 class="modal-title" id="editGraveModalLabel">Edit Grave Details</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form method="POST">
+                                                        <input type="hidden" name="id" value="<?= $row->id; ?>">
+                                                        <div class="mb-3">
+                                                            <label for="editCemeteryID" class="form-label">Cemetery ID</label>
+                                                            <input type="number" class="form-control" id="editCemeteryID" name="cemetery_id" value="<?= $row->cemetery_id; ?>" required>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="editPlotNumber" class="form-label">Plot Number</label>
+                                                            <input type="text" class="form-control" id="editPlotNumber" name="plot_number" value="<?= $row->plot_number; ?>" required>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="editSize" class="form-label">Category</label>
+                                                            <select class="form-control" id="editAvailabilityStatus" name="size" required>
+                                                                <option value="" selected disabled>choose category..</option>
+                                                                <option value="single"  <?= ($row->size == 'single') ? 'selected' : ''; ?>>Single</option>
+                                                                <option value="double" <?= ($row->size == 'double') ? 'selected' : ''; ?>>Double</option>
+                                                                <option value="family" <?= ($row->size == 'family') ? 'selected' : ''; ?>>Family</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="editAvailabilityStatus" class="form-label">Availability Status</label>
+                                                            <select class="form-control" id="editAvailabilityStatus" name="availability_status" required>
+                                                                <option value="" selected disabled>choose status..</option>
+                                                                <option value="available" <?= ($row->availability_status == 'available') ? 'selected' : ''; ?>>Available</option>
+                                                                <option value="occupied" <?= ($row->availability_status == 'occupied') ? 'selected' : ''; ?>>Occupied</option>
+                                                                <option value="reserved" <?= ($row->availability_status == 'reserved') ? 'selected' : ''; ?>>Reserved</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="editSectionName" class="form-label">Section Name</label>
+                                                            <input type="text" class="form-control" id="editSectionName" name="section_name" value="<?= $row->section_name; ?>" required>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="editPrice" class="form-label">Price</label>
+                                                            <input type="text" class="form-control" id="editPrice" name="price" value="<?= $row->price; ?>" required>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="editCoordinates" class="form-label">Coordinates</label>
+                                                            <input type="text" class="form-control" id="editCoordinates" name="coordinates" value="<?= $row->coordinates; ?>" required>
+                                                        </div>
+                                                        <button type="submit" name="edit_grave_btn" class="btn btn-primary" style="background-color: #0b603a; color: white;">Update Grave</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <a href="delete_lot.php?id=<?= $row->id; ?>" class="btn btn-danger btn-sm deleteBtn">
                                         <i class="fas fa-trash"></i>
                                     </a>
                                 </td>
@@ -111,16 +209,13 @@ include 'header.php';
                                 <input type="text" class="form-control" id="addPlotNumber" name="Plot_number" required>
                             </div>
                             <div class="mb-3">
-    <label for="addCategories" class="form-label">Categories</label>
-    <select class="form-control" id="addCategories" name="categories" required>
-        <option value="Resident - Adult">Resident - Adult</option>
-        <option value="Resident - Child">Resident - Child</option>
-        <option value="Resident - Infant">Resident - Infant</option>
-        <option value="Non Resident - Adult">Non Resident - Adult</option>
-        <option value="Non Resident - Child">Non Resident - Child</option>
-        <option value="Non Resident - Infant">Non Resident - Infant</option>
-    </select>
-</div>
+                                <label for="addSize" class="form-label">Size</label>
+                                <select class="form-control" id="addSize" name="size" required>
+                                    <option value="single">single</option>
+                                    <option value="double">double</option>
+                                    <option value="family">family</option>
+                                </select>
+                            </div>
                         </div>
 
                         <div class="col-md-6">

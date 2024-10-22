@@ -489,8 +489,13 @@ ALTER TABLE `expenses`
 --
 -- Indexes for table `grave_management`
 --
-ALTER TABLE `grave_management`
-  ADD PRIMARY KEY (`cemetery_id`,`plot_number`);
+ALTER TABLE grave_management
+ADD CONSTRAINT unique_cemetery_id UNIQUE (cemetery_id);
+
+-- 
+-- 
+ALTER TABLE grave_management
+ADD COLUMN id INT AUTO_INCREMENT PRIMARY KEY FIRST;
 
 --
 -- Indexes for table `grave_mapping`

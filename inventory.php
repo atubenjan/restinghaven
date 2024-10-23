@@ -1,7 +1,33 @@
 <?php include 'header.php'; // Include header and navigation
+
+if (isset($_POST['edit_inventory_btn'])) {
+  $id = $_POST['id'];
+  $product_name = $_POST['product_name'];
+  $category = $_POST['category'];
+  $description = $_POST['description'];
+  $quantity = $_POST['quantity'];
+  $unit_of_measurement = $_POST['unit_of_measurement'];
+  $reorder_level = $_POST['reorder_level'];
+  $supplier_id = $_POST['supplier_id'];
+  $cost_per_unit = $_POST['cost_per_unit'];
+  $total_cost = $_POST['total_cost'];
+  $status = $_POST['status'];
+
+  // Prepare the SQL statement
+  $stmt = $dbh->prepare("UPDATE inventory SET product_name=?, category=?, description=?, quantity=?, unit_of_measurement=?, reorder_level=?, supplier_id=?, cost_per_unit=?, total_cost=?, status=? WHERE id=?");
+
+  // Execute the statement
+  if ($stmt->execute([$product_name, $category, $description, $quantity, $unit_of_measurement, $reorder_level, $supplier_id, $cost_per_unit, $total_cost, $status, $id])) {
+    header("Location: inventory.php?status=success&message=Inventory updated successfully");
+    exit;
+} else {
+    header("Location: inventory.php?status=error&message=Error updating inventory");
+    exit;
+  }
+}
+
+
 ?>
-
-
 <div class="content-wrapper">
   <div class="content-header">
     <div class="container-fluid">
@@ -51,36 +77,94 @@
             <tbody>
               <?php
               // Include database connection
-
-              // Fetch inventory items
-              try {
                   $stmt = $dbh->query("SELECT * FROM inventory");
-                  $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-                  // Display each item
-                  foreach ($items as $item) {
-                      echo "<tr>";
-                      echo "<td>" . htmlspecialchars($item['id'] ?? '', ENT_QUOTES, 'UTF-8') . "</td>";
-                      echo "<td>" . htmlspecialchars($item['product_name'] ?? '', ENT_QUOTES, 'UTF-8') . "</td>";
-                      echo "<td>" . htmlspecialchars($item['category'] ?? '', ENT_QUOTES, 'UTF-8') . "</td>";
-                      echo "<td>" . htmlspecialchars($item['description'] ?? '', ENT_QUOTES, 'UTF-8') . "</td>";
-                      echo "<td>" . htmlspecialchars($item['quantity'] ?? '', ENT_QUOTES, 'UTF-8') . "</td>";
-                      echo "<td>" . htmlspecialchars($item['unit_of_measurement'] ?? '', ENT_QUOTES, 'UTF-8') . "</td>";
-                      echo "<td>" . htmlspecialchars($item['reorder_level'] ?? '', ENT_QUOTES, 'UTF-8') . "</td>";
-                      echo "<td>" . htmlspecialchars($item['supplier_id'] ?? '', ENT_QUOTES, 'UTF-8') . "</td>";
-                      echo "<td>" . htmlspecialchars($item['cost_per_unit'] ?? '', ENT_QUOTES, 'UTF-8') . "</td>";
-                      echo "<td>" . htmlspecialchars($item['total_cost'] ?? '', ENT_QUOTES, 'UTF-8') . "</td>";
-                      echo "<td>" . htmlspecialchars($item['status'] ?? '', ENT_QUOTES, 'UTF-8') . "</td>";
-                      echo "<td>
-                            <button class='btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#editInventoryModal' data-id='" . htmlspecialchars($item['id'] ?? '', ENT_QUOTES, 'UTF-8') . "'>Edit</button>
-                            <a href='delete_inventory.php?id=" . htmlspecialchars($item['id'] ?? '', ENT_QUOTES, 'UTF-8') . "' class='btn btn-danger btn-sm'>Delete</a>
-                            </td>";
-                      echo "</tr>";
-                  }
-              } catch (PDOException $e) {
-                  echo "Error: " . $e->getMessage();
-              }
+                  $count = 1;
+                  while ($item = $stmt->fetch(PDO::FETCH_ASSOC)){
               ?>
+                      <tr>
+                      <td><?= $count;?></td>
+                      <td><?= htmlspecialchars($item['product_name'])?></td>
+                      <td><?= htmlspecialchars($item['category'])?></td>
+                      <td><?= htmlspecialchars($item['description'])?></td>
+                      <td><?= htmlspecialchars($item['quantity'])?></td>
+                      <td><?= htmlspecialchars($item['unit_of_measurement'])?></td>
+                      <td><?= htmlspecialchars($item['reorder_level'])?></td>
+                      <td><?= htmlspecialchars($item['supplier_id'])?></td>
+                      <td><?= htmlspecialchars($item['cost_per_unit'])?></td>
+                      <td><?= htmlspecialchars($item['total_cost'])?></td>
+                      <td><?= htmlspecialchars($item['status'])?></td>
+                      <td>
+                        <button class='btn btn-warning btn-sm' data-toggle='modal' data-target='#editInventoryModal<?= $item['id'];?>'>Edit</button>
+                        <!-- edit modal -->
+                        <div class="modal fade" id="editInventoryModal<?= $item['id'];?>">
+                          <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="editInventoryModalLabel">Edit Inventory Item</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                              </div>
+                              <div class="modal-body">
+                                <form method="POST">
+                                  <input type="hidden" id="editItemId" value="<?= $item['id'];?>" name="id">
+                                  <div class="row">
+                                    <div class="col-md-4">
+                                      <div class="mb-3">
+                                        <label for="editItemName" class="form-label">Item Name</label>
+                                        <input type="text" class="form-control"  value="<?= $item['product_name'];?>" id="editItemName" name="product_name" required>
+                                      </div>
+                                      <div class="mb-3">
+                                        <label for="editCategory" class="form-label">Category</label>
+                                        <input type="text" class="form-control" value="<?= $item['category'];?>" id="editCategory" name="category" required>
+                                      </div>
+                                      <div class="mb-3">
+                                        <label for="editDescription" class="form-label">Description</label>
+                                        <textarea class="form-control" id="editDescription" name="description"><?= $item['description'];?></textarea>
+                                      </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                      <div class="mb-3">
+                                        <label for="editQuantity" class="form-label">Quantity</label>
+                                        <input type="number" class="form-control" value="<?= $item['quantity'];?>" id="editQuantity" name="quantity" required>
+                                      </div>
+                                      <div class="mb-3">
+                                        <label for="editUnitOfMeasurement" class="form-label">Unit of Measurement</label>
+                                        <input type="text" class="form-control" id="editUnitOfMeasurement" value="<?= $item['unit_of_measurement'];?>" name="unit_of_measurement" required>
+                                      </div>
+                                      <div class="mb-3">
+                                        <label for="editReorderLevel" class="form-label">Reorder Level</label>
+                                        <input type="number" class="form-control" id="editReorderLevel" value="<?= $item['reorder_level'];?>" name="reorder_level" required>
+                                      </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                      <div class="mb-3">
+                                        <label for="editSupplier" class="form-label">Supplier</label>
+                                        <input type="text" class="form-control" value="<?= $item['supplier_id'];?>" id="editSupplier" name="supplier_id">
+                                      </div>
+                                      <div class="mb-3">
+                                        <label for="editCostPerUnit" class="form-label">Cost per Unit</label>
+                                        <input type="number" step="0.01" class="form-control" value="<?= $item['cost_per_unit'];?>" id="editCostPerUnit" name="cost_per_unit" required>
+                                      </div>
+                                      <div class="mb-3">
+                                        <label for="editTotalCost" class="form-label">Total Cost</label>
+                                        <input type="number" step="0.01" class="form-control" value="<?= $item['total_cost'];?>" id="editTotalCost" name="total_cost" readonly>
+                                      </div>
+                                      <div class="mb-3">
+                                        <label for="editStatus" class="form-label">Status</label>
+                                        <input type="text" class="form-control" value="<?= $item['status'];?>" id="editStatus" name="status">
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <button type="submit" name="edit_inventory_btn" class="btn btn-primary btn-sm">Submit</button>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <a href="delete_inventory.php?id=<?= $item['id'];?>" class='btn btn-danger btn-sm deleteBtn'>Delete</a>
+                      </td>
+                      </tr>
+                
+                <?php $count++; };?>
             </tbody>
           </table>
         </div>
@@ -104,165 +188,100 @@
         </button>
       </div>
       <div class="modal-body">
-<form id="addInventoryForm" action="" method="post">
-    <div class="row">
-        <div class="col-md-6">
-            <div class="mb-3">
-                <label for="addProductName" class="form-label">Product Name</label>
-                <input type="text" class="form-control" id="addProductName" name="product_name" required>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="mb-3">
-                <label for="addProductCode" class="form-label">Product Code</label>
-                <input type="text" class="form-control" id="addProductCode" name="product_code" required>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="mb-3">
-                <label for="addCategory" class="form-label">Category</label>
-                <input type="text" class="form-control" id="addCategory" name="category" required>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="mb-3">
-                <label for="addDescription" class="form-label">Description</label>
-                <textarea class="form-control" id="addDescription" name="description"></textarea>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="mb-3">
-                <label for="addQuantity" class="form-label">Quantity</label>
-                <input type="number" class="form-control" id="addQuantity" name="quantity" required>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="mb-3">
-                <label for="addUnitOfMeasurement" class="form-label">Unit of Measurement</label>
-                <input type="text" class="form-control" id="addUnitOfMeasurement" name="unit_of_measurement" required>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="mb-3">
-                <label for="addReorderLevel" class="form-label">Reorder Level</label>
-                <input type="number" class="form-control" id="addReorderLevel" name="reorder_level" required>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="mb-3">
-                 <!-- Other form fields -->
-    <label for="supplier_id">Supplier:</label>
-    <select name="supplier_id" id="supplier_id" required>
-        <option value="">Select Supplier</option>
-        <option value="1">Supplier 1</option>
-        <option value="2">Supplier 2</option>
-        <!-- More supplier options -->
-    </select>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="mb-3">
-                <label for="addCostPerUnit" class="form-label">Cost per Unit</label>
-                <input type="number" step="0.01" class="form-control" id="addCostPerUnit" name="cost_per_unit" required>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="mb-3">
-                <label for="addTotalCost" class="form-label">Total Cost</label>
-                <input type="number" step="0.01" class="form-control" id="addTotalCost" name="total_cost" required>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="mb-3">
-                <label for="addStatus" class="form-label">Status</label>
-                <select id="addStatus" name="status" class="form-control">
-                    <option value="Active">Active</option>
-                    <option value="Non-active">Non-active</option>
-                </select>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="mb-3">
-                <label for="addStatus" class="form-label">Date Added</label>
-                <input type="date" name="date_added" required>
-            </div>
-        </div>
-      
-
-    </div>
-    <button type="submit" name="add_inventory_btn" class="btn btn-primary btn-sm">Submit</button>
-</form>
-
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Edit Inventory Modal -->
-<div class="modal fade" id="editInventoryModal" tabindex="-1" aria-labelledby="editInventoryModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="editInventoryModalLabel">Edit Inventory Item</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form id="editInventoryForm">
-          <input type="hidden" id="editItemId" name="id">
+      <form id="addInventoryForm" action="" method="post">
           <div class="row">
-            <div class="col-md-4">
-              <div class="mb-3">
-                <label for="editItemName" class="form-label">Item Name</label>
-                <input type="text" class="form-control" id="editItemName" name="product_name" required>
+              <div class="col-md-6">
+                  <div class="mb-3">
+                      <label for="addProductName" class="form-label">Product Name</label>
+                      <input type="text" class="form-control" id="addProductName" name="product_name" required>
+                  </div>
               </div>
-              <div class="mb-3">
-                <label for="editCategory" class="form-label">Category</label>
-                <input type="text" class="form-control" id="editCategory" name="category" required>
+              <div class="col-md-6">
+                  <div class="mb-3">
+                      <label for="addProductCode" class="form-label">Product Code</label>
+                      <input type="text" class="form-control" id="addProductCode" name="product_code" required>
+                  </div>
               </div>
-              <div class="mb-3">
-                <label for="editDescription" class="form-label">Description</label>
-                <textarea class="form-control" id="editDescription" name="description"></textarea>
+              <div class="col-md-6">
+                  <div class="mb-3">
+                      <label for="addCategory" class="form-label">Category</label>
+                      <input type="text" class="form-control" id="addCategory" name="category" required>
+                  </div>
               </div>
-            </div>
-            <div class="col-md-4">
-              <div class="mb-3">
-                <label for="editQuantity" class="form-label">Quantity</label>
-                <input type="number" class="form-control" id="editQuantity" name="quantity" required>
+              <div class="col-md-6">
+                  <div class="mb-3">
+                      <label for="addDescription" class="form-label">Description</label>
+                      <textarea class="form-control" id="addDescription" name="description"></textarea>
+                  </div>
               </div>
-              <div class="mb-3">
-                <label for="editUnitOfMeasurement" class="form-label">Unit of Measurement</label>
-                <input type="text" class="form-control" id="editUnitOfMeasurement" name="unit_of_measurement" required>
+              <div class="col-md-6">
+                  <div class="mb-3">
+                      <label for="addQuantity" class="form-label">Quantity</label>
+                      <input type="number" class="form-control" id="addQuantity" name="quantity" required>
+                  </div>
               </div>
-              <div class="mb-3">
-                <label for="editReorderLevel" class="form-label">Reorder Level</label>
-                <input type="number" class="form-control" id="editReorderLevel" name="reorder_level" required>
+              <div class="col-md-6">
+                  <div class="mb-3">
+                      <label for="addUnitOfMeasurement" class="form-label">Unit of Measurement</label>
+                      <input type="text" class="form-control" id="addUnitOfMeasurement" name="unit_of_measurement" required>
+                  </div>
               </div>
-            </div>
-            <div class="col-md-4">
-              <div class="mb-3">
-                <label for="editSupplier" class="form-label">Supplier</label>
-                <input type="text" class="form-control" id="editSupplier" name="supplier_id">
+              <div class="col-md-6">
+                  <div class="mb-3">
+                      <label for="addReorderLevel" class="form-label">Reorder Level</label>
+                      <input type="number" class="form-control" id="addReorderLevel" name="reorder_level" required>
+                  </div>
               </div>
-              <div class="mb-3">
-                <label for="editCostPerUnit" class="form-label">Cost per Unit</label>
-                <input type="number" step="0.01" class="form-control" id="editCostPerUnit" name="cost_per_unit" required>
+              <div class="col-md-6">
+                  <div class="mb-3">
+                      <!-- Other form fields -->
+          <label for="supplier_id">Supplier:</label>
+          <select name="supplier_id" id="supplier_id" required>
+              <option value="">Select Supplier</option>
+              <option value="1">Supplier 1</option>
+              <option value="2">Supplier 2</option>
+              <!-- More supplier options -->
+          </select>
+                  </div>
               </div>
-              <div class="mb-3">
-                <label for="editTotalCost" class="form-label">Total Cost</label>
-                <input type="number" step="0.01" class="form-control" id="editTotalCost" name="total_cost" readonly>
+              <div class="col-md-6">
+                  <div class="mb-3">
+                      <label for="addCostPerUnit" class="form-label">Cost per Unit</label>
+                      <input type="number" step="0.01" class="form-control" id="addCostPerUnit" name="cost_per_unit" required>
+                  </div>
               </div>
-              <div class="mb-3">
-                <label for="editStatus" class="form-label">Status</label>
-                <input type="text" class="form-control" id="editStatus" name="status">
+              <div class="col-md-6">
+                  <div class="mb-3">
+                      <label for="addTotalCost" class="form-label">Total Cost</label>
+                      <input type="number" step="0.01" class="form-control" id="addTotalCost" name="total_cost" required>
+                  </div>
               </div>
-            </div>
+              <div class="col-md-6">
+                  <div class="mb-3">
+                      <label for="addStatus" class="form-label">Status</label>
+                      <select id="addStatus" name="status" class="form-control">
+                          <option value="Active">Active</option>
+                          <option value="Non-active">Non-active</option>
+                      </select>
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="mb-3">
+                      <label for="addStatus" class="form-label">Date Added</label>
+                      <input type="date" name="date_added" required>
+                  </div>
+              </div>
+            
+
           </div>
-          <button type="submit" class="btn btn-primary btn-sm">Submit</button>
-        </form>
+          <button type="submit" name="add_inventory_btn" class="btn btn-primary btn-sm">Submit</button>
+      </form>
+
       </div>
     </div>
   </div>
 </div>
+
 
 <!-- JavaScript to handle total cost calculation -->
 <script>

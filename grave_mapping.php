@@ -1,5 +1,43 @@
 <?php
   include 'header.php'; // Include header and navigation
+
+  if(isset($_POST['edit_grave_mapping'])) {
+    $id = $_POST['id'];
+    $grave_number = $_POST['grave_number'];
+    $location = $_POST['location'];
+    $lot_number = $_POST['lot_number'];
+    $size = $_POST['size'];
+    $status = $_POST['status'];
+    $remarks = $_POST['remarks'];
+
+    // Prepare the UPDATE statement
+    $stmt = $dbh->prepare("UPDATE grave_mapping SET 
+        grave_number =?, 
+        location =?, 
+        lot_number =?, 
+        size =?, 
+        status =?, 
+        remarks =? 
+        WHERE id =?");
+
+    // Bind the parameters
+    $stmt->bindParam(1, $grave_number);
+    $stmt->bindParam(2, $location);
+    $stmt->bindParam(3, $lot_number);
+    $stmt->bindParam(4, $size);
+    $stmt->bindParam(5, $status);
+    $stmt->bindParam(6, $remarks);
+    $stmt->bindParam(7, $id);
+
+    // Execute the statement
+    if ($stmt->execute()) {
+      header("Location: grave_mapping.php?status=success&message=Grave mapping updated successfully");
+      exit();
+      } else {
+        header("Location: grave_mapping.php?status=error&message=Failed to update grave mapping");
+        exit();
+      }
+  }
 ?>
 
 <div class="content-wrapper">
@@ -61,8 +99,51 @@
                 <td><?= $row->status;?></td>
                 <td><?= $row->remarks;?></td>
                 <td>
-                  <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editGraveMappingModal" onclick="populateEditModal(1, 'G-123', 'Section A, Row 3', 'L-45', '4x6', 'Occupied', 'Reserved for family')">Edit</button>
-                  <a href="delete_grave_mapping.html" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this record?');">Delete</a>
+                  <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editGraveMappingModal<?= $row->id?>">Edit</button>
+                  <!-- Edit Grave Mapping Modal -->
+                <div class="modal fade" id="editGraveMappingModal<?= $row->id?>">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header" style="background-color: #0b603a; border-color: #0b603a;">
+                        <h5 class="modal-title" id="editGraveMappingModalLabel">Edit Grave Mapping Record</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+                      </div>
+                      <div class="modal-body">
+                        <form method="post">
+                          <input type="hidden" id="id" value="<?= $row->id?>" name="id">
+                          <div class="row">
+                            <div class="col-md-6 mb-3">
+                              <label for="editGraveNumber" class="form-label">Grave Number</label>
+                              <input type="text" class="form-control" value="<?= $row->grave_number?>" id="editGraveNumber" name="grave_number" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <label for="editLocation" class="form-label">Location</label>
+                              <input type="text" class="form-control" value="<?= $row->location?>" id="editLocation" name="location" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <label for="editLotNumber" class="form-label">Lot Number</label>
+                              <input type="text" class="form-control" id="editLotNumber" value="<?= $row->lot_number?>" name="lot_number">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <label for="editSize" class="form-label">Size</label>
+                              <input type="text" class="form-control" id="editSize" value="<?= $row->size?>" name="size">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <label for="editStatus" class="form-label">Status</label>
+                              <input type="text" class="form-control" id="editStatus" value="<?= $row->status?>" name="status">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <label for="editRemarks" class="form-label">Remarks</label>
+                              <textarea class="form-control" id="editRemarks" name="remarks"><?= $row->remarks?></textarea>
+                            </div>
+                          </div>
+                          <button type="submit" class="btn btn-primary" name="edit_grave_mapping" style="background-color: #0b603a; border-color: #0b603a;">Save changes</button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                  <a href="delete_grave_mapping.php?id=<?= $row->id?>" class="btn btn-danger btn-sm deleteBtn">Delete</a>
                 </td>
               </tr>
               <?php $count++; } ?>
@@ -121,49 +202,6 @@
   </div>
 </div>
 
-<!-- Edit Grave Mapping Modal -->
-<div class="modal fade" id="editGraveMappingModal" tabindex="-1" aria-labelledby="editGraveMappingModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="editGraveMappingModalLabel">Edit Grave Mapping Record</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form id="editGraveMappingForm">
-          <input type="hidden" id="editGraveMappingId" name="id">
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label for="editGraveNumber" class="form-label">Grave Number</label>
-              <input type="text" class="form-control" id="editGraveNumber" name="grave_number" required>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label for="editLocation" class="form-label">Location</label>
-              <input type="text" class="form-control" id="editLocation" name="location" required>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label for="editLotNumber" class="form-label">Lot Number</label>
-              <input type="text" class="form-control" id="editLotNumber" name="lot_number">
-            </div>
-            <div class="col-md-6 mb-3">
-              <label for="editSize" class="form-label">Size</label>
-              <input type="text" class="form-control" id="editSize" name="size">
-            </div>
-            <div class="col-md-6 mb-3">
-              <label for="editStatus" class="form-label">Status</label>
-              <input type="text" class="form-control" id="editStatus" name="status">
-            </div>
-            <div class="col-md-6 mb-3">
-              <label for="editRemarks" class="form-label">Remarks</label>
-              <textarea class="form-control" id="editRemarks" name="remarks"></textarea>
-            </div>
-          </div>
-          <button type="submit" class="btn btn-primary">Save changes</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
 
 <?php include 'footer.php'; // Include footer ?>
 

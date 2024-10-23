@@ -240,27 +240,25 @@ elseif (isset($_POST['register_btn'])) {
     }
 }
 // Edit User
-elseif (isset($_POST['edit_user_btn'])) {
+if (isset($_POST['edit_user_btn'])) {
     $id = trim($_POST['id']);
     $username = trim($_POST['username']);
     $email = trim($_POST['email']);
     $national_id = trim($_POST['national_id']);
     $user_role = trim($_POST['user_role']);
-    $oldphoto = trim($_POST['oldphoto']);
 
     $filename = isset($_FILES['photo']['name']) ? trim($_FILES['photo']['name']) : '';
     $photo = '';
+
     if ($filename) {
         $chk = rand(1111111111111, 9999999999999);
-        $ext = strrchr($filename, ".");
-        $photo = $chk . $ext;
+        $ext = pathinfo($filename, PATHINFO_EXTENSION);
+        $photo = $chk . '.' . $ext; // Ensure proper file extension
         $target_img = "./uploads/" . $photo;
-        $url = SITE_URL . '/uploads/' . $photo;
-        $url_img = $url;
-    } else {
-        $url_img = $oldphoto;
+        $url_img = SITE_URL . '/uploads/' . $photo;
     }
-
+    
+    // Prepare the SQL statement
     $result = dbCreate("UPDATE users SET username = :username, email = :email, national_id = :national_id, user_role = :user_role, photo = :photo WHERE id = :id", [
         ':username' => $username,
         ':email' => $email,
@@ -270,7 +268,9 @@ elseif (isset($_POST['edit_user_btn'])) {
         ':id' => $id
     ]);
 
+    // Check if the update was successful
     if ($result) {
+        // Move the uploaded file if a new file was uploaded
         if ($filename) {
             move_uploaded_file($_FILES['photo']['tmp_name'], $target_img);
         }
@@ -286,6 +286,7 @@ elseif (isset($_POST['edit_user_btn'])) {
         </script>";
     }
 }
+
 
 
 

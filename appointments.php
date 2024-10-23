@@ -79,9 +79,9 @@
                   <div class="modal fade" id="editModal<?= $row->id ?>" tabindex="-1" role="dialog" aria-labelledby="editModalLabel<?= $row->id ?>" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                       <div class="modal-content">
-                        <div class="modal-header">
+                        <div class="modal-header" style="background-color: #0b603a; border-color: #0b603a; color: white;">
                           <h5 class="modal-title" id="editModalLabel<?= $row->id ?>">Edit Appointment</h5>
-                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                           </button>
                         </div>
@@ -112,7 +112,7 @@
                               <label for="editReason<?= $row->id ?>" class="form-label">Reason</label>
                               <textarea class="form-control" id="editReason<?= $row->id ?>" name="reason" rows="3" required><?= $row->reason ?></textarea>
                             </div>
-                            <button type="submit" name="update_appointment_btn" class="btn btn-primary">Update</button>
+                            <button type="submit" name="update_appointment_btn" class="btn btn-primary" style="background-color: #0b603a; border-color: #0b603a;">Update</button>
                           </form>
                         </div>
                       </div>

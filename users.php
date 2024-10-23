@@ -95,9 +95,9 @@ if (isset($_REQUEST['deleteUser'])) {
                                                 <div class="modal fade" id="editUser<?=$row->id?>">
                                                     <div class="modal-dialog">
                                                         <div class="modal-content">
-                                                            <div class="modal-header" style="background-color: #0b603a; border-color: #0b603a;">
+                                                            <div class="modal-header" style="background-color: #0b603a; color: white; border-color: #0b603a;">
                                                                 <h4 class="modal-title">Edit User</h4>
-                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                                                                     <span aria-hidden="true">&times;</span>
                                                                 </button>
                                                             </div>

@@ -104,9 +104,9 @@
                 <div class="modal fade" id="editGraveMappingModal<?= $row->id?>">
                   <div class="modal-dialog">
                     <div class="modal-content">
-                      <div class="modal-header" style="background-color: #0b603a; border-color: #0b603a;">
+                      <div class="modal-header" style="background-color: #0b603a; color:white; border-color: #0b603a;">
                         <h5 class="modal-title" id="editGraveMappingModalLabel">Edit Grave Mapping Record</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">&times;</button>
                       </div>
                       <div class="modal-body">
                         <form method="post">

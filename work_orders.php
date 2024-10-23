@@ -105,9 +105,9 @@ if(isset($_POST['edit_work_order_btn'])) {
                         <div class="modal fade" id="editWorkOrderModal<?=$row->id?>">
                           <div class="modal-dialog">
                             <div class="modal-content">
-                              <div class="modal-header">
+                              <div class="modal-header"  style="background-color: #0b603a; color: white; border-color: #0b603a;">
                                 <h4 class="modal-title" id="modalTitle">Edit Work Order</h4> <!-- Dynamic title -->
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                                   <span aria-hidden="true">&times;</span>
                                 </button>
                               </div>
@@ -160,7 +160,7 @@ if(isset($_POST['edit_work_order_btn'])) {
                                     </div>
                                   </div>
                                   
-                                  <button type="submit" name="edit_work_order_btn" class="btn btn-primary" id="saveButton">Add Work Order</button>
+                                  <button type="submit" name="edit_work_order_btn" class="btn btn-primary" id="saveButton"  style="background-color: #0b603a; border-color: #0b603a;">Add Work Order</button>
                                 </form>
                               </div>
                             </div>

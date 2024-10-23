@@ -129,14 +129,14 @@ $deceased = $deceased_id->fetchAll(PDO::FETCH_OBJ);
               <td><?= $row->cemetery_id; ?></td>
               <td><?= $row->remarks; ?></td>
               <td>
-                <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#viewBurialModal">View</button>
+                <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#viewBurialModal">View</button>
                 <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editBurialModal<?= $row->burial_id?>">Edit</button>
                 <div class="modal fade" id="editBurialModal<?= $row->burial_id?>">
                   <div class="modal-dialog">
                     <div class="modal-content">
-                      <div class="modal-header">
+                      <div class="modal-header"  style="background-color: #0b603a; color: white; border-color: #0b603a;">
                         <h5 class="modal-title" id="addBurialModalLabel">Edit Burial Record</h5>
-                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">&times;</button>
                       </div>
                       <div class="modal-body">
                         <form method="POST" action="">
@@ -213,7 +213,7 @@ $deceased = $deceased_id->fetchAll(PDO::FETCH_OBJ);
                               <textarea class="form-control" id="remarks" name="remarks" rows="3"><?= $row->remarks; ?>"</textarea>
                             </div>
                           </div>
-                          <button type="submit" name="edit_burial_record" class="btn btn-primary">Add Record</button>
+                          <button type="submit" name="edit_burial_record" class="btn btn-primary"  style="background-color: #0b603a; border-color: #0b603a;">Add Record</button>
                         </form>
                       </div>
                     </div>

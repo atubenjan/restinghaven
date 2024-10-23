@@ -257,7 +257,7 @@ if (isset($_POST['edit_user_btn'])) {
         $target_img = "./uploads/" . $photo;
         $url_img = SITE_URL . '/uploads/' . $photo;
     }
-    
+
     // Prepare the SQL statement
     $result = dbCreate("UPDATE users SET username = :username, email = :email, national_id = :national_id, user_role = :user_role, photo = :photo WHERE id = :id", [
         ':username' => $username,
@@ -450,7 +450,6 @@ if (isset($_POST['burial_record_btn'])) {
     $time_of_burial = trim($_POST['time_of_burial']);
     $burial_type = trim($_POST['burial_type']);
     $officiant = trim($_POST['officiant']);
-    $funeral_service_details = trim($_POST['funeral_service_details']);
     $burial_status = trim($_POST['burial_status']);
     $remarks = trim($_POST['remarks']);
 
@@ -459,9 +458,9 @@ if (isset($_POST['burial_record_btn'])) {
 
     // Prepare the SQL query
     $sql = "INSERT INTO burial_records 
-        (burial_date, grave_number, deceased_id, cemetery_id, plot_id, time_of_burial, burial_type, officiant, funeral_service_details, burial_status, remarks, created_at)
+        (burial_date, grave_number, deceased_id, cemetery_id, plot_id, time_of_burial, burial_type, officiant, burial_status, remarks, created_at)
         VALUES 
-        (:burial_date, :grave_number, :deceased_id, :cemetery_id, :plot_id, :time_of_burial, :burial_type, :officiant, :funeral_service_details, :burial_status, :remarks, :created_at)";
+        (:burial_date, :grave_number, :deceased_id, :cemetery_id, :plot_id, :time_of_burial, :burial_type, :officiant, :burial_status, :remarks, :created_at)";
 
     // Execute the database query
     $result = dbCreate($sql, [
@@ -473,7 +472,6 @@ if (isset($_POST['burial_record_btn'])) {
         ':time_of_burial' => $time_of_burial,
         ':burial_type' => $burial_type,
         ':officiant' => $officiant,
-        ':funeral_service_details' => $funeral_service_details,
         ':burial_status' => $burial_status,
         ':remarks' => $remarks,
         ':created_at' => $created_at

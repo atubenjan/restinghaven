@@ -153,14 +153,15 @@ if (isset($_POST['edit_deceased_btn'])) {
                       <td><?= isset($row->file_upload) ? $row->file_upload : 'N/A'; ?></td>
                       <td><?= $row->remarks; ?></td>
                       <td>
-                        <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal-success" data-id="<?= $row->deceased_id; ?>">View</button>
+                        <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal-success">View</button>
+                        
                         <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editDeceasedModal<?= $row->deceased_id; ?>">Edit</button>
                         <!-- Edit Deceased Modal -->
-                        <div class="modal fade" id="editDeceasedModal<?= $row->deceased_id; ?>" tabindex="-1" role="dialog" aria-labelledby="editDeceasedModalLabel<?= $row->deceased_id; ?>" aria-hidden="true">
+                        <div class="modal fade" id="editDeceasedModal<?= $row->deceased_id; ?>">
                           <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                               <div class="modal-header">
-                                <h4 class="modal-title" id="editDeceasedModalLabel<?= $row->deceased_id; ?>">Edit Deceased Details</h4>
+                                <h4 class="modal-title" id="editDeceasedModalLabel">Edit Deceased Details</h4>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                   <span aria-hidden="true">&times;</span>
                                 </button>
@@ -171,76 +172,76 @@ if (isset($_POST['edit_deceased_btn'])) {
                                   <div class="container">
                                     <div class="row">
                                       <div class="col-md-4 mb-3">
-                                        <label for="editName<?= $row->deceased_id; ?>" class="form-label">Full Name</label>
-                                        <input type="text" class="form-control" id="editName<?= $row->deceased_id; ?>" name="full_name" value="<?= $row->full_name; ?>" required>
+                                        <label for="editName" class="form-label">Full Name</label>
+                                        <input type="text" class="form-control" id="editName" name="full_name" value="<?= $row->full_name; ?>" required>
                                       </div>
                                       <div class="col-md-4 mb-3">
-                                        <label for="editDateOfBirth<?= $row->deceased_id; ?>" class="form-label">Date of Birth</label>
-                                        <input type="date" class="form-control" id="editDateOfBirth<?= $row->deceased_id; ?>" name="date_of_birth" value="<?= $row->date_of_birth; ?>" required>
+                                        <label for="editDateOfBirth" class="form-label">Date of Birth</label>
+                                        <input type="date" class="form-control" id="editDateOfBirth" name="date_of_birth" value="<?= $row->date_of_birth; ?>" required>
                                       </div>
                                       <div class="col-md-4 mb-3">
-                                        <label for="editDateOfDeath<?= $row->deceased_id; ?>" class="form-label">Date of Death</label>
-                                        <input type="date" class="form-control" id="editDateOfDeath<?= $row->deceased_id; ?>" name="date_of_death" value="<?= $row->date_of_death; ?>" required>
+                                        <label for="editDateOfDeath" class="form-label">Date of Death</label>
+                                        <input type="date" class="form-control" id="editDateOfDeath" name="date_of_death" value="<?= $row->date_of_death; ?>" required>
                                       </div>
                                       <div class="col-md-4 mb-3">
-                                        <label for="editTimeOfDeath<?= $row->deceased_id; ?>" class="form-label">Time of Death</label>
-                                        <input type="time" class="form-control" id="editTimeOfDeath<?= $row->deceased_id; ?>" name="time_of_death" value="<?= $row->time_of_death; ?>">
+                                        <label for="editTimeOfDeath" class="form-label">Time of Death</label>
+                                        <input type="time" class="form-control" id="editTimeOfDeath" name="time_of_death" value="<?= $row->time_of_death; ?>">
                                       </div>
                                       <div class="col-md-4 mb-3">
-                                        <label for="editCauseOfDeath<?= $row->deceased_id; ?>" class="form-label">Cause of Death</label>
-                                        <input type="text" class="form-control" id="editCauseOfDeath<?= $row->deceased_id; ?>" name="cause_of_death" value="<?= $row->cause_of_death; ?>">
+                                        <label for="editCauseOfDeath" class="form-label">Cause of Death</label>
+                                        <input type="text" class="form-control" id="editCauseOfDeath" name="cause_of_death" value="<?= $row->cause_of_death; ?>">
                                       </div>
                                       <div class="col-md-4 mb-3">
-                                        <label for="editPlotNumber<?= $row->deceased_id; ?>" class="form-label">Plot Number</label>
-                                        <input type="text" class="form-control" id="editPlotNumber<?= $row->deceased_id; ?>" name="plot_number" value="<?= $row->plot_number; ?>">
+                                        <label for="editPlotNumber" class="form-label">Plot Number</label>
+                                        <input type="text" class="form-control" id="editPlotNumber" name="plot_number" value="<?= $row->plot_number; ?>">
                                       </div>
                                       <div class="col-md-4 mb-3">
-                                        <label for="editFamilyLineage<?= $row->deceased_id; ?>" class="form-label">Family Lineage</label>
-                                        <input type="text" class="form-control" id="editFamilyLineage<?= $row->deceased_id; ?>" name="family_lineage" value="<?= $row->family_lineage; ?>">
+                                        <label for="editFamilyLineage" class="form-label">Family Lineage</label>
+                                        <input type="text" class="form-control" id="editFamilyLineage" name="family_lineage" value="<?= $row->family_lineage; ?>">
                                       </div>
                                       <div class="col-md-4 mb-3">
-                                        <label for="editSpouse<?= $row->deceased_id; ?>" class="form-label">Spouse</label>
-                                        <input type="text" class="form-control" id="editSpouse<?= $row->deceased_id; ?>" name="spouse" value="<?= $row->spouse; ?>">
+                                        <label for="editSpouse" class="form-label">Spouse</label>
+                                        <input type="text" class="form-control" id="editSpouse" name="spouse" value="<?= $row->spouse; ?>">
                                       </div>
                                       <div class="col-md-4 mb-3">
-                                        <label for="editOrigin<?= $row->deceased_id; ?>" class="form-label">Origin</label>
-                                        <input type="text" class="form-control" id="editOrigin<?= $row->deceased_id; ?>" name="origin" value="<?= $row->origin; ?>">
+                                        <label for="editOrigin" class="form-label">Origin</label>
+                                        <input type="text" class="form-control" id="editOrigin" name="origin" value="<?= $row->origin; ?>">
                                       </div>
                                       <div class="col-md-4 mb-3">
-                                        <label for="editAgeAtDeath<?= $row->deceased_id; ?>" class="form-label">Age at Death</label>
-                                        <input type="number" class="form-control" id="editAgeAtDeath<?= $row->deceased_id; ?>" name="age_at_death" value="<?= $row->age_at_death; ?>">
+                                        <label for="editAgeAtDeath" class="form-label">Age at Death</label>
+                                        <input type="number" class="form-control" id="editAgeAtDeath" name="age_at_death" value="<?= $row->age_at_death; ?>">
                                       </div>
                                       <div class="col-md-4 mb-3">
-                                        <label for="editGender<?= $row->deceased_id; ?>" class="form-label">Gender</label>
-                                        <select class="form-control" id="editGender<?= $row->deceased_id; ?>" name="gender">
+                                        <label for="editGender" class="form-label">Gender</label>
+                                        <select class="form-control" id="editGender" name="gender">
                                           <option value="Male" <?= $row->gender == 'Male' ? 'selected' : ''; ?>>Male</option>
                                           <option value="Female" <?= $row->gender == 'Female' ? 'selected' : ''; ?>>Female</option>
                                         </select>
                                       </div>
                                       <div class="col-md-4 mb-3">
-                                        <label for="editPlaceOfBirth<?= $row->deceased_id; ?>" class="form-label">Place of Birth</label>
-                                        <input type="text" class="form-control" id="editPlaceOfBirth<?= $row->deceased_id; ?>" name="place_of_birth" value="<?= $row->place_of_birth; ?>">
+                                        <label for="editPlaceOfBirth" class="form-label">Place of Birth</label>
+                                        <input type="text" class="form-control" id="editPlaceOfBirth" name="place_of_birth" value="<?= $row->place_of_birth; ?>">
                                       </div>
                                       <div class="col-md-4 mb-3">
-                                        <label for="editPlaceOfDeath<?= $row->deceased_id; ?>" class="form-label">Place of Death</label>
-                                        <input type="text" class="form-control" id="editPlaceOfDeath<?= $row->deceased_id; ?>" name="place_of_death" value="<?= $row->place_of_death; ?>">
+                                        <label for="editPlaceOfDeath" class="form-label">Place of Death</label>
+                                        <input type="text" class="form-control" id="editPlaceOfDeath" name="place_of_death" value="<?= $row->place_of_death; ?>">
                                       </div>
                                       <div class="col-md-4 mb-3">
-                                        <label for="editNationality<?= $row->deceased_id; ?>" class="form-label">Nationality/Ethnicity</label>
-                                        <input type="text" class="form-control" id="editNationality<?= $row->deceased_id; ?>" name="nationality" value="<?= $row->nationality; ?>">
+                                        <label for="editNationality" class="form-label">Nationality/Ethnicity</label>
+                                        <input type="text" class="form-control" id="editNationality" name="nationality" value="<?= $row->nationality; ?>">
                                       </div>
                                       <div class="col-md-4 mb-3">
-                                        <label for="editOccupation<?= $row->deceased_id; ?>" class="form-label">Occupation</label>
-                                        <input type="text" class="form-control" id="editOccupation<?= $row->deceased_id; ?>" name="occupation" value="<?= $row->occupation; ?>">
+                                        <label for="editOccupation" class="form-label">Occupation</label>
+                                        <input type="text" class="form-control" id="editOccupation" name="occupation" value="<?= $row->occupation; ?>">
                                       </div>
                                       <div class="col-md-4 mb-3">
-                                        <label for="editFileUpload<?= $row->deceased_id; ?>" class="form-label">File Upload</label>
-                                        <input type="file" class="form-control" id="editFileUpload<?= $row->deceased_id; ?>" name="file_upload">
+                                        <label for="editFileUpload" class="form-label">File Upload</label>
+                                        <input type="file" class="form-control" id="editFileUpload" name="file_upload">
                                         <small>Current: <?= isset($row->file_upload) ? $row->file_upload : 'N/A'; ?></small>
                                       </div>
                                       <div class="col-md-12 mb-3">
-                                        <label for="editRemarks<?= $row->deceased_id; ?>" class="form-label">Remarks</label>
-                                        <textarea class="form-control" id="editRemarks<?= $row->deceased_id; ?>" name="remarks" rows="3"><?= $row->remarks; ?></textarea>
+                                        <label for="editRemarks" class="form-label">Remarks</label>
+                                        <textarea class="form-control" id="editRemarks" name="remarks" rows="3"><?= $row->remarks; ?></textarea>
                                       </div>
                                     </div>
                                   </div>
@@ -253,6 +254,7 @@ if (isset($_POST['edit_deceased_btn'])) {
                             </div>
                           </div>
                         </div>
+
                         <a href="delete_deceased.php?deceased_id=<?= $row->deceased_id; ?>" class="btn btn-sm btn-danger deleteDeceased" data-id="<?= $row->deceased_id; ?>">
                           Delete
                         </a>

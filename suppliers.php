@@ -133,12 +133,12 @@ if (isset($_POST['update_supplier_btn'])) {
                                         <div class="modal fade" id="editSupplier<?= $row['id'];?>">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
-                                                    <div class="modal-header">
+                                                    <div class="modal-header"  style="background-color: #0b603a; color: white; border-color: #0b603a;">
                                                         <h5 class="modal-title" id="editSupplierLabel">Edit Supplier</h5>
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+                                                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">&times;</button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <form id="editSupplierForm" action="" method="post"> <!-- Add action for updating supplier -->
+                                                        <form method="post"> <!-- Add action for updating supplier -->
                                                             <input type="hidden" name="supplier_id" value="<?= $row['id'];?>" id="supplier_id">
                                                             <div class="mb-3">
                                                                 <label for="supplier_name" class="form-label">Supplier Name</label>
@@ -172,8 +172,7 @@ if (isset($_POST['update_supplier_btn'])) {
                                                                 <input type="date" class="form-control" value="<?= $row['date_added'];?>" name="date_added" id="date_added" required>
                                                             </div>
                                                             <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                <button type="submit" class="btn btn-primary" name="update_supplier_btn">Update Supplier</button>
+                                                                <button type="submit" class="btn btn-primary" name="update_supplier_btn"  style="background-color: #0b603a; border-color: #0b603a;">Update Supplier</button>
                                                             </div>
                                                         </form>
                                                     </div>

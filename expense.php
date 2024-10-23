@@ -97,9 +97,9 @@ $expenses = $dbh->query("SELECT * FROM expenses")->fetchAll(PDO::FETCH_OBJ);
                                                 <div class="modal fade" id="editExpense<?=$row->id?>" tabindex="-1" aria-labelledby="editExpenseModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog">
                                                         <div class="modal-content">
-                                                            <div class="modal-header">
+                                                            <div class="modal-header"  style="background-color: #0b603a; color:white; border-color: #0b603a;">
                                                                 <h5 class="modal-title" id="editExpenseModalLabel">Edit Expense</h5>
-                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                                                                     &times;
                                                                 </button>
                                                             </div>
@@ -126,7 +126,7 @@ $expenses = $dbh->query("SELECT * FROM expenses")->fetchAll(PDO::FETCH_OBJ);
                                                                         <label for="editExpenseRemarks" class="form-label">Remarks</label>
                                                                         <textarea class="form-control" id="editExpenseRemarks" name="remarks"><?= $row->remarks?></textarea>
                                                                     </div>
-                                                                    <button type="submit" name="update_expense_btn" class="btn btn-primary">Update Expense</button>
+                                                                    <button type="submit" name="update_expense_btn" class="btn btn-primary"  style="background-color: #0b603a; border-color: #0b603a;">Update Expense</button>
                                                                 </form>
                                                             </div>
                                                         </div>

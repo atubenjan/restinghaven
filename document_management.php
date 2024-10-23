@@ -115,7 +115,7 @@
                     <td>
                       <a href="<?php echo $filePath; ?>" class="btn btn-info btn-sm" target="_blank">View</a> <!-- View the file -->
                       <a href="download.php?file=<?php echo urlencode($file); ?>" class="btn btn-primary btn-sm">Download</a> <!-- Download the file -->
-                      <a href="delete_document.php?file=<?php echo urlencode($file); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this file?');">Delete</a>
+                      <a href="delete_document.php?file=<?php echo urlencode($file); ?>" class="btn btn-danger btn-sm deleteBtn">Delete</a>
                     </td>
                   </tr>
               <?php

@@ -99,9 +99,9 @@ if (isset($_POST['edit_inventory_btn'])) {
                         <div class="modal fade" id="editInventoryModal<?= $item['id'];?>">
                           <div class="modal-dialog modal-lg">
                             <div class="modal-content">
-                              <div class="modal-header">
+                              <div class="modal-header"  style="background-color: #0b603a; color:white; border-color: #0b603a;">
                                 <h5 class="modal-title" id="editInventoryModalLabel">Edit Inventory Item</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">&times;</button>
                               </div>
                               <div class="modal-body">
                                 <form method="POST">
@@ -154,7 +154,7 @@ if (isset($_POST['edit_inventory_btn'])) {
                                       </div>
                                     </div>
                                   </div>
-                                  <button type="submit" name="edit_inventory_btn" class="btn btn-primary btn-sm">Submit</button>
+                                  <button type="submit" name="edit_inventory_btn" class="btn btn-primary btn-sm"  style="background-color: #0b603a; border-color: #0b603a;">Submit</button>
                                 </form>
                               </div>
                             </div>

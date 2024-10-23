@@ -72,9 +72,9 @@ if(isset($_POST['edit_sales_btn'])){
                 <div class="modal fade" id="editSalesModal<?= $row->id?>">
                   <div class="modal-dialog">
                     <div class="modal-content">
-                      <div class="modal-header">
+                      <div class="modal-header"  style="background-color: #0b603a; color: white; border-color: #0b603a;">
                         <h5 class="modal-title" id="salesModalLabel">Edit Sales</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">&times;</button>
                       </div>
                       <div class="modal-body">
                         <form method="POST">
@@ -95,7 +95,7 @@ if(isset($_POST['edit_sales_btn'])){
                             <label for="date" class="form-label">Date</label>
                             <input type="date" class="form-control" id="date" value = "<?= $row->date?>" name="date" required>
                           </div>
-                          <button type="submit" name="edit_sales_btn" class="btn btn-primary">Save</button>
+                          <button type="submit" name="edit_sales_btn" class="btn btn-primary"  style="background-color: #0b603a; border-color: #0b603a;">Save</button>
                         </form>
                       </div>
                     </div>

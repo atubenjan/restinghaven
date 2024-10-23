@@ -13,10 +13,10 @@ if (isset($_GET['id'])) {
 
     if ($stmt->rowCount() > 0) {
         // Success, redirect to work orders page
-        header('Location: work_orders.php?delete_success=1');
+        header('Location: work_orders.php?status=success&message=Order deleted successfully');
     } else {
         // Failure, redirect with error
-        header('Location: work_orders.php?delete_error=1');
+        header('Location: work_orders.php?status=error&message=error deleting order');
     }
 }
 ?>

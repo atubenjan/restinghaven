@@ -1,4 +1,35 @@
-<?php include('header.php'); ?>
+<?php include('header.php'); 
+
+if(isset($_POST['edit_work_order_btn'])) {
+  $id = $_POST['id'];
+  $description = $_POST['description'];
+  $status = $_POST['status'];
+  $priority = $_POST['priority'];
+  $assigned_to = $_POST['assigned_to'];
+  $due_date = $_POST['due_date'];
+
+  // Prepare SQL update statement
+  $stmt = $dbh->prepare("UPDATE work_orders SET description =?, status =?, priority =?, assigned_to =?, due_date =? WHERE id =?");
+
+  // Bind parameters
+  $stmt->bindParam(1, $description);
+  $stmt->bindParam(2, $status);
+  $stmt->bindParam(3, $priority);
+  $stmt->bindParam(4, $assigned_to);
+  $stmt->bindParam(5, $due_date);
+  $stmt->bindParam(6, $id);
+
+  // Execute the statement
+  if ($stmt->execute()) {
+    header("Location: work_orders.php?status=success&message=Work order updated successfully.");
+    exit;
+  } else {
+    header("Location: work_orders.php?status=error&message=Failed to update work order.");
+    exit;
+  }
+}
+
+?>
 <div class="content-wrapper">
   <section class="content-header">
     <div class="container-fluid">
@@ -69,8 +100,74 @@
                       <td><?= $row->assigned_to ?></td>
                       <td><?= $row->due_date ?></td>
                       <td>
-                        <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editWorkOrderModal">Edit</button>
-                        <a href="delete_work_order.php?id=<?= $row->id ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this work order?');">Delete</a>
+                        <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editWorkOrderModal<?=$row->id?>">Edit</button>
+
+                        <div class="modal fade" id="editWorkOrderModal<?=$row->id?>">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h4 class="modal-title" id="modalTitle">Edit Work Order</h4> <!-- Dynamic title -->
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                <form action="" method="POST">
+                                  <!-- Hidden input for the Work Order ID (used for editing) -->
+                                  <input type="hidden" name="id" value="<?= $row->id ?>">
+
+                                  <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                      <label for="addDescription" class="form-label">Description</label>
+                                      <textarea class="form-control" id="addDescription" name="description" required><?= $row->description?></textarea>
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                      <label for="addStatus" class="form-label">Status</label>
+                                      <select class="form-control" id="addStatus" name="status" required>
+                                        <option value="Pending" <?= ($row->status == 'Pending') ? 'selected' : ''; ?>>Pending</option>
+                                        <option value="In Progress" <?= ($row->status == 'In Progress') ? 'selected' : ''; ?>>In Progress</option>
+                                        <option value="Completed" <?= ($row->status == 'Completed') ? 'selected' : ''; ?>>Completed</option>
+                                      </select>
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                      <label for="addPriority" class="form-label">Priority</label>
+                                      <select class="form-control" id="addPriority" name="priority" required>
+                                        <option value="Low" <?= ($row->priority == 'Low') ? 'selected' : ''; ?>>Low</option>
+                                        <option value="Medium" <?= ($row->priority == 'Medium') ? 'selected' : ''; ?>>Medium</option>
+                                        <option value="High" <?= ($row->priority == 'High') ? 'selected' : ''; ?>>High</option>
+                                      </select>
+                                    </div>
+                                  
+                                    <div class="col-md-6 mb-3">
+                                      <label for="userRole" class="form-label">Assigned To</label>
+                                      <select class="form-control" id="userRole" name="assigned_to" required>
+                                        <option value="" disabled selected>Select User Role</option>
+                                        <option value="Admin"  <?= ($row->assigned_to == 'Admin') ? 'selected' : ''; ?>>Admin</option>
+                                        <option value="SuperAdmin"  <?= ($row->assigned_to == 'SuperAdmin') ? 'selected' : ''; ?>>SuperAdmin</option>
+                                        <option value="Manager"  <?= ($row->assigned_to == 'Manager') ? 'selected' : ''; ?>>Manager</option>
+                                        <option value="FuneralDirector"  <?= ($row->assigned_to == 'FuneralDirector') ? 'selected' : ''; ?>>FuneralDirector</option>
+                                        <option value="CemeteryStaff"  <?= ($row->assigned_to == 'CemeteryStaff') ? 'selected' : ''; ?>>CemeteryStaff</option>
+                                        <option value="Accounting"  <?= ($row->assigned_to == 'Accounting') ? 'selected' : ''; ?>>Accounting</option>
+                                        <option value="Maintenance"  <?= ($row->assigned_to == 'Maintenance') ? 'selected' : ''; ?>>Maintenance</option>
+                                      </select>
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                      <label for="addDueDate" class="form-label">Due Date</label>
+                                      <input type="date" class="form-control" id="addDueDate" value="<?= $row->due_date?>" name="due_date" required>
+                                    </div>
+                                  </div>
+                                  
+                                  <button type="submit" name="edit_work_order_btn" class="btn btn-primary" id="saveButton">Add Work Order</button>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <a href="delete_work_order.php?id=<?= $row->id ?>" class="btn btn-danger btn-sm deleteBtn">Delete</a>
                       </td>
                     </tr>
                     <?php 

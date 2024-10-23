@@ -17,7 +17,7 @@ if (isset($_GET['id'])) {
          exit();
      }
 } else {
-    header(Location: "expense.php");
+    header("Location: expense.php");
     exit();
 }
 ?>

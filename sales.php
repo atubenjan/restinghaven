@@ -1,5 +1,33 @@
 <?php
 include 'header.php';
+
+if(isset($_POST['edit_sales_btn'])){
+  $id = $_POST['id'];
+  $product_name = $_POST['product_name'];
+  $quantity = $_POST['quantity'];
+  $price = $_POST['price'];
+  $date = $_POST['date']; // Added date input field
+
+  // Prepare SQL update statement
+  $stmt = $dbh->prepare("UPDATE sales SET product_name =?, quantity =?, price =?, date =? WHERE id =?");
+
+  // Bind parameters
+  $stmt->bindParam(1, $product_name);
+  $stmt->bindParam(2, $quantity);
+  $stmt->bindParam(3, $price);
+  $stmt->bindParam(4, $date); // Added date binding
+  $stmt->bindParam(5, $id);
+
+  // Execute the query
+  if ($stmt->execute()) {
+    header("Location: sales.php?status=success&message=sales updated successfully");
+    exit;
+} else {
+    header("Location: sales.php?status=error&message=Error updating sales");
+    exit;
+}
+}
+
 ?>
 
 <!-- Content Wrapper. Contains page content -->
@@ -38,8 +66,42 @@ include 'header.php';
               <td><?= $row->price; ?></td>
               <td><?= $row->date; ?></td> <!-- Example date -->
               <td>
-                <button class="btn btn-warning btn-sm edit-btn" data-id="1" data-name="Sample Product" data-quantity="10" data-price="15.00" data-date="2024-09-11" data-bs-toggle="modal" data-bs-target="#salesModal">Edit</button>
-                <button class="btn btn-danger btn-sm delete-btn" data-id="1">Delete</button>
+                <button class="btn btn-warning btn-sm edit-btn" data-toggle="modal" data-target="#editSalesModal<?= $row->id?>">Edit</button>
+
+                <!-- Modal for adding sales-->
+                <div class="modal fade" id="editSalesModal<?= $row->id?>">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="salesModalLabel">Edit Sales</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+                      </div>
+                      <div class="modal-body">
+                        <form method="POST">
+                          <input type="hidden" name="id" value="<?= $row->id?>" id="sales-id">
+                          <div class="mb-3">
+                            <label for="product-name" class="form-label">Product Name</label>
+                            <input type="text" class="form-control" id="product-name" value = "<?= $row->product_name?>" name="product_name" required>
+                          </div>
+                          <div class="mb-3">
+                            <label for="quantity" class="form-label">Quantity</label>
+                            <input type="number" class="form-control" id="quantity" value = "<?= $row->quantity?>" name="quantity" required>
+                          </div>
+                          <div class="mb-3">
+                            <label for="price" class="form-label">Price</label>
+                            <input type="number" step="0.01" class="form-control" id="price" value = "<?= $row->price?>" name="price" required>
+                          </div>
+                          <div class="mb-3">
+                            <label for="date" class="form-label">Date</label>
+                            <input type="date" class="form-control" id="date" value = "<?= $row->date?>" name="date" required>
+                          </div>
+                          <button type="submit" name="edit_sales_btn" class="btn btn-primary">Save</button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <a href="delete_sales.php?id=<?= $row->id?>" class="btn btn-danger btn-sm deleteBtn" data-id="1">Delete</a>
               </td>
             </tr>
             <?php $count++; }?>
@@ -52,12 +114,12 @@ include 'header.php';
 </div>
 <!-- /.content-wrapper -->
 
-<!-- Modal for adding/editing sales -->
+<!-- Modal for adding sales-->
 <div class="modal fade" id="salesModal">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="salesModalLabel">Add/Edit Sales</h5>
+        <h5 class="modal-title" id="salesModalLabel">Add Sales</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
       </div>
       <div class="modal-body">

@@ -7,12 +7,13 @@ if (isset($_GET['deleteSupplier'])) {
     $stmt = $dbh->prepare("DELETE FROM suppliers WHERE id = :id");
     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
     if ($stmt->execute()) {
-        echo "<script>
-                alert('Supplier deleted successfully.');
-                window.location.href = 'suppliers.php'; // Redirect to the suppliers page
-              </script>";
+        // Redirect back to the burial records page
+        header("Location: suppliers.php?status=success&message=supplier record deleted successfully");
+        exit;
     } else {
-        echo "<script>alert('Error deleting supplier.');</script>";
+        // Redirect back with error message
+        header("Location: suppliers.php?status=error&message=Error deleting supplier's record");
+        exit;
     }
 }
 
@@ -38,12 +39,13 @@ if (isset($_POST['update_supplier_btn'])) {
     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
     if ($stmt->execute()) {
-        echo "<script>
-                alert('Supplier updated successfully.');
-                window.location.href = 'suppliers.php'; // Redirect to the suppliers page
-              </script>";
+        // Redirect back to the burial records page
+        header("Location: suppliers.php?status=success&message=supplier record updated successfully");
+        exit;
     } else {
-        echo "<script>alert('Error updating supplier.');</script>";
+        // Redirect back with error message
+        header("Location: suppliers.php?status=error&message=Error updating supplier's record");
+        exit;
     }
 }
 ?>
@@ -110,10 +112,11 @@ if (isset($_POST['update_supplier_btn'])) {
                             <?php
                             // Fetch and display suppliers
                             $stmt = $dbh->query("SELECT * FROM suppliers");
+                            $count = 1;
                             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                             ?>
                                 <tr>
-                                    <td><?= htmlspecialchars($row['id']); ?></td>
+                                    <td><?=$count; ?></td>
                                     <td><?= htmlspecialchars($row['supplier_name']); ?></td>
                                     <td><?= htmlspecialchars($row['contact_person']); ?></td>
                                     <td><?= htmlspecialchars($row['contact_email']); ?></td>
@@ -122,14 +125,66 @@ if (isset($_POST['update_supplier_btn'])) {
                                     <td><?= htmlspecialchars($row['status']); ?></td>
                                     <td><?= htmlspecialchars($row['date_added']); ?></td>
                                     <td>
-                                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editSupplier"
-                                            onclick="populateEditModal('<?= htmlspecialchars($row['id']); ?>', '<?= htmlspecialchars($row['supplier_name']); ?>', '<?= htmlspecialchars($row['contact_person']); ?>', '<?= htmlspecialchars($row['contact_email']); ?>', '<?= htmlspecialchars($row['contact_phone']); ?>', '<?= htmlspecialchars($row['address']); ?>', '<?= htmlspecialchars($row['status']); ?>', '<?= htmlspecialchars($row['date_added']); ?>')">
+                                        <!-- edit supplier btn -->
+                                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editSupplier<?= $row['id'];?>">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <a href="?deleteSupplier=<?= htmlspecialchars($row['id']); ?>" class="btn btn-info btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this supplier?');"><i class="fas fa-trash"></i></a>
+                                        <!-- Edit Supplier Modal -->
+                                        <div class="modal fade" id="editSupplier<?= $row['id'];?>">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="editSupplierLabel">Edit Supplier</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form id="editSupplierForm" action="" method="post"> <!-- Add action for updating supplier -->
+                                                            <input type="hidden" name="supplier_id" value="<?= $row['id'];?>" id="supplier_id">
+                                                            <div class="mb-3">
+                                                                <label for="supplier_name" class="form-label">Supplier Name</label>
+                                                                <input type="text" class="form-control" value="<?= $row['supplier_name'];?>" name="supplier_name" id="supplier_name" required>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="contact_person" class="form-label">Contact Person</label>
+                                                                <input type="text" class="form-control" value="<?= $row['contact_person'];?>" name="contact_person" id="contact_person" required>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="contact_email" class="form-label">Contact Email</label>
+                                                                <input type="email" class="form-control" value="<?= $row['contact_email'];?>" name="contact_email" id="contact_email">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="contact_phone" class="form-label">Contact Phone</label>
+                                                                <input type="tel" class="form-control" value="<?= $row['contact_phone'];?>" name="contact_phone" id="contact_phone">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="address" class="form-label">Address</label>
+                                                                <textarea class="form-control" name="address" id="address"><?= $row['address'];?></textarea>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="status" class="form-label">Status</label>
+                                                                <select name="status" id="status" class="form-control">
+                                                                    <option value="Active" <?= $row['status'] == 'Active' ? 'selected' : '';?>>Active</option>
+                                                                    <option value="Not Active" <?= $row['status'] == 'Not Active' ? 'selected' : '';?>>Not Active</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="date_added" class="form-label">Date Added</label>
+                                                                <input type="date" class="form-control" value="<?= $row['date_added'];?>" name="date_added" id="date_added" required>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                <button type="submit" class="btn btn-primary" name="update_supplier_btn">Update Supplier</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- delete supplier btn-->
+                                        <a href="?deleteSupplier=<?= htmlspecialchars($row['id']); ?>" class="btn btn-info btn-sm btn-danger deleteBtn"><i class="fas fa-trash"></i></a>
                                     </td>
                                 </tr>
-                            <?php } ?>
+                            <?php $count++; } ?>
                         </tbody>
                     </table>
                 </div>
@@ -190,7 +245,7 @@ if (isset($_POST['update_supplier_btn'])) {
                                 <label for="addStatus" class="form-label">Status</label>
                                 <select id="addStatus" name="status" class="form-control">
                                     <option value="Active">Active</option>
-                                    <option value="Non-active">Non-active</option>
+                                    <option value="Not Active">Not Active</option>
                                 </select>
                             </div>
                         </div>
@@ -211,57 +266,6 @@ if (isset($_POST['update_supplier_btn'])) {
     </div>
 </div>
 
-<!-- Edit Supplier Modal -->
-<div class="modal fade" id="editSupplier" tabindex="-1" aria-labelledby="editSupplierLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editSupplierLabel">Edit Supplier</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="editSupplierForm" action="" method="post"> <!-- Add action for updating supplier -->
-                    <input type="hidden" name="supplier_id" id="supplier_id">
-                    <div class="mb-3">
-                        <label for="supplier_name" class="form-label">Supplier Name</label>
-                        <input type="text" class="form-control" name="supplier_name" id="supplier_name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="contact_person" class="form-label">Contact Person</label>
-                        <input type="text" class="form-control" name="contact_person" id="contact_person" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="contact_email" class="form-label">Contact Email</label>
-                        <input type="email" class="form-control" name="contact_email" id="contact_email">
-                    </div>
-                    <div class="mb-3">
-                        <label for="contact_phone" class="form-label">Contact Phone</label>
-                        <input type="tel" class="form-control" name="contact_phone" id="contact_phone">
-                    </div>
-                    <div class="mb-3">
-                        <label for="address" class="form-label">Address</label>
-                        <textarea class="form-control" name="address" id="address"></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="status" class="form-label">Status</label>
-                        <select name="status" id="status" class="form-control">
-                            <option value="Active">Active</option>
-                            <option value="Non-active">Non-active</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="date_added" class="form-label">Date Added</label>
-                        <input type="date" class="form-control" name="date_added" id="date_added" required>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary" name="update_supplier_btn">Update Supplier</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
 <script>
 function populateEditModal(id, name, contactPerson, contactEmail, contactPhone, address, status, dateAdded) {

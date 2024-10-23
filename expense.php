@@ -2,24 +2,9 @@
 // Include header and navigation
 include 'header.php';
 
-// Check if delete request is sent
-if (isset($_GET['deleteProduct'])) {
-    $id = $_GET['deleteProduct'];
 
-    // Prepare the DELETE statement
-    $stmt = $dbh->prepare("DELETE FROM expenses WHERE id = :id");
-    $stmt->bindParam(':id', $id);
-    
-    // Execute the statement and check if deletion was successful
-    if ($stmt->execute()) {
-        echo "<script>alert('Expense deleted successfully.'); window.location='expense.php';</script>";
-    } else {
-        echo "<script>alert('Error deleting expense.');</script>";
-    }
-}
-
-// Check if update request is sent
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
+// Handle update request
+if (isset($_POST['update_expense_btn'])) {
     $id = $_POST['id'];
     $date = $_POST['date'];
     $description = $_POST['description'];
@@ -36,9 +21,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
     $stmt->bindParam(':remarks', $remarks);
     
     if ($stmt->execute()) {
-        echo "<script>alert('Expense updated successfully.'); window.location='expense.php';</script>";
+        header("Location: expense.php?status=success&message=Expense updated successfully");
+        exit;
     } else {
-        echo "<script>alert('Error updating expense.');</script>";
+        header("Location: expense.php?status=error&message=Error updating expense");
+        exit;
     }
 }
 
@@ -104,18 +91,48 @@ $expenses = $dbh->query("SELECT * FROM expenses")->fetchAll(PDO::FETCH_OBJ);
                                             <td><?= htmlspecialchars($row->category); ?></td>
                                             <td><?= htmlspecialchars($row->remarks); ?></td>
                                             <td>
-                                                <button type="button" class="btn btn-primary btn-sm" 
-                                                    data-toggle="modal" 
-                                                    data-target="#editExpenseModal" 
-                                                    data-id="<?= $row->id ?>" 
-                                                    data-date="<?= $row->date ?>" 
-                                                    data-description="<?= htmlspecialchars($row->description, ENT_QUOTES) ?>" 
-                                                    data-amount="<?= $row->amount ?>" 
-                                                    data-category="<?= htmlspecialchars($row->category, ENT_QUOTES) ?>" 
-                                                    data-remarks="<?= htmlspecialchars($row->remarks, ENT_QUOTES) ?>">
+                                                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editExpense<?= $row->id ?>">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
-                                                <a href="?deleteProduct=<?= $row->id ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this?')">
+                                                <div class="modal fade" id="editExpense<?=$row->id?>" tabindex="-1" aria-labelledby="editExpenseModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="editExpenseModalLabel">Edit Expense</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    &times;
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <form method="post" action="">
+                                                                    <input type="hidden" id="editExpenseId" name="id" value="<?= $row->id?>">
+                                                                    <div class="mb-3">
+                                                                        <label for="editExpenseDate" class="form-label">Date</label>
+                                                                        <input type="date" class="form-control" id="editExpenseDate" name="date" required value="<?= $row->date ?>">
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <label for="editExpenseDescription" class="form-label">Description</label>
+                                                                        <input type="text" class="form-control" id="editExpenseDescription" name="description" required value="<?=$row->description ?>">
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <label for="editExpenseAmount" class="form-label">Amount</label>
+                                                                        <input type="number" class="form-control" id="editExpenseAmount" name="amount" step="0.01" required value="<?= $row->amount; ?>">
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <label for="editExpenseCategory" class="form-label">Category</label>
+                                                                        <input type="text" class="form-control" id="editExpenseCategory" name="category" required value="<?= $row->category ?>">
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <label for="editExpenseRemarks" class="form-label">Remarks</label>
+                                                                        <textarea class="form-control" id="editExpenseRemarks" name="remarks"><?= $row->remarks?></textarea>
+                                                                    </div>
+                                                                    <button type="submit" name="update_expense_btn" class="btn btn-primary">Update Expense</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <a href="delete_expense.php?id=<?= $row->id ?>" class="btn btn-danger btn-sm deleteBtn">
                                                     <i class="fas fa-trash"></i>
                                                 </a>
                                                 <button type="button" class="btn btn-info btn-sm text-white" data-toggle="modal" data-target="#viewProduct<?= $row->id ?>">
@@ -169,44 +186,6 @@ $expenses = $dbh->query("SELECT * FROM expenses")->fetchAll(PDO::FETCH_OBJ);
                         <textarea class="form-control" id="expenseRemarks" name="remarks"></textarea>
                     </div>
                     <button type="submit" name="add_expense_btn" class="btn btn-primary">Add Expense</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Edit Expense Modal -->
-<div class="modal fade" id="editExpenseModal" tabindex="-1" aria-labelledby="editExpenseModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editExpenseModalLabel">Edit Expense</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="editExpenseForm" method="post" action="">
-                    <input type="hidden" id="editExpenseId" name="id">
-                    <div class="mb-3">
-                        <label for="editExpenseDate" class="form-label">Date</label>
-                        <input type="date" class="form-control" id="editExpenseDate" name="date" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="editExpenseDescription" class="form-label">Description</label>
-                        <input type="text" class="form-control" id="editExpenseDescription" name="description" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="editExpenseAmount" class="form-label">Amount</label>
-                        <input type="number" class="form-control" id="editExpenseAmount" name="amount" step="0.01" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="editExpenseCategory" class="form-label">Category</label>
-                        <input type="text" class="form-control" id="editExpenseCategory" name="category" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="editExpenseRemarks" class="form-label">Remarks</label>
-                        <textarea class="form-control" id="editExpenseRemarks" name="remarks"></textarea>
-                    </div>
-                    <button type="submit" name="update_expense_btn" class="btn btn-primary">Update Expense</button>
                 </form>
             </div>
         </div>

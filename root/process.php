@@ -69,17 +69,12 @@ if (isset($_POST['login_btn'])) {
 
         echo "
             <script>
-                alert('Login Successful...');
                 window.location.href = '".SITE_URL."';
             </script>
         ";
     } else {
-        echo "
-            <script>
-                alert('Invalid email or password');
-                window.location.href = window.location.href;
-            </script>
-        ";
+        header("Location: login.php?status=error&message=Invalid Login credentials");
+        exit();
     }
 }
 // User Registration

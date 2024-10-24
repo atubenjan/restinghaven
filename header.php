@@ -41,6 +41,16 @@ if (empty($_SESSION['id'])) {
   <link rel="stylesheet" href="plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
   <link rel="stylesheet" href="plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
 </head>
+<style>
+    .modal {
+    z-index: 1050; /* Ensure it's above other elements */
+}
+
+body {
+  overflow: visible !important;
+}
+
+</style>
 
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
@@ -195,7 +205,7 @@ if (empty($_SESSION['id'])) {
         </a>
     </li>
     <li class="nav-item">
-        <a href="logout.php" class="nav-link <?= ($current_page == 'logout.php') ? 'active' : '' ?>"
+        <a href="logout.php" id="logoutBtn" class="nav-link <?= ($current_page == 'logout.php') ? 'active' : '' ?>"
             style="<?= ($current_page == 'logout.php') ? 'background-color: #0b603a; color: white;' : '' ?>">
             <i class="nav-icon fas fa-lock"></i>
             <p>LogOut</p>
@@ -209,7 +219,27 @@ if (empty($_SESSION['id'])) {
             <!-- /.sidebar -->
         </aside>
 
-       
+    <script>
+         document.getElementById('logoutBtn').addEventListener('click', (e) => {
+      e.preventDefault();
+
+        const logoutUrl = e.currentTarget.href; 
+
+      swal.fire({
+        title: 'Are you sure?',
+        text: "You will be logged out!",
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, log me out!'
+      }).then((result) => {
+        if(result.isConfirmed) {
+          window.location.href = logoutUrl;
+        }
+      })
+    })
+
+    </script>   
            
      
                                  

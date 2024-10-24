@@ -5,20 +5,34 @@ if (isset($_POST['edit_deceased_btn'])) {
   $full_name = $_POST['full_name'];
   $date_of_birth = $_POST['date_of_birth'];
   $date_of_death = $_POST['date_of_death'];
-  $place_of_death = $_POST['place_of_death'];
+  $time_of_death = $_POST['time_of_death'];
   $cause_of_death = $_POST['cause_of_death'];
   $plot_number = $_POST['plot_number'];
   $family_lineage = $_POST['family_lineage'];
   $spouse = $_POST['spouse'];
   $origin = $_POST['origin'];
-  $age_at_death = $_POST['age_at_death']; // Fixed variable name
+  $age_at_death = $_POST['age_at_death']; 
   $gender = $_POST['gender'];
   $place_of_birth = $_POST['place_of_birth'];
   $place_of_death = $_POST['place_of_death'];
   $nationality = $_POST['nationality'];
   $occupation = $_POST['occupation'];
-  $remarks = $_POST['remarks']; // Fixed variable name
-  $files = $_POST['files'];
+  $remarks = $_POST['remarks']; 
+
+  // Handle file upload
+  $files = null; // Default value
+  if (isset($_FILES['files']) && $_FILES['files']['error'] == 0) {
+      $target_dir = "uploads/"; // Ensure this directory exists
+      $target_file = $target_dir . basename($_FILES["files"]["name"]);
+
+      // Move the uploaded file to the desired directory
+      if (move_uploaded_file($_FILES["files"]["tmp_name"], $target_file)) {
+          $files = $target_file; // Store the file path for database
+      } else {
+          // Handle error moving the file
+          $files = null; // Or handle this case as needed
+      }
+  }
 
   // Prepare SQL update statement
   $stmt = $dbh->prepare("
@@ -26,7 +40,7 @@ if (isset($_POST['edit_deceased_btn'])) {
           full_name = :full_name,
           date_of_birth = :date_of_birth,
           date_of_death = :date_of_death,
-          place_of_death = :place_of_death,
+          time_of_death = :time_of_death,
           cause_of_death = :cause_of_death,
           plot_number = :plot_number,
           family_lineage = :family_lineage,
@@ -47,7 +61,7 @@ if (isset($_POST['edit_deceased_btn'])) {
   $stmt->bindParam(':full_name', $full_name);
   $stmt->bindParam(':date_of_birth', $date_of_birth);
   $stmt->bindParam(':date_of_death', $date_of_death);
-  $stmt->bindParam(':place_of_death', $place_of_death);
+  $stmt->bindParam(':time_of_death', $time_of_death);
   $stmt->bindParam(':cause_of_death', $cause_of_death);
   $stmt->bindParam(':plot_number', $plot_number);
   $stmt->bindParam(':family_lineage', $family_lineage);
@@ -60,19 +74,19 @@ if (isset($_POST['edit_deceased_btn'])) {
   $stmt->bindParam(':nationality', $nationality);
   $stmt->bindParam(':occupation', $occupation);
   $stmt->bindParam(':remarks', $remarks);
-  $stmt->bindParam(':files', $files);
+  $stmt->bindParam(':files', $files); // Bind the file path
   $stmt->bindParam(':deceased_id', $deceased_id);
 
   // Execute the statement
   if ($stmt->execute()) {
-    header("Location: deceased_records.php?status=success&message=Record edited successfully");
-    exit();
-} else {
-    // Redirect to the main page with an error message
-    header("Location: deceased_records.php?status=error&message=Error editting record");
-    exit();
+      header("Location: deceased_records.php?status=success&message=Record edited successfully");
+      exit();
+  } else {
+      header("Location: deceased_records.php?status=error&message=Error editing record");
+      exit();
+  }
 }
-}
+
 
 ?>
 
@@ -105,164 +119,164 @@ if (isset($_POST['edit_deceased_btn'])) {
             </div>
             <!-- /.card-header -->
             <div class="card-body">
-                <table id="example1" class="table table-bordered table-striped">
-                <thead style="background-color: #0b603a; color: white;">
+                <div class="table-responsive">
+                  <table id="example1" class="table table-bordered table-striped">
+                    <thead style="background-color: #0b603a; color: white;">
+                          <tr>
+                              <th>ID</th>
+                              <th>Full Name</th>
+                              <th>Date of Birth</th>
+                              <th>Time of Death</th>
+                              <th>Cause of Death</th>
+                              <th>Plot Number</th>
+                              <th>Family Lineage</th>
+                              <th>Spouse</th>
+                              <th>Origin</th>
+                              <th>Age at Death</th>
+                              <th>Gender</th>
+                              <th>Place of Birth</th>
+                              <th>Place of Death</th>
+                              <th>Nationality/Ethnicity</th>
+                              <th>Occupation</th>
+                              <th>File Upload</th>
+                              <th>Remarks</th>
+                              <th>Actions</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                      <?php
+                          $stmt = $dbh->query("SELECT * FROM deceased_records");
+                          $count = 1;
+                          while($row = $stmt->fetch(PDO::FETCH_OBJ)) {
+                      ?>
                         <tr>
-                            <th>ID</th>
-                            <th>Full Name</th>
-                            <th>Date of Birth</th>
-                            <th>Place of Death</th>
-                            <th>Cause of Death</th>
-                            <th>Plot Number</th>
-                            <th>Family Lineage</th>
-                            <th>Spouse</th>
-                            <th>Origin</th>
-                            <th>Age at Death</th>
-                            <th>Gender</th>
-                            <th>Place of Birth</th>
-                            <th>Place of Death</th>
-                            <th>Nationality/Ethnicity</th>
-                            <th>Occupation</th>
-                            <th>File Upload</th>
-                            <th>Remarks</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <?php
-                        $stmt = $dbh->query("SELECT * FROM deceased_records");
-                        $count = 1;
-                        while($row = $stmt->fetch(PDO::FETCH_OBJ)) {    
-                    ?>
-                      <tr>
-                      <td><?= $count;?></td>
-                      <td><?= $row->full_name; ?></td>
-                      <td><?= $row->date_of_death; ?></td>
-                      <td><?= $row->place_of_death; ?></td>
-                      <td><?= $row->cause_of_death; ?></td>
-                      <td><?= $row->plot_number; ?></td>
-                      <td><?= $row->family_lineage; ?></td>
-                      <td><?= $row->spouse; ?></td>
-                      <td><?= $row->origin; ?></td>
-                      <td><?= $row->age_at_death; ?></td>
-                      <td><?= $row->gender; ?></td>
-                      <td><?= $row->place_of_birth; ?></td>
-                      <td><?= $row->place_of_death; ?></td>
-                      <td><?= $row->nationality; ?></td>
-                      <td><?= $row->occupation; ?></td>
-                      <td><?= isset($row->file_upload) ? $row->file_upload : 'N/A'; ?></td>
-                      <td><?= $row->remarks; ?></td>
-                      <td>
-                        <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal-success">View</button>
-                        
-                        <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editDeceasedModal<?= $row->deceased_id; ?>">Edit</button>
-                        <!-- Edit Deceased Modal -->
-                        <div class="modal fade" id="editDeceasedModal<?= $row->deceased_id; ?>">
-                          <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <h4 class="modal-title" id="editDeceasedModalLabel">Edit Deceased Details</h4>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                  <span aria-hidden="true">&times;</span>
-                                </button>
-                              </div>
-                              <div class="modal-body">
-                                <form action="" method="post" enctype="multipart/form-data">
-                                  <input type="hidden" name="deceased_id" value="<?= $row->deceased_id; ?>">
-                                  <div class="container">
-                                    <div class="row">
-                                      <div class="col-md-4 mb-3">
-                                        <label for="editName" class="form-label">Full Name</label>
-                                        <input type="text" class="form-control" id="editName" name="full_name" value="<?= $row->full_name; ?>" required>
-                                      </div>
-                                      <div class="col-md-4 mb-3">
-                                        <label for="editDateOfBirth" class="form-label">Date of Birth</label>
-                                        <input type="date" class="form-control" id="editDateOfBirth" name="date_of_birth" value="<?= $row->date_of_birth; ?>" required>
-                                      </div>
-                                      <div class="col-md-4 mb-3">
-                                        <label for="editDateOfDeath" class="form-label">Date of Death</label>
-                                        <input type="date" class="form-control" id="editDateOfDeath" name="date_of_death" value="<?= $row->date_of_death; ?>" required>
-                                      </div>
-                                      <div class="col-md-4 mb-3">
-                                        <label for="editTimeOfDeath" class="form-label">Time of Death</label>
-                                        <input type="time" class="form-control" id="editTimeOfDeath" name="place_of_death" value="<?= $row->place_of_death; ?>">
-                                      </div>
-                                      <div class="col-md-4 mb-3">
-                                        <label for="editCauseOfDeath" class="form-label">Cause of Death</label>
-                                        <input type="text" class="form-control" id="editCauseOfDeath" name="cause_of_death" value="<?= $row->cause_of_death; ?>">
-                                      </div>
-                                      <div class="col-md-4 mb-3">
-                                        <label for="editPlotNumber" class="form-label">Plot Number</label>
-                                        <input type="text" class="form-control" id="editPlotNumber" name="plot_number" value="<?= $row->plot_number; ?>">
-                                      </div>
-                                      <div class="col-md-4 mb-3">
-                                        <label for="editFamilyLineage" class="form-label">Family Lineage</label>
-                                        <input type="text" class="form-control" id="editFamilyLineage" name="family_lineage" value="<?= $row->family_lineage; ?>">
-                                      </div>
-                                      <div class="col-md-4 mb-3">
-                                        <label for="editSpouse" class="form-label">Spouse</label>
-                                        <input type="text" class="form-control" id="editSpouse" name="spouse" value="<?= $row->spouse; ?>">
-                                      </div>
-                                      <div class="col-md-4 mb-3">
-                                        <label for="editOrigin" class="form-label">Origin</label>
-                                        <input type="text" class="form-control" id="editOrigin" name="origin" value="<?= $row->origin; ?>">
-                                      </div>
-                                      <div class="col-md-4 mb-3">
-                                        <label for="editAgeAtDeath" class="form-label">Age at Death</label>
-                                        <input type="number" class="form-control" id="editAgeAtDeath" name="age_at_death" value="<?= $row->age_at_death; ?>">
-                                      </div>
-                                      <div class="col-md-4 mb-3">
-                                        <label for="editGender" class="form-label">Gender</label>
-                                        <select class="form-control" id="editGender" name="gender">
-                                          <option value="Male" <?= $row->gender == 'Male' ? 'selected' : ''; ?>>Male</option>
-                                          <option value="Female" <?= $row->gender == 'Female' ? 'selected' : ''; ?>>Female</option>
-                                        </select>
-                                      </div>
-                                      <div class="col-md-4 mb-3">
-                                        <label for="editPlaceOfBirth" class="form-label">Place of Birth</label>
-                                        <input type="text" class="form-control" id="editPlaceOfBirth" name="place_of_birth" value="<?= $row->place_of_birth; ?>">
-                                      </div>
-                                      <div class="col-md-4 mb-3">
-                                        <label for="editPlaceOfDeath" class="form-label">Place of Death</label>
-                                        <input type="text" class="form-control" id="editPlaceOfDeath" name="place_of_death" value="<?= $row->place_of_death; ?>">
-                                      </div>
-                                      <div class="col-md-4 mb-3">
-                                        <label for="editNationality" class="form-label">Nationality/Ethnicity</label>
-                                        <input type="text" class="form-control" id="editNationality" name="nationality" value="<?= $row->nationality; ?>">
-                                      </div>
-                                      <div class="col-md-4 mb-3">
-                                        <label for="editOccupation" class="form-label">Occupation</label>
-                                        <input type="text" class="form-control" id="editOccupation" name="occupation" value="<?= $row->occupation; ?>">
-                                      </div>
-                                      <div class="col-md-4 mb-3">
-                                        <label for="editFileUpload" class="form-label">File Upload</label>
-                                        <input type="file" class="form-control" id="editFileUpload" name="file_upload">
-                                        <small>Current: <?= isset($row->file_upload) ? $row->file_upload : 'N/A'; ?></small>
-                                      </div>
-                                      <div class="col-md-12 mb-3">
-                                        <label for="editRemarks" class="form-label">Remarks</label>
-                                        <textarea class="form-control" id="editRemarks" name="remarks" rows="3"><?= $row->remarks; ?></textarea>
+                        <td><?= $count;?></td>
+                        <td><?= $row->full_name; ?></td>
+                        <td><?= $row->date_of_death; ?></td>
+                        <td><?= $row->time_of_death; ?></td>
+                        <td><?= $row->cause_of_death; ?></td>
+                        <td><?= $row->plot_number; ?></td>
+                        <td><?= $row->family_lineage; ?></td>
+                        <td><?= $row->spouse; ?></td>
+                        <td><?= $row->origin; ?></td>
+                        <td><?= $row->age_at_death; ?></td>
+                        <td><?= $row->gender; ?></td>
+                        <td><?= $row->place_of_birth; ?></td>
+                        <td><?= $row->place_of_death; ?></td>
+                        <td><?= $row->nationality; ?></td>
+                        <td><?= $row->occupation; ?></td>
+                        <td><?= isset($row->files) ? $row->files : 'N/A'; ?></td>
+                        <td><?= $row->remarks; ?></td>
+                        <td>
+                          <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal-success" data-id="<?= $row->deceased_id; ?>">View</button>
+                          <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editDeceasedModal<?= $row->deceased_id; ?>">Edit</button>
+                          <!-- Edit Deceased Modal -->
+                          <div class="modal fade" id="editDeceasedModal<?= $row->deceased_id; ?>" tabindex="-1" role="dialog" aria-labelledby="editDeceasedModalLabel<?= $row->deceased_id; ?>" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                              <div class="modal-content">
+                                <div class="modal-header" style="background-color: #0b603a; color: white; border-color: #0b603a;">
+                                  <h4 class="modal-title" id="editDeceasedModalLabel<?= $row->deceased_id; ?>">Edit Deceased Details</h4>
+                                  <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <div class="modal-body">
+                                  <form action="" method="post" enctype="multipart/form-data">
+                                    <input type="hidden" name="deceased_id" value="<?= $row->deceased_id; ?>">
+                                    <div class="container">
+                                      <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                          <label for="editName" class="form-label">Full Name</label>
+                                          <input type="text" class="form-control" id="editName" name="full_name" value="<?= $row->full_name; ?>" required>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                          <label for="editDateOfBirth" class="form-label">Date of Birth</label>
+                                          <input type="date" class="form-control" id="editDateOfBirth" name="date_of_birth" value="<?= $row->date_of_birth; ?>" required>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                          <label for="editDateOfDeath" class="form-label">Date of Death</label>
+                                          <input type="date" class="form-control" id="editDateOfDeath" name="date_of_death" value="<?= $row->date_of_death; ?>" required>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                          <label for="editTimeOfDeath" class="form-label">Time of Death</label>
+                                          <input type="time" class="form-control" id="editTimeOfDeath" name="time_of_death" value="<?= $row->time_of_death; ?>">
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                          <label for="editCauseOfDeath" class="form-label">Cause of Death</label>
+                                          <input type="text" class="form-control" id="editCauseOfDeath" name="cause_of_death" value="<?= $row->cause_of_death; ?>">
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                          <label for="editPlotNumber" class="form-label">Plot Number</label>
+                                          <input type="text" class="form-control" id="editPlotNumber" name="plot_number" value="<?= $row->plot_number; ?>">
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                          <label for="editFamilyLineage" class="form-label">Family Lineage</label>
+                                          <input type="text" class="form-control" id="editFamilyLineage" name="family_lineage" value="<?= $row->family_lineage; ?>">
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                          <label for="editSpouse" class="form-label">Spouse</label>
+                                          <input type="text" class="form-control" id="editSpouse" name="spouse" value="<?= $row->spouse; ?>">
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                          <label for="editOrigin" class="form-label">Origin</label>
+                                          <input type="text" class="form-control" id="editOrigin" name="origin" value="<?= $row->origin; ?>">
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                          <label for="editAgeAtDeath" class="form-label">Age at Death</label>
+                                          <input type="number" class="form-control" id="editAgeAtDeath" name="age_at_death" value="<?= $row->age_at_death; ?>">
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                          <label for="editGender" class="form-label">Gender</label>
+                                          <select class="form-control" id="editGender" name="gender">
+                                            <option value="Male" <?= $row->gender == 'Male' ? 'selected' : ''; ?>>Male</option>
+                                            <option value="Female" <?= $row->gender == 'Female' ? 'selected' : ''; ?>>Female</option>
+                                          </select>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                          <label for="editPlaceOfBirth" class="form-label">Place of Birth</label>
+                                          <input type="text" class="form-control" id="editPlaceOfBirth" name="place_of_birth" value="<?= $row->place_of_birth; ?>">
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                          <label for="editPlaceOfDeath" class="form-label">Place of Death</label>
+                                          <input type="text" class="form-control" id="editPlaceOfDeath" name="place_of_death" value="<?= $row->place_of_death; ?>">
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                          <label for="editNationality" class="form-label">Nationality/Ethnicity</label>
+                                          <input type="text" class="form-control" id="editNationality" name="nationality" value="<?= $row->nationality; ?>">
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                          <label for="editOccupation" class="form-label">Occupation</label>
+                                          <input type="text" class="form-control" id="editOccupation" name="occupation" value="<?= $row->occupation; ?>">
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                          <label for="editFileUpload" class="form-label">File Upload</label>
+                                          <input type="file" class="form-control" id="editFileUpload" name="files">
+                                          <small>Current: <?= isset($row->files) ? $row->files : 'N/A'; ?></small>
+                                        </div>
+                                        <div class="col-md-12 mb-3">
+                                          <label for="editRemarks" class="form-label">Remarks</label>
+                                          <textarea class="form-control" id="editRemarks" name="remarks" rows="3"><?= $row->remarks; ?></textarea>
+                                        </div>
                                       </div>
                                     </div>
-                                  </div>
-                                  <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="submit" name="edit_deceased_btn" class="btn btn-primary">Save Changes</button>
-                                  </div>
-                                </form>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                      <button type="submit" name="edit_deceased_btn" class="btn btn-primary" style="background-color: #0b603a; border-color: #0b603a;">Save Changes</button>
+                                    </div>
+                                  </form>
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-
-                        <a href="delete_deceased.php?deceased_id=<?= $row->deceased_id; ?>" class="btn btn-sm btn-danger deleteDeceased" data-id="<?= $row->deceased_id; ?>">
-                          Delete
-                        </a>
-                        </td>
-                      </tr>
-                        <?php $count++; } ?>
-                    </tbody>
-                </table>
+                          <a href="delete_deceased.php?deceased_id=<?= $row->deceased_id; ?>" class="btn btn-sm btn-danger deleteDeceased" data-id="<?= $row->deceased_id; ?>">
+                            Delete
+                          </a>
+                          </td>
+                        </tr>
+                          <?php $count++; } ?>
+                      </tbody>
+                  </table>
+                </div>
             </div>
             <!-- /.card-body -->
         </div>
@@ -303,8 +317,8 @@ if (isset($_POST['edit_deceased_btn'])) {
                 <input type="date" class="form-control" id="addDateOfDeath" name="date_of_death" required>
               </div>
               <div class="col-md-4 mb-3">
-                <label for="addTimeOfDeath" class="form-label">Place of Death</label>
-                <input type="time" class="form-control" id="addTimeOfDeath" name="place_of_death">
+                <label for="addTimeOfDeath" class="form-label">Time of Death</label>
+                <input type="time" class="form-control" id="addTimeOfDeath" name="time_of_death">
               </div>
               <div class="col-md-4 mb-3">
                 <label for="addCauseOfDeath" class="form-label">Cause of Death</label>

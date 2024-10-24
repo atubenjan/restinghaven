@@ -5,7 +5,7 @@ if (isset($_POST['edit_deceased_btn'])) {
   $full_name = $_POST['full_name'];
   $date_of_birth = $_POST['date_of_birth'];
   $date_of_death = $_POST['date_of_death'];
-  $time_of_death = $_POST['time_of_death'];
+  $place_of_death = $_POST['place_of_death'];
   $cause_of_death = $_POST['cause_of_death'];
   $plot_number = $_POST['plot_number'];
   $family_lineage = $_POST['family_lineage'];
@@ -26,7 +26,7 @@ if (isset($_POST['edit_deceased_btn'])) {
           full_name = :full_name,
           date_of_birth = :date_of_birth,
           date_of_death = :date_of_death,
-          time_of_death = :time_of_death,
+          place_of_death = :place_of_death,
           cause_of_death = :cause_of_death,
           plot_number = :plot_number,
           family_lineage = :family_lineage,
@@ -47,7 +47,7 @@ if (isset($_POST['edit_deceased_btn'])) {
   $stmt->bindParam(':full_name', $full_name);
   $stmt->bindParam(':date_of_birth', $date_of_birth);
   $stmt->bindParam(':date_of_death', $date_of_death);
-  $stmt->bindParam(':time_of_death', $time_of_death);
+  $stmt->bindParam(':place_of_death', $place_of_death);
   $stmt->bindParam(':cause_of_death', $cause_of_death);
   $stmt->bindParam(':plot_number', $plot_number);
   $stmt->bindParam(':family_lineage', $family_lineage);
@@ -111,7 +111,7 @@ if (isset($_POST['edit_deceased_btn'])) {
                             <th>ID</th>
                             <th>Full Name</th>
                             <th>Date of Birth</th>
-                            <th>Time of Death</th>
+                            <th>Place of Death</th>
                             <th>Cause of Death</th>
                             <th>Plot Number</th>
                             <th>Family Lineage</th>
@@ -138,7 +138,7 @@ if (isset($_POST['edit_deceased_btn'])) {
                       <td><?= $count;?></td>
                       <td><?= $row->full_name; ?></td>
                       <td><?= $row->date_of_death; ?></td>
-                      <td><?= $row->time_of_death; ?></td>
+                      <td><?= $row->place_of_death; ?></td>
                       <td><?= $row->cause_of_death; ?></td>
                       <td><?= $row->plot_number; ?></td>
                       <td><?= $row->family_lineage; ?></td>
@@ -185,7 +185,7 @@ if (isset($_POST['edit_deceased_btn'])) {
                                       </div>
                                       <div class="col-md-4 mb-3">
                                         <label for="editTimeOfDeath" class="form-label">Time of Death</label>
-                                        <input type="time" class="form-control" id="editTimeOfDeath" name="time_of_death" value="<?= $row->time_of_death; ?>">
+                                        <input type="time" class="form-control" id="editTimeOfDeath" name="place_of_death" value="<?= $row->place_of_death; ?>">
                                       </div>
                                       <div class="col-md-4 mb-3">
                                         <label for="editCauseOfDeath" class="form-label">Cause of Death</label>
@@ -303,8 +303,8 @@ if (isset($_POST['edit_deceased_btn'])) {
                 <input type="date" class="form-control" id="addDateOfDeath" name="date_of_death" required>
               </div>
               <div class="col-md-4 mb-3">
-                <label for="addTimeOfDeath" class="form-label">Time of Death</label>
-                <input type="time" class="form-control" id="addTimeOfDeath" name="time_of_death">
+                <label for="addTimeOfDeath" class="form-label">Place of Death</label>
+                <input type="time" class="form-control" id="addTimeOfDeath" name="place_of_death">
               </div>
               <div class="col-md-4 mb-3">
                 <label for="addCauseOfDeath" class="form-label">Cause of Death</label>

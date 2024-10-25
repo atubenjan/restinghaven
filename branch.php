@@ -38,7 +38,7 @@ $managers = $managerStmt->fetchAll(PDO::FETCH_OBJ);
           <table id="example1" class="table table-bordered table-striped">
             <thead style="background-color: #0b603a; color: white;">
               <tr>
-                <th>ID</th>
+                <th>Branch ID</th>
                 <th>Branch Name</th>
                 <th>Location</th>
                 <th>Branch Manager</th>
@@ -53,7 +53,7 @@ $managers = $managerStmt->fetchAll(PDO::FETCH_OBJ);
               while ($row = $branchStmt->fetch(PDO::FETCH_OBJ)) {
               ?>
               <tr>
-                <td><?= $count; ?></td>
+                <td><?= $row->branch_id; ?></td>
                 <td><?= $row->branch_name; ?></td>
                 <td><?= $row->location; ?></td>
                 <td><?= $row->branch_manager; ?></td>
@@ -75,34 +75,48 @@ $managers = $managerStmt->fetchAll(PDO::FETCH_OBJ);
                           </button>
                         </div>
                         <div class="modal-body">
-                          <form method="POST">
-                            <input type="hidden" name="branch_id" value="<?= $row->branch_id; ?>">
-                            
-                            <div class="mb-3">
-                              <label for="editBranchName" class="form-label">Branch Name</label>
-                              <input type="text" class="form-control" id="editBranchName" name="branch_name" value="<?= $row->branch_name; ?>" required>
-                            </div>
-                            <div class="mb-3">
-                              <label for="editBranchLocation" class="form-label">Location</label>
-                              <input type="text" class="form-control" id="editBranchLocation" name="location" value="<?= $row->location; ?>" required>
-                            </div>
-                            <div class="mb-3">
-                              <label for="editBranchManager" class="form-label">Branch Manager</label>
-                              <select class="form-control" id="editBranchManager" name="branch_manager" required>
-                                <option value="" selected disabled>Select a Manager</option>
-                                <?php foreach ($managers as $manager): ?>
-                                    <option value="<?= $manager->username; ?>" <?= ($row->branch_manager == $manager->username) ? 'selected' : ''; ?>><?= htmlspecialchars($manager->username); ?></option>
-                                <?php endforeach; ?>
-                              </select>
-                            </div>
+  <form method="POST">
+    <input type="hidden" name="branch_id" value="<?= $row->branch_id; ?>">
 
-                            <div class="mb-3">
-                              <label for="editBranchContact" class="form-label">Contact</label>
-                              <input type="text" class="form-control" id="editBranchContact" name="contact" value="<?= $row->contact; ?>" required>
-                            </div>
-                            <button type="submit" name="edit_branch" class="btn btn-primary" style="background-color: #0b603a; color: white;">Update Branch</button>
-                          </form>
-                        </div>
+    <div class="row">
+      <!-- Left Column -->
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label for="editBranchName" class="form-label">Branch Name</label>
+          <input type="text" class="form-control" id="editBranchName" name="branch_name" value="<?= $row->branch_name; ?>" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="editBranchManager" class="form-label">Branch Manager</label>
+          <select class="form-control" id="editBranchManager" name="branch_manager" required>
+            <option value="" selected disabled>Select a Manager</option>
+            <?php foreach ($managers as $manager): ?>
+              <option value="<?= $manager->username; ?>" <?= ($row->branch_manager == $manager->username) ? 'selected' : ''; ?>>
+                <?= htmlspecialchars($manager->username); ?>
+              </option>
+            <?php endforeach; ?>
+          </select>
+        </div>
+      </div>
+
+      <!-- Right Column -->
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label for="editBranchLocation" class="form-label">Location</label>
+          <input type="text" class="form-control" id="editBranchLocation" name="location" value="<?= $row->location; ?>" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="editBranchContact" class="form-label">Contact</label>
+          <input type="text" class="form-control" id="editBranchContact" name="contact" value="<?= $row->contact; ?>" required>
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" name="edit_branch" class="btn btn-primary" style="background-color: #0b603a; color: white;">Update Branch</button>
+  </form>
+</div>
+
                       </div>
                     </div>
                   </div>
@@ -133,29 +147,35 @@ $managers = $managerStmt->fetchAll(PDO::FETCH_OBJ);
       </div>
       <div class="modal-body">
         <form action="" method="POST">
-          <div class="mb-3">
-            <label for="addBranchName" class="form-label">Branch Name</label>
-            <input type="text" class="form-control" id="addBranchName" name="branch_name" required>
-          </div>
-          <div class="mb-3">
-            <label for="addBranchLocation" class="form-label">Location</label>
-            <input type="text" class="form-control" id="addBranchLocation" name="location" required>
-          </div>
-          <div class="mb-3">
-            <label for="addBranchManager" class="form-label">Branch Manager</label>
-            <select class="form-control" id="addBranchManager" name="branch_manager" required>
-              <option value="">Select a Manager</option>
-              <?php
-              $stmt = $dbh->query("SELECT id, username FROM users WHERE user_role = 'manager'");
-              while ($row = $stmt->fetch(PDO::FETCH_OBJ)) {
-                  echo "<option value=\"{$row->id}\">{$row->username}</option>";
-              }
-              ?>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="addBranchContact" class="form-label">Contact</label>
-            <input type="text" class="form-control" id="addBranchContact" name="contact" required>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="addBranchName" class="form-label">Branch Name</label>
+                <input type="text" class="form-control" id="addBranchName" name="branch_name" required>
+              </div>
+              <div class="mb-3">
+                <label for="addBranchLocation" class="form-label">Location</label>
+                <input type="text" class="form-control" id="addBranchLocation" name="location" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="addBranchManager" class="form-label">Branch Manager</label>
+                <select class="form-control" id="addBranchManager" name="branch_manager" required>
+                  <option value="">Select a Manager</option>
+                  <?php
+                  $stmt = $dbh->query("SELECT id, username FROM users WHERE user_role = 'manager'");
+                  while ($row = $stmt->fetch(PDO::FETCH_OBJ)) {
+                      echo "<option value=\"{$row->id}\">{$row->username}</option>";
+                  }
+                  ?>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="addBranchContact" class="form-label">Contact</label>
+                <input type="text" class="form-control" id="addBranchContact" name="contact" required>
+              </div>
+            </div>
           </div>
           <button type="submit" name="add_branch_btn" class="btn btn-primary" style="background-color: #0b603a;">Submit</button>
         </form>
@@ -163,5 +183,7 @@ $managers = $managerStmt->fetchAll(PDO::FETCH_OBJ);
     </div>
   </div>
 </div>
+
+
 
 <?php include 'footer.php'; // Include footer ?>

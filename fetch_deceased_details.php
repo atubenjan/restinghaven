@@ -23,7 +23,7 @@ if (isset($_POST['id'])) {
             $html .= '<p><strong>Name:</strong> ' . htmlspecialchars($record['name'], ENT_QUOTES, 'UTF-8') . '</p>';
             $html .= '<p><strong>Date of Birth:</strong> ' . htmlspecialchars($record['date_of_birth'], ENT_QUOTES, 'UTF-8') . '</p>';
             $html .= '<p><strong>Date of Death:</strong> ' . htmlspecialchars($record['date_of_death'], ENT_QUOTES, 'UTF-8') . '</p>';
-            $html .= '<p><strong>Time of Death:</strong> ' . htmlspecialchars($record['time_of_death'], ENT_QUOTES, 'UTF-8') . '</p>';
+            $html .= '<p><strong>Time of Death:</strong> ' . htmlspecialchars($record['place_of_death'], ENT_QUOTES, 'UTF-8') . '</p>';
             $html .= '<p><strong>Cause of Death:</strong> ' . htmlspecialchars($record['cause_of_death'], ENT_QUOTES, 'UTF-8') . '</p>';
             $html .= '<p><strong>Plot Number:</strong> ' . htmlspecialchars($record['plot_number'], ENT_QUOTES, 'UTF-8') . '</p>';
             $html .= '<p><strong>Family Lineage:</strong> ' . htmlspecialchars($record['family_lineage'], ENT_QUOTES, 'UTF-8') . '</p>';

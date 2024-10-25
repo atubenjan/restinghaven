@@ -79,7 +79,7 @@ if (isset($_POST['login_btn'])) {
 }
 // User Registration
 // add_branch
-elseif (isset($_POST['add_branch_btn'])) { // Corrected the button name to match the form submission
+elseif (isset($_POST['add_branch_btn'])) {
     // Sanitize input
     $branch_name = trim($_POST['branch_name']);
     $location = trim($_POST['location']);
@@ -126,6 +126,7 @@ elseif (isset($_POST['add_branch_btn'])) { // Corrected the button name to match
         exit();
     }
 }
+
 
 // edit_branch
 elseif (isset($_POST['edit_branch'])) {
@@ -389,41 +390,128 @@ elseif (isset($_POST['add_lot_btn'])) {
     }
 }
 // add deceased record
-elseif (isset($_POST['add_deceased_btn'])) {
+if (isset($_POST['add_deceased_btn'])) {
     // Safely assign and trim POST values
     $full_name = trim($_POST['full_name']);
     $date_of_birth = trim($_POST['date_of_birth']);
     $date_of_death = trim($_POST['date_of_death']);
-    $time_of_death = trim($_POST['time_of_death']);
+    $place_of_death = trim($_POST['place_of_death']);
     $cause_of_death = trim($_POST['cause_of_death']);
     $plot_number = trim($_POST['plot_number']);
     $family_lineage = trim($_POST['family_lineage']);
     $spouse = trim($_POST['spouse']);
     $origin = trim($_POST['origin']);
     $place_of_birth = trim($_POST['place_of_birth']);
-    $place_of_death = trim($_POST['place_of_death']);
-    $nationality = trim($_POST['nationality']); // Update to match the column name in the database
+    $nationality = trim($_POST['nationality']);
     $occupation = trim($_POST['occupation']);
     $remarks = trim($_POST['remarks']);
-    $files = isset($_FILES['file']['name']) ? $_FILES['file']['name'] : null; // Handle file uploads
+    $age_at_death = trim($_POST['age_at_death']); // Get age at death
+    $gender = trim($_POST['gender']); // Get gender
+
+    // Initialize the files variable
+    $files = null; // Default to null
+
+    // Handle file uploads if a file was uploaded
+    if (isset($_FILES['file_upload']) && $_FILES['file_upload']['error'] == UPLOAD_ERR_OK) {
+        // Define a directory to store the uploaded files
+        $upload_dir = 'uploads/'; // Make sure this directory exists and is writable
+
+        // Ensure the upload directory exists
+        if (!is_dir($upload_dir)) {
+            mkdir($upload_dir, 0755, true); // Create directory if it doesn't exist
+        }
+
+        // Create a unique file name to avoid overwriting existing files
+        $file_name = uniqid() . '_' . basename($_FILES['file_upload']['name']);
+        $target_file = $upload_dir . $file_name;
+
+        // Move the uploaded file to the target directory
+        if (move_uploaded_file($_FILES['file_upload']['tmp_name'], $target_file)) {
+            $files = $target_file; // Store the file path in the variable
+        } else {
+            // Handle error if file cannot be moved
+            header("Location: deceased_records.php?status=error&message=File upload failed.");
+            exit();
+        }
+    }
+
+    // Generate the deceased_id in the format DRHC001
+    $check = $dbh->query("SELECT deceased_id FROM deceased_records"); // Check if any records exist
+
+    if ($check->rowCount() == 0) {
+        // If no records exist, start with 'DRHC001'
+        $new_deceased_id = 'DRHC001';
+    } else {
+        // Fetch the last deceased_id and generate a new one
+        $stmt = $dbh->query("SELECT deceased_id FROM deceased_records ORDER BY deceased_id DESC LIMIT 1");
+        $last_deceased = $stmt->fetch(PDO::FETCH_OBJ);
+
+        if ($last_deceased) {
+            // Extract numeric part from the last deceased_id and increment it
+            $last_id_num = (int) substr($last_deceased->deceased_id, 4); // Get the number part after 'DRHC'
+            $new_id_num = $last_id_num + 1;
+            $new_deceased_id = 'DRHC' . str_pad($new_id_num, 3, '0', STR_PAD_LEFT); // Create new deceased_id
+        } else {
+            // If no deceased records exist, start with 'DRHC001'
+            $new_deceased_id = 'DRHC001';
+        }
+    }
 
     // Proceed with the database query
-    $result = dbCreate("INSERT INTO deceased_records (full_name, date_of_birth, date_of_death, time_of_death, cause_of_death, plot_number, family_lineage, spouse, origin, place_of_birth, place_of_death, nationality, occupation, remarks, files) VALUES (:full_name, :date_of_birth, :date_of_death, :time_of_death, :cause_of_death, :plot_number, :family_lineage, :spouse, :origin, :place_of_birth, :place_of_death, :nationality, :occupation, :remarks, :files)", [
+    $result = dbCreate("INSERT INTO deceased_records (
+        deceased_id,  
+        full_name, 
+        date_of_birth, 
+        date_of_death, 
+        place_of_death, 
+        cause_of_death, 
+        plot_number, 
+        family_lineage, 
+        spouse, 
+        origin, 
+        place_of_birth, 
+        nationality, 
+        occupation, 
+        age_at_death, 
+        gender, 
+        remarks, 
+        files
+    ) VALUES (
+        :deceased_id,  
+        :full_name, 
+        :date_of_birth, 
+        :date_of_death, 
+        :place_of_death, 
+        :cause_of_death, 
+        :plot_number, 
+        :family_lineage, 
+        :spouse, 
+        :origin, 
+        :place_of_birth, 
+        :nationality, 
+        :occupation, 
+        :age_at_death, 
+        :gender, 
+        :remarks, 
+        :files
+    )", [
+        ':deceased_id' => $new_deceased_id, // Bind new ID
         ':full_name' => $full_name,
         ':date_of_birth' => $date_of_birth,
         ':date_of_death' => $date_of_death,
-        ':time_of_death' => $time_of_death,
+        ':place_of_death' => $place_of_death,
         ':cause_of_death' => $cause_of_death,
         ':plot_number' => $plot_number,
         ':family_lineage' => $family_lineage,
         ':spouse' => $spouse,
         ':origin' => $origin,
         ':place_of_birth' => $place_of_birth,
-        ':place_of_death' => $place_of_death,
-        ':nationality' => $nationality, // Make sure this column name exists in the database
+        ':nationality' => $nationality,
         ':occupation' => $occupation,
+        ':age_at_death' => $age_at_death,  // Bind the age at death
+        ':gender' => $gender,                // Bind the gender
         ':remarks' => $remarks,
-        ':files' => $files
+        ':files' => $files // Save the file path in the database
     ]);
 
     if ($result == 1) {
@@ -435,13 +523,14 @@ elseif (isset($_POST['add_deceased_btn'])) {
     }
 }
 
+   
 if (isset($_POST['burial_record_btn'])) {
     // Extract and trim POST variables
     $burial_date = trim($_POST['burial_date']);
     $grave_number = trim($_POST['grave_number']);
     $deceased_id = trim($_POST['deceased_id']);
     $cemetery_id = trim($_POST['cemetery_id']);
-    $plot_id = trim($_POST['plot_id']);
+  
     $time_of_burial = trim($_POST['time_of_burial']);
     $burial_type = trim($_POST['burial_type']);
     $officiant = trim($_POST['officiant']);
@@ -453,9 +542,9 @@ if (isset($_POST['burial_record_btn'])) {
 
     // Prepare the SQL query
     $sql = "INSERT INTO burial_records 
-        (burial_date, grave_number, deceased_id, cemetery_id, plot_id, time_of_burial, burial_type, officiant, burial_status, remarks, created_at)
+        (burial_date, grave_number, deceased_id, cemetery_id,  time_of_burial, burial_type, officiant, burial_status, remarks, created_at)
         VALUES 
-        (:burial_date, :grave_number, :deceased_id, :cemetery_id, :plot_id, :time_of_burial, :burial_type, :officiant, :burial_status, :remarks, :created_at)";
+        (:burial_date, :grave_number, :deceased_id, :cemetery_id, :time_of_burial, :burial_type, :officiant, :burial_status, :remarks, :created_at)";
 
     // Execute the database query
     $result = dbCreate($sql, [
@@ -463,7 +552,7 @@ if (isset($_POST['burial_record_btn'])) {
         ':grave_number' => $grave_number,
         ':deceased_id' => $deceased_id,
         ':cemetery_id' => $cemetery_id,
-        ':plot_id' => $plot_id,
+       
         ':time_of_burial' => $time_of_burial,
         ':burial_type' => $burial_type,
         ':officiant' => $officiant,
@@ -528,6 +617,29 @@ elseif (isset($_POST['add_work_order_btn'])) {
 elseif (isset($_POST['add_customer_btn'])) {
     trim(extract($_POST));
 
+    // Initialize error array to collect validation errors
+    $errors = [];
+
+    // Validate Name: Should not be empty and should contain only letters and spaces
+    if (empty($name) || !preg_match("/^[a-zA-Z\s]+$/", $name)) {
+        $errors[] = "Name must contain only letters and spaces.";
+    }
+
+    // Validate Phone: Should not be empty and should match a valid phone number pattern
+    // Example pattern for a phone number (10-15 digits)
+    if (empty($phone) || !preg_match("/^[0-9]{10,15}$/", $phone)) {
+        $errors[] = "Phone number must contain 10 to 15 digits.";
+    }
+
+    // Check if there are validation errors
+    if (count($errors) > 0) {
+        // Redirect with error messages
+        $error_message = implode(', ', $errors);
+        header("Location: customer_management.php?status=error&message=$error_message");
+        exit();
+    }
+
+    // If no validation errors, proceed with database insertion
     $result = dbCreate("INSERT INTO customers (name, email, phone, remarks) VALUES (:name, :email, :phone, :remarks)", [
         ':name' => $name,
         ':email' => $email,
@@ -535,14 +647,15 @@ elseif (isset($_POST['add_customer_btn'])) {
         ':remarks' => $remarks,
     ]);
 
-     if ($result == 1) {
-            header("Location: customer_management.php?status=success&message=Customer added successfully.");
-            exit();
+    if ($result == 1) {
+        header("Location: customer_management.php?status=success&message=Customer added successfully.");
+        exit();
     } else {
         header("Location: customer_management.php?status=error&message=Customer addition failed.");
         exit();
     }
 }
+
 
 // edit customer
 elseif (isset($_POST['edit_customer_btn'])) {
@@ -611,47 +724,67 @@ elseif (isset($_POST['grave_mapping_btn'])) {
     }
 }
 if (isset($_POST['add_grave_btn'])) { 
-    // Fetch and sanitize POST data
-    $cemetery_id = isset($_POST['Cemetery_id']) ? trim($_POST['Cemetery_id']) : null;
-    $plot_number = isset($_POST['Plot_number']) ? trim($_POST['Plot_number']) : null;
-    $size = isset($_POST['size']) ? trim($_POST['size']) : null;
-    $section_name = isset($_POST['section_name']) ? trim($_POST['section_name']) : null;
-    $availability_status = isset($_POST['Availability_Status']) ? trim($_POST['Availability_Status']) : null;
-    $price = isset($_POST['price']) ? trim($_POST['price']) : null;
-    $coordinates = isset($_POST['coordinates']) ? trim($_POST['coordinates']) : null;
+    // Safely assign and trim POST values
+    $plot_number = trim($_POST['Plot_number'] ?? '');
+    $lot = trim($_POST['lot'] ?? '');
+    $size = trim($_POST['size'] ?? '');
+    $section_name = trim($_POST['section_name'] ?? '');
+    $availability_status = trim($_POST['Availability_Status'] ?? '');
+    $price = trim($_POST['price'] ?? '');
+    $coordinates = trim($_POST['coordinates'] ?? '');
 
     // Ensure all required fields are available
-    if ($cemetery_id && $plot_number && $size && $section_name && $availability_status && $price && $coordinates) {
-        // Prepare the SQL statement with PDO
-        $stmt = $dbh->prepare("
-            INSERT INTO grave_management (cemetery_id, plot_number, size, section_name, availability_status, price, coordinates)
-            VALUES (:cemetery_id, :plot_number, :size, :section_name, :availability_status, :price, :coordinates)
-        ");
+    if ($plot_number && $size && $section_name && $availability_status && $price && $coordinates) {
+        // Fetch the last cemetery_id and generate a new one
+        $stmt = $dbh->query("SELECT cemetery_id FROM grave_management ORDER BY cemetery_id DESC LIMIT 1");
+        $last_cemetery = $stmt->fetch(PDO::FETCH_OBJ);
 
-        // Bind the parameters to the SQL query
-        $params = [
-            ':cemetery_id' => $cemetery_id,
-            ':plot_number' => $plot_number,
-            ':size' => $size,
-            ':section_name' => $section_name,
-            ':availability_status' => $availability_status,
-            ':price' => $price,
-            ':coordinates' => $coordinates,
-        ];
-
-        // Execute the query and check for success
-        if ($stmt->execute($params)) {
-            header("Location: grave_management.php?status=success&message=Lot added successfully");
-            exit();
+        if ($last_cemetery) {
+            // Extract numeric part from the last cemetery_id and increment it
+            $last_id_num = (int) substr($last_cemetery->cemetery_id, 4); // Get the number part after 'CRHC'
+            $new_id_num = $last_id_num + 1;
+            $cemetery_id = 'CRHC' . str_pad($new_id_num, 4, '0', STR_PAD_LEFT); // Create new cemetery_id
         } else {
-            header("Location: grave_management.php?status=error&message=Error adding lot");
+            // If no cemetery exists, start with 'CRHC0001'
+            $cemetery_id = 'CRHC0001';
+        }
+
+        // Check if the plot_number already exists
+        $check = $dbh->prepare("SELECT * FROM grave_management WHERE plot_number = :plot_number");
+        $check->execute([':plot_number' => $plot_number]);
+
+        if ($check->rowCount() == 0) {
+            // Proceed with the database query using dbCreate
+            $result = dbCreate("INSERT INTO grave_management (cemetery_id, plot_number,lot, size, section_name, availability_status, price, coordinates) 
+                                VALUES (:cemetery_id, :plot_number,:lot, :size,  :section_name, :availability_status, :price, :coordinates)", [
+                ':cemetery_id' => $cemetery_id,
+                ':plot_number' => $plot_number,
+                ':lot'=>$lot,
+                ':size' => $size,
+                ':section_name' => $section_name,
+                ':availability_status' => $availability_status,
+                ':price' => $price,
+                ':coordinates' => $coordinates,
+            ]);
+
+            if ($result == 1) {
+                header("Location: grave_management.php?status=success&message=Lot added successfully.");
+                exit();
+            } else {
+                header("Location: grave_management.php?status=error&message=Error adding lot.");
+                exit();
+            }
+        } else {
+            // Handle the case where the plot_number already exists
+            header("Location: grave_management.php?status=error&message=Grave number already exists.");
             exit();
         }
     } else {
         // Handle the error where not all required fields are filled
-        header("Location: grave_management.php.php?error=Missing required fields");
+        header("Location: grave_management.php?error=Missing required fields.");
         exit();
     }
 }
+
 
 ?>

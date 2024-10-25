@@ -34,7 +34,7 @@
           <thead style="background-color: #0b603a; color: white;">
               <tr>
                 <th>Customer ID</th>
-                <th>Name</th>
+                <th>Full Names</th>
                 <th>Email</th>
                 <th>Phone</th>
                 <th>Remarks/Notes</th>
@@ -124,21 +124,25 @@
       </div>
       <div class="modal-body">
         <form action="" method="POST">
-          <div class="mb-3">
-            <label for="addCustomerName" class="form-label">Name</label>
-            <input type="text" class="form-control" id="addCustomerName" name="name" required>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="addCustomerName" class="form-label">Name</label>
+              <input type="text" class="form-control" id="addCustomerName" name="name" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="addCustomerEmail" class="form-label">Email</label>
+              <input type="email" class="form-control" id="addCustomerEmail" name="email" required>
+            </div>
           </div>
-          <div class="mb-3">
-            <label for="addCustomerEmail" class="form-label">Email</label>
-            <input type="email" class="form-control" id="addCustomerEmail" name="email" required>
-          </div>
-          <div class="mb-3">
-            <label for="addCustomerPhone" class="form-label">Phone</label>
-            <input type="text" class="form-control" id="addCustomerPhone" name="phone" required>
-          </div>
-          <div class="mb-3">
-            <label for="addCustomerRemarks" class="form-label">Remarks/Notes</label>
-            <textarea class="form-control" id="addCustomerRemarks" name="remarks" rows="3"></textarea>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="addCustomerPhone" class="form-label">Phone</label>
+              <input type="text" class="form-control" id="addCustomerPhone" name="phone" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="addCustomerRemarks" class="form-label">Remarks/Notes</label>
+              <textarea class="form-control" id="addCustomerRemarks" name="remarks" rows="3"></textarea>
+            </div>
           </div>
           <button type="submit" name="add_customer_btn" class="btn btn-primary" style="background-color: #0b603a; color: white;">Submit</button>
         </form>
@@ -146,6 +150,7 @@
     </div>
   </div>
 </div>
+
 <!-- Edit Customer Modal -->
 <div class="modal fade" id="editCustomerModal" tabindex="-1" aria-labelledby="editCustomerModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -157,21 +162,25 @@
       <div class="modal-body">
         <form id="editCustomerForm">
           <input type="hidden" id="editCustomerId" name="id">
-          <div class="mb-3">
-            <label for="editCustomerName" class="form-label">Name</label>
-            <input type="text" class="form-control" id="editCustomerName" name="name" required>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="editCustomerName" class="form-label">Name</label>
+              <input type="text" class="form-control" id="editCustomerName" name="name" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="editCustomerEmail" class="form-label">Email</label>
+              <input type="email" class="form-control" id="editCustomerEmail" name="email" required>
+            </div>
           </div>
-          <div class="mb-3">
-            <label for="editCustomerEmail" class="form-label">Email</label>
-            <input type="email" class="form-control" id="editCustomerEmail" name="email" required>
-          </div>
-          <div class="mb-3">
-            <label for="editCustomerPhone" class="form-label">Phone</label>
-            <input type="text" class="form-control" id="editCustomerPhone" name="phone" required>
-          </div>
-          <div class="mb-3">
-            <label for="editCustomerRemarks" class="form-label">Remarks/Notes</label>
-            <textarea class="form-control" id="editCustomerRemarks" name="remarks" rows="3"></textarea>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="editCustomerPhone" class="form-label">Phone</label>
+              <input type="text" class="form-control" id="editCustomerPhone" name="phone" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="editCustomerRemarks" class="form-label">Remarks/Notes</label>
+              <textarea class="form-control" id="editCustomerRemarks" name="remarks" rows="3"></textarea>
+            </div>
           </div>
           <button type="submit" class="btn btn-primary">Save changes</button>
         </form>
@@ -204,4 +213,42 @@
     // Handle edit customer form submission
     alert('Edit Customer Form submitted');
   });
+
+// JavaScript to validate form fields
+document.getElementById('addCustomerForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    if (validateForm()) {
+        alert('Add Customer Form submitted');
+        // You can proceed with form submission logic
+    }
+});
+
+document.getElementById('editCustomerForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    if (validateForm()) {
+        alert('Edit Customer Form submitted');
+        // You can proceed with form submission logic
+    }
+});
+
+function validateForm() {
+    let name = document.getElementById('addCustomerName').value || document.getElementById('editCustomerName').value;
+    let phone = document.getElementById('addCustomerPhone').value || document.getElementById('editCustomerPhone').value;
+
+    // Name validation (only letters and spaces)
+    let nameRegex = /^[a-zA-Z\s]+$/;
+    if (!nameRegex.test(name)) {
+        alert('Name should only contain letters and spaces.');
+        return false;
+    }
+
+    // Phone validation (10 digits)
+    let phoneRegex = /^\d{10}$/;
+    if (!phoneRegex.test(phone)) {
+        alert('Phone number should be 10 digits.');
+        return false;
+    }
+
+    return true;
+}
 </script>

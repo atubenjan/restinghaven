@@ -80,11 +80,13 @@ if (isset($_POST['edit_grave_btn'])) {
                 <table id="example1" class="table table-bordered table-striped">
                     <thead style="background-color: #0b603a; color: white;">
                             <tr>
-                                <th>ID</th>
-                                <th>Cemetery</th>
+                                <th>Cementery ID</th>
+                            
                                 <th>Plot Number</th>
-                                <th>Section</th>
+                                <th>Lot</th>
                                 <th>Size</th>
+                                <th>Section</th>                            
+                               
                                 <th>Status</th>
                                 <th>Price</th>
                                 <th>Coordinates</th>
@@ -101,19 +103,26 @@ if (isset($_POST['edit_grave_btn'])) {
                             while ($row = $stmt->fetch(PDO::FETCH_OBJ)) {
                             ?>
                             <tr>
-                                <td><?= $count; ?></td>
+                                
                                 <td><?= htmlspecialchars($row->cemetery_id); ?></td>
                                 <td><?= htmlspecialchars($row->plot_number); ?></td>
-                                <td><?= htmlspecialchars($row->section_name); ?></td>
+                                <td><?= htmlspecialchars($row->lot); ?></td>
                                 <td><?= htmlspecialchars($row->size); ?></td>
+                                <td><?= htmlspecialchars($row->section_name); ?></td>
+                               
                                 <td><?= htmlspecialchars($row->availability_status); ?></td>
-                                <td><?= htmlspecialchars($row->price); ?></td>
+                                <td><?= htmlspecialchars($row->price); ?>UGX</td>
                                 <td><?= htmlspecialchars($row->coordinates); ?></td>
                                 <td>
-                                    <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#edit-modal<?= $row->id; ?>">
+                                    <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#edit-modal<?= $row->cemetery_id; ?>">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <div class="modal fade" id="edit-modal<?= $row->id ?>">
+
+
+                                  
+
+
+                                    <div class="modal fade" id="edit-modal<?= $row->cemetery_id ?>">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                                                 <div class="modal-header" style="background-color: #0b603a; color: white;">
@@ -122,54 +131,74 @@ if (isset($_POST['edit_grave_btn'])) {
                                                         <span aria-hidden="true">&times;</span>
                                                     </button>
                                                 </div>
+
+
+
+
+
+
+
                                                 <div class="modal-body">
-                                                    <form method="POST">
-                                                        <input type="hidden" name="id" value="<?= $row->id; ?>">
-                                                        <div class="mb-3">
-                                                            <label for="editCemeteryID" class="form-label">Cemetery ID</label>
-                                                            <input type="number" class="form-control" id="editCemeteryID" name="cemetery_id" value="<?= $row->cemetery_id; ?>" required>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label for="editPlotNumber" class="form-label">Plot Number</label>
-                                                            <input type="text" class="form-control" id="editPlotNumber" name="plot_number" value="<?= $row->plot_number; ?>" required>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label for="editSize" class="form-label">Category</label>
-                                                            <select class="form-control" id="editAvailabilityStatus" name="size" required>
-                                                                <option value="" selected disabled>choose category..</option>
-                                                                <option value="single"  <?= ($row->size == 'single') ? 'selected' : ''; ?>>Single</option>
-                                                                <option value="double" <?= ($row->size == 'double') ? 'selected' : ''; ?>>Double</option>
-                                                                <option value="family" <?= ($row->size == 'family') ? 'selected' : ''; ?>>Family</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label for="editAvailabilityStatus" class="form-label">Availability Status</label>
-                                                            <select class="form-control" id="editAvailabilityStatus" name="availability_status" required>
-                                                                <option value="" selected disabled>choose status..</option>
-                                                                <option value="available" <?= ($row->availability_status == 'available') ? 'selected' : ''; ?>>Available</option>
-                                                                <option value="occupied" <?= ($row->availability_status == 'occupied') ? 'selected' : ''; ?>>Occupied</option>
-                                                                <option value="reserved" <?= ($row->availability_status == 'reserved') ? 'selected' : ''; ?>>Reserved</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label for="editSectionName" class="form-label">Section Name</label>
-                                                            <input type="text" class="form-control" id="editSectionName" name="section_name" value="<?= $row->section_name; ?>" required>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label for="editPrice" class="form-label">Price</label>
-                                                            <input type="text" class="form-control" id="editPrice" name="price" value="<?= $row->price; ?>" required>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label for="editCoordinates" class="form-label">Coordinates</label>
-                                                            <input type="text" class="form-control" id="editCoordinates" name="coordinates" value="<?= $row->coordinates; ?>" required>
-                                                        </div>
-                                                        <button type="submit" name="edit_grave_btn" class="btn btn-primary" style="background-color: #0b603a; color: white;">Update Grave</button>
-                                                    </form>
+                                                <form method="POST">
+    <input type="hidden" name="cemetery_id" value="<?= $row->cemetery_id; ?>">
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="editPlotNumber" class="form-label">Plot Number</label>
+                <input type="text" class="form-control" id="editPlotNumber" name="plot_number" value="<?= $row->plot_number; ?>" required>
+            </div>
+            <div class="mb-3">
+                <label for="editPlotNumber" class="form-label">Lot</label>
+                <input type="text" class="form-control" id="editPlotNumber" name="lot" value="<?= $row->lot; ?>" required>
+            </div>
+            <div class="mb-3">
+                <label for="editSize" class="form-label">Category</label>
+                <select class="form-control" id="editSize" name="size" required>
+                    <option value="" selected disabled>Choose category...</option>
+                    <option value="single" <?= ($row->size == 'single') ? 'selected' : ''; ?>>Single</option>
+                    <option value="double" <?= ($row->size == 'double') ? 'selected' : ''; ?>>Double</option>
+                    <option value="family" <?= ($row->size == 'family') ? 'selected' : ''; ?>>Family</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="editAvailabilityStatus" class="form-label">Availability Status</label>
+                <select class="form-control" id="editAvailabilityStatus" name="availability_status" required>
+                    <option value="" selected disabled>Choose status...</option>
+                    <option value="available" <?= ($row->availability_status == 'available') ? 'selected' : ''; ?>>Available</option>
+                    <option value="occupied" <?= ($row->availability_status == 'occupied') ? 'selected' : ''; ?>>Occupied</option>
+                    <option value="reserved" <?= ($row->availability_status == 'reserved') ? 'selected' : ''; ?>>Reserved</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="editSectionName" class="form-label">Section Name</label>
+                <input type="text" class="form-control" id="editSectionName" name="section_name" value="<?= $row->section_name; ?>" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="editPrice" class="form-label">Price</label>
+                <input type="text" class="form-control" id="editPrice" name="price" value="<?= $row->price; ?>" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="editCoordinates" class="form-label">Coordinates</label>
+                <input type="text" class="form-control" id="editCoordinates" name="coordinates" value="<?= $row->coordinates; ?>" required>
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" name="edit_grave_btn" class="btn btn-primary" style="background-color: #0b603a; color: white;">Update Grave</button>
+</form>
+
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <a href="delete_lot.php?id=<?= $row->id; ?>" class="btn btn-danger btn-sm deleteBtn">
+                                    <a href="delete_lot.php?id=<?= $row->cemetery_id; ?>" class="btn btn-danger btn-sm deleteBtn">
                                         <i class="fas fa-trash"></i>
                                     </a>
                                 </td>
@@ -199,25 +228,39 @@ if (isset($_POST['edit_grave_btn'])) {
             <div class="modal-body">
                 <form id="addLotForm" action="" method="post">
                     <div class="row">
+                        <!-- Left Column -->
                         <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="addCemeteryID" class="form-label">Cemetery ID</label>
-                                <input type="number" class="form-control" id="addCemeteryID" name="Cemetery_id" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="addPlotNumber" class="form-label">Plot Number</label>
-                                <input type="text" class="form-control" id="addPlotNumber" name="Plot_number" required>
-                            </div>
-                            <div class="mb-3">
+                        <div class="mb-3">
+                        <span style="color: red; font-size: 0.85em; display: block; margin-bottom: 2px;">
+        The Plot should be in the format PRHC0001.
+    </span>
+    <label for="addPlotNumber" class="form-label">Plot Number</label>
+    <input type="text" class="form-control" id="addPlotNumber" name="Plot_number" placeholder="PRHC0001">
+</div>
+
+
+<div class="mb-3">
+    <span style="color: red; font-size: 0.85em; display: block; margin-bottom: 2px;">
+        The Lot should be in the format LRHC0001.
+    </span>
+    <label for="addPlotNumber" class="form-label">Lot</label>
+    <input type="text" class="form-control" id="addPlotNumber" name="lot" placeholder="LRHC0001" required>
+</div>
+
+
+                        <div class="mb-3">
                                 <label for="addSize" class="form-label">Size</label>
                                 <select class="form-control" id="addSize" name="size" required>
-                                    <option value="single">single</option>
-                                    <option value="double">double</option>
-                                    <option value="family">family</option>
+                                    <option value="single">Resident-Adult</option>
+                                    <option value="single">Resident-Child</option>
+                                    <option value="single">Resident-Infant</option>
+                                    <option value="single">Non Resident-Adult</option>
+                                    <option value="single">Non Resident-Child</option>
+                                    <option value="single">Non Resident-Infant</option>
                                 </select>
                             </div>
                         </div>
-
+                        <!-- Right Column -->
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="addStatus" class="form-label">Availability Status</label>
@@ -234,10 +277,17 @@ if (isset($_POST['edit_grave_btn'])) {
                                     <option value="Block">Block</option>
                                 </select>
                             </div>
+                        </div>
+                    </div>
+                    <!-- Full Width Section -->
+                    <div class="row">
+                        <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="addPrice" class="form-label">Price</label>
                                 <input type="number" class="form-control" id="addPrice" name="price" step="0.01" required>
                             </div>
+                        </div>
+                        <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="addCoordinates" class="form-label">Coordinates (GPS)</label>
                                 <input type="text" class="form-control" id="addCoordinates" name="coordinates" placeholder="e.g., 40.7128 N, 74.0060 W" required>
@@ -251,6 +301,7 @@ if (isset($_POST['edit_grave_btn'])) {
     </div>
 </div>
 
+
 <!-- Include footer -->
 <?php include 'footer.php'; ?>
 
@@ -259,4 +310,5 @@ if (isset($_POST['edit_grave_btn'])) {
     document.addEventListener("DOMContentLoaded", function() {
         // JavaScript functionality to manage the lot addition can go here
     });
+    
 </script>

@@ -4,8 +4,7 @@ if (isset($_POST['edit_deceased_btn'])) {
   $deceased_id = $_POST['deceased_id'];
   $full_name = $_POST['full_name'];
   $date_of_birth = $_POST['date_of_birth'];
-  $date_of_death = $_POST['date_of_death'];
-  $time_of_death = $_POST['time_of_death'];
+  $place_of_death = $_POST['place_of_death'];
   $cause_of_death = $_POST['cause_of_death'];
   $plot_number = $_POST['plot_number'];
   $family_lineage = $_POST['family_lineage'];
@@ -14,7 +13,6 @@ if (isset($_POST['edit_deceased_btn'])) {
   $age_at_death = $_POST['age_at_death']; 
   $gender = $_POST['gender'];
   $place_of_birth = $_POST['place_of_birth'];
-  $place_of_death = $_POST['place_of_death'];
   $nationality = $_POST['nationality'];
   $occupation = $_POST['occupation'];
   $remarks = $_POST['remarks']; 
@@ -40,7 +38,7 @@ if (isset($_POST['edit_deceased_btn'])) {
           full_name = :full_name,
           date_of_birth = :date_of_birth,
           date_of_death = :date_of_death,
-          time_of_death = :time_of_death,
+          place_of_death = :place_of_death,
           cause_of_death = :cause_of_death,
           plot_number = :plot_number,
           family_lineage = :family_lineage,
@@ -49,7 +47,6 @@ if (isset($_POST['edit_deceased_btn'])) {
           age_at_death = :age_at_death,
           gender = :gender,
           place_of_birth = :place_of_birth,
-          place_of_death = :place_of_death,
           nationality = :nationality,
           occupation = :occupation,
           remarks = :remarks,
@@ -61,7 +58,7 @@ if (isset($_POST['edit_deceased_btn'])) {
   $stmt->bindParam(':full_name', $full_name);
   $stmt->bindParam(':date_of_birth', $date_of_birth);
   $stmt->bindParam(':date_of_death', $date_of_death);
-  $stmt->bindParam(':time_of_death', $time_of_death);
+  $stmt->bindParam(':place_of_death', $place_of_death);
   $stmt->bindParam(':cause_of_death', $cause_of_death);
   $stmt->bindParam(':plot_number', $plot_number);
   $stmt->bindParam(':family_lineage', $family_lineage);
@@ -70,7 +67,6 @@ if (isset($_POST['edit_deceased_btn'])) {
   $stmt->bindParam(':age_at_death', $age_at_death);
   $stmt->bindParam(':gender', $gender);
   $stmt->bindParam(':place_of_birth', $place_of_birth);
-  $stmt->bindParam(':place_of_death', $place_of_death);
   $stmt->bindParam(':nationality', $nationality);
   $stmt->bindParam(':occupation', $occupation);
   $stmt->bindParam(':remarks', $remarks);
@@ -87,6 +83,8 @@ if (isset($_POST['edit_deceased_btn'])) {
   }
 }
 
+$plotNumbersStmt = $dbh->query("SELECT plot_number FROM grave_management");
+$plotNumbers = $plotNumbersStmt->fetchAll(PDO::FETCH_COLUMN); // Fetches an array of plot numbers
 
 ?>
 
@@ -123,10 +121,10 @@ if (isset($_POST['edit_deceased_btn'])) {
                   <table id="example1" class="table table-bordered table-striped">
                     <thead style="background-color: #0b603a; color: white;">
                           <tr>
-                              <th>ID</th>
+                              <th>Deceased ID</th>
                               <th>Full Name</th>
                               <th>Date of Birth</th>
-                              <th>Time of Death</th>
+                              <th>Place of Death</th>
                               <th>Cause of Death</th>
                               <th>Plot Number</th>
                               <th>Family Lineage</th>
@@ -135,7 +133,6 @@ if (isset($_POST['edit_deceased_btn'])) {
                               <th>Age at Death</th>
                               <th>Gender</th>
                               <th>Place of Birth</th>
-                              <th>Place of Death</th>
                               <th>Nationality/Ethnicity</th>
                               <th>Occupation</th>
                               <th>File Upload</th>
@@ -150,10 +147,10 @@ if (isset($_POST['edit_deceased_btn'])) {
                           while($row = $stmt->fetch(PDO::FETCH_OBJ)) {
                       ?>
                         <tr>
-                        <td><?= $count;?></td>
+                        <td><?= $row->deceased_id;?></td>
                         <td><?= $row->full_name; ?></td>
                         <td><?= $row->date_of_death; ?></td>
-                        <td><?= $row->time_of_death; ?></td>
+                        <td><?= $row->place_of_death; ?></td>
                         <td><?= $row->cause_of_death; ?></td>
                         <td><?= $row->plot_number; ?></td>
                         <td><?= $row->family_lineage; ?></td>
@@ -162,7 +159,6 @@ if (isset($_POST['edit_deceased_btn'])) {
                         <td><?= $row->age_at_death; ?></td>
                         <td><?= $row->gender; ?></td>
                         <td><?= $row->place_of_birth; ?></td>
-                        <td><?= $row->place_of_death; ?></td>
                         <td><?= $row->nationality; ?></td>
                         <td><?= $row->occupation; ?></td>
                         <td><?= isset($row->files) ? $row->files : 'N/A'; ?></td>
@@ -198,8 +194,8 @@ if (isset($_POST['edit_deceased_btn'])) {
                                           <input type="date" class="form-control" id="editDateOfDeath" name="date_of_death" value="<?= $row->date_of_death; ?>" required>
                                         </div>
                                         <div class="col-md-4 mb-3">
-                                          <label for="editTimeOfDeath" class="form-label">Time of Death</label>
-                                          <input type="time" class="form-control" id="editTimeOfDeath" name="time_of_death" value="<?= $row->time_of_death; ?>">
+                                          <label for="editTimeOfDeath" class="form-label">Place of Death</label>
+                                          <input type="text" class="form-control" id="editTimeOfDeath" name="place_of_death" value="<?= $row->place_of_death; ?>">
                                         </div>
                                         <div class="col-md-4 mb-3">
                                           <label for="editCauseOfDeath" class="form-label">Cause of Death</label>
@@ -232,10 +228,7 @@ if (isset($_POST['edit_deceased_btn'])) {
                                             <option value="Female" <?= $row->gender == 'Female' ? 'selected' : ''; ?>>Female</option>
                                           </select>
                                         </div>
-                                        <div class="col-md-4 mb-3">
-                                          <label for="editPlaceOfBirth" class="form-label">Place of Birth</label>
-                                          <input type="text" class="form-control" id="editPlaceOfBirth" name="place_of_birth" value="<?= $row->place_of_birth; ?>">
-                                        </div>
+                                       
                                         <div class="col-md-4 mb-3">
                                           <label for="editPlaceOfDeath" class="form-label">Place of Death</label>
                                           <input type="text" class="form-control" id="editPlaceOfDeath" name="place_of_death" value="<?= $row->place_of_death; ?>">
@@ -257,6 +250,10 @@ if (isset($_POST['edit_deceased_btn'])) {
                                           <label for="editRemarks" class="form-label">Remarks</label>
                                           <textarea class="form-control" id="editRemarks" name="remarks" rows="3"><?= $row->remarks; ?></textarea>
                                         </div>
+                                        <div class="col-md-6 mb-3">
+                <label for="fileUpload" class="form-label">Upload File</label>
+                <input type="file" class="form-control" id="fileUpload" name="files" required>
+            </div>
                                       </div>
                                     </div>
                                     <div class="modal-footer">
@@ -300,7 +297,7 @@ if (isset($_POST['edit_deceased_btn'])) {
         </button>
       </div>
       <div class="modal-body">
-        <form action="" method="post" enctype="multipart/form-data">
+      <form method="post" action="" enctype="multipart/form-data">
           <div class="container">
             <div class="row">
               <!-- Column 1 -->
@@ -317,17 +314,22 @@ if (isset($_POST['edit_deceased_btn'])) {
                 <input type="date" class="form-control" id="addDateOfDeath" name="date_of_death" required>
               </div>
               <div class="col-md-4 mb-3">
-                <label for="addTimeOfDeath" class="form-label">Time of Death</label>
-                <input type="time" class="form-control" id="addTimeOfDeath" name="time_of_death">
+                <label for="addTimeOfDeath" class="form-label">Place of Death</label>
+                <input type="text" class="form-control" id="addTimeOfDeath" name="place_of_death">
               </div>
               <div class="col-md-4 mb-3">
                 <label for="addCauseOfDeath" class="form-label">Cause of Death</label>
                 <input type="text" class="form-control" id="addCauseOfDeath" name="cause_of_death">
               </div>
               <div class="col-md-4 mb-3">
-                <label for="addPlotNumber" class="form-label">Plot Number</label>
-                <input type="text" class="form-control" id="addPlotNumber" name="plot_number">
-              </div>
+    <label for="addPlotNumber" class="form-label">Plot Number</label>
+    <select class="form-control" id="addPlotNumber" name="plot_number" placeholder="Choose a Plot Number ">
+        <option value="" selected disabled>Choose a plot number...</option>
+        <?php foreach ($plotNumbers as $plotNumber): ?>
+            <option value="<?= htmlspecialchars($plotNumber); ?>"><?= htmlspecialchars($plotNumber); ?></option>
+        <?php endforeach; ?>
+    </select>
+</div>
               <div class="col-md-4 mb-3">
                 <label for="addFamilyLineage" class="form-label">Family Lineage</label>
                 <input type="text" class="form-control" id="addFamilyLineage" name="family_lineage">
@@ -356,10 +358,7 @@ if (isset($_POST['edit_deceased_btn'])) {
                 <label for="addPlaceOfBirth" class="form-label">Place of Birth</label>
                 <input type="text" class="form-control" id="addPlaceOfBirth" name="place_of_birth">
               </div>
-              <div class="col-md-4 mb-3">
-                <label for="addPlaceOfDeath" class="form-label">Place of Death</label>
-                <input type="text" class="form-control" id="addPlaceOfDeath" name="place_of_death">
-              </div>
+            
              <div class="col-md-4 mb-3">
            
         <label for="addNationality" class="form-label">Nationality/Ethnicity</label>
@@ -390,7 +389,7 @@ if (isset($_POST['edit_deceased_btn'])) {
               </div>
               <div class="col-md-4 mb-3">
                 <label for="addFileUpload" class="form-label">File Upload</label>
-                <input type="file" class="form-control" id="addFileUpload" name="file_upload">
+                <input type="file" class="form-control" id="addFileUpload" name="files">
               </div>
               <div class="col-md-12 mb-3">
                 <label for="addRemarks" class="form-label">Remarks</label>
@@ -409,21 +408,7 @@ if (isset($_POST['edit_deceased_btn'])) {
 </div>
 
 <!-- View Deceased Modal -->
-<div class="modal fade" id="modal-success">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">View Deceased Details</h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <!-- Content will be loaded here via JavaScript -->
-      </div>
-    </div>
-  </div>
-</div>
+
 
 
 <!-- Include jQuery, Bootstrap JS, and any other necessary libraries -->

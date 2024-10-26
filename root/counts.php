@@ -1,16 +1,6 @@
 <?php
 require "config.php";
   // require "./root/config.php";
-$total_branches = countBranches();
-
-function countBranches() {
-    global $dbh; // Use the global PDO database handler
-    $query = "SELECT COUNT(*) as total FROM branch"; // Adjust the table name if needed
-    $stmt = $dbh->prepare($query);
-    $stmt->execute();
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    return $result['total']; // Return the total count
-}
 
 // Count burial records and store in $total_burial_records
 $total_burial_records = countBurialRecords();

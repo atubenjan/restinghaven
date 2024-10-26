@@ -124,6 +124,7 @@ $plotNumbers = $plotNumbersStmt->fetchAll(PDO::FETCH_COLUMN); // Fetches an arra
                               <th>Deceased ID</th>
                               <th>Full Name</th>
                               <th>Date of Birth</th>
+                              <th>Date of Death</th> 
                               <th>Place of Death</th>
                               <th>Cause of Death</th>
                               <th>Plot Number</th>
@@ -149,6 +150,7 @@ $plotNumbers = $plotNumbersStmt->fetchAll(PDO::FETCH_COLUMN); // Fetches an arra
                         <tr>
                         <td><?= $row->deceased_id;?></td>
                         <td><?= $row->full_name; ?></td>
+                        <td><?= $row->date_of_birth; ?></td>
                         <td><?= $row->date_of_death; ?></td>
                         <td><?= $row->place_of_death; ?></td>
                         <td><?= $row->cause_of_death; ?></td>

@@ -84,9 +84,9 @@ if (isset($_POST['edit_grave_btn'])) {
                             
                                 <th>Plot Number</th>
                                 <th>Lot</th>
-                                <th>Size</th>
-                                <th>Section</th>                            
                                
+                                <th>Section</th>                            
+                                <th>Type/Category</th>
                                 <th>Status</th>
                                 <th>Price</th>
                                 <th>Coordinates</th>
@@ -107,9 +107,9 @@ if (isset($_POST['edit_grave_btn'])) {
                                 <td><?= htmlspecialchars($row->cemetery_id); ?></td>
                                 <td><?= htmlspecialchars($row->plot_number); ?></td>
                                 <td><?= htmlspecialchars($row->lot); ?></td>
-                                <td><?= htmlspecialchars($row->size); ?></td>
+                              
                                 <td><?= htmlspecialchars($row->section_name); ?></td>
-                               
+                                <td><?= htmlspecialchars($row->type); ?></td>
                                 <td><?= htmlspecialchars($row->availability_status); ?></td>
                                 <td><?= htmlspecialchars($row->price); ?>UGX</td>
                                 <td><?= htmlspecialchars($row->coordinates); ?></td>
@@ -154,11 +154,9 @@ if (isset($_POST['edit_grave_btn'])) {
             </div>
             <div class="mb-3">
                 <label for="editSize" class="form-label">Category</label>
-                <select class="form-control" id="editSize" name="size" required>
+                <select class="form-control" id="editSize" name="tye" required>
                     <option value="" selected disabled>Choose category...</option>
-                    <option value="single" <?= ($row->size == 'single') ? 'selected' : ''; ?>>Single</option>
-                    <option value="double" <?= ($row->size == 'double') ? 'selected' : ''; ?>>Double</option>
-                    <option value="family" <?= ($row->size == 'family') ? 'selected' : ''; ?>>Family</option>
+                   
                 </select>
             </div>
 
@@ -249,14 +247,21 @@ if (isset($_POST['edit_grave_btn'])) {
 
 
                         <div class="mb-3">
-                                <label for="addSize" class="form-label">Size</label>
-                                <select class="form-control" id="addSize" name="size" required>
-                                    <option value="single">Resident-Adult</option>
-                                    <option value="single">Resident-Child</option>
-                                    <option value="single">Resident-Infant</option>
-                                    <option value="single">Non Resident-Adult</option>
-                                    <option value="single">Non Resident-Child</option>
-                                    <option value="single">Non Resident-Infant</option>
+                                <label for="addSize" class="form-label">Type</label>
+                                <select class="form-control" id="addSize" name="type" required>
+                                <option value="resident_adult">Resident-Adult</option>
+<option value="resident_child">Resident-Child</option>
+<option value="resident_infant">Resident-Infant</option>
+<option value="non_resident_adult">Non Resident-Adult</option>
+<option value="non_resident_child">Non Resident-Child</option>
+<option value="non_resident_infant">Non Resident-Infant</option>
+<option value="temporary_burial">Temporary Burial</option>
+<option value="wall_of_remembrance">Wall of Remembrance</option>
+<option value="urn_container_spot">Urn-Container Spot</option>
+<option value="urn_burial_spot">Urn-Burial Spot</option>
+<option value="reservation_non_reservation">Reservation-Non_Reservation</option>
+<option value="reservation_resident">Reservation-Resident</option>
+
                                 </select>
                             </div>
                         </div>

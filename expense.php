@@ -87,7 +87,8 @@ $expenses = $dbh->query("SELECT * FROM expenses")->fetchAll(PDO::FETCH_OBJ);
                                             <td><?= $count + 1; ?></td>
                                             <td><?= htmlspecialchars($row->date); ?></td>
                                             <td><?= htmlspecialchars($row->description); ?></td>
-                                            <td><?= htmlspecialchars($row->amount); ?></td>
+                                            <td><?= htmlspecialchars($row->amount); ?> UGX</td>
+
                                             <td><?= htmlspecialchars($row->category); ?></td>
                                             <td><?= htmlspecialchars($row->remarks); ?></td>
                                             <td>
@@ -155,7 +156,6 @@ $expenses = $dbh->query("SELECT * FROM expenses")->fetchAll(PDO::FETCH_OBJ);
 </div>
 <!-- /.content-wrapper -->
 
-<!-- Add Expense Modal -->
 <div class="modal fade" id="modal-default">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -165,21 +165,25 @@ $expenses = $dbh->query("SELECT * FROM expenses")->fetchAll(PDO::FETCH_OBJ);
             </div>
             <div class="modal-body">
                 <form id="addExpenseForm" method="post" action="">
-                    <div class="mb-3">
-                        <label for="expenseDate" class="form-label">Date</label>
-                        <input type="date" class="form-control" id="expenseDate" name="date" required>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="expenseDate" class="form-label">Date</label>
+                            <input type="date" class="form-control" id="expenseDate" name="date" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="expenseAmount" class="form-label">Amount</label>
+                            <input type="number" class="form-control" id="expenseAmount" name="amount" step="0.01" required>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="expenseDescription" class="form-label">Description</label>
-                        <input type="text" class="form-control" id="expenseDescription" name="description" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="expenseAmount" class="form-label">Amount</label>
-                        <input type="number" class="form-control" id="expenseAmount" name="amount" step="0.01" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="expenseCategory" class="form-label">Category</label>
-                        <input type="text" class="form-control" id="expenseCategory" name="category" required>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="expenseDescription" class="form-label">Description</label>
+                            <input type="text" class="form-control" id="expenseDescription" name="description" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="expenseCategory" class="form-label">Category</label>
+                            <input type="text" class="form-control" id="expenseCategory" name="category" required>
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label for="expenseRemarks" class="form-label">Remarks</label>
@@ -191,6 +195,7 @@ $expenses = $dbh->query("SELECT * FROM expenses")->fetchAll(PDO::FETCH_OBJ);
         </div>
     </div>
 </div>
+
 
 <script>
     // JavaScript for populating edit modal

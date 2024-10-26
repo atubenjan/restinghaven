@@ -27,6 +27,9 @@ if(isset($_POST['edit_sales_btn'])){
     exit;
 }
 }
+   // Fetch customer data from the database using PDO
+   $customerStmt = $dbh->query("SELECT  name FROM customers");
+   $customers = $customerStmt->fetchAll(PDO::FETCH_ASSOC); // Fetch as associative array
 
 ?>
 
@@ -43,12 +46,17 @@ if(isset($_POST['edit_sales_btn'])){
         <table id="example1" class="table table-bordered table-striped">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Product Name</th>
-              <th>Quantity</th>
-              <th>Price</th>
-              <th>Date</th> <!-- Added Date Column -->
-              <th>Actions</th>
+            <th>ID</th>
+      <th>Customer Name</th> <!-- Added Customer Name -->
+      <th>Item/Service Sold</th> <!-- From the Item Sold field -->
+      <th>Quantity</th>
+      <th>Unit Price</th> <!-- Changed from Price to Unit Price for clarity -->
+      <th>Total Price</th> <!-- Added Total Price Column -->
+      <th>Date of Sale</th> <!-- Changed to match the Sale Date field -->
+      <th>Description</th> <!-- Added Description Column -->
+      <th>Payment Method</th> <!-- Added Payment Method Column -->
+      <th>Payment Status</th> <!-- Added Payment Status Column -->
+      <th>Actions</th>
             </tr>
           </thead>
           <tbody id="sales-table-body">
@@ -60,47 +68,21 @@ if(isset($_POST['edit_sales_btn'])){
              while ($row = $stmt->fetch(PDO::FETCH_OBJ)) {
              ?>
             <tr>
-              <td><?= $count; ?></td>
-              <td><?= $row->product_name; ?></td>
-              <td><?= $row->quantity; ?></td>
-              <td><?= $row->price; ?></td>
-              <td><?= $row->date; ?></td> <!-- Example date -->
+            <td><?= $count; ?></td>
+    <td><?= htmlspecialchars($row->customer_name); ?></td>
+    <td><?= htmlspecialchars($row->item_sold); ?></td>
+    <td><?= htmlspecialchars($row->quantity); ?></td>
+    <td><?= htmlspecialchars(number_format($row->unit_price, 2)); ?></td>
+    <td><?= htmlspecialchars(number_format($row->total_price, 2)); ?>UGX</td>
+    <td><?= htmlspecialchars($row->sale_date); ?></td>
+    <td><?= htmlspecialchars($row->description); ?></td>
+    <td><?= htmlspecialchars($row->payment_method); ?></td>
+    <td><?= htmlspecialchars($row->payment_status); ?></td>
               <td>
                 <button class="btn btn-warning btn-sm edit-btn" data-toggle="modal" data-target="#editSalesModal<?= $row->id?>">Edit</button>
 
                 <!-- Modal for adding sales-->
-                <div class="modal fade" id="editSalesModal<?= $row->id?>">
-                  <div class="modal-dialog">
-                    <div class="modal-content">
-                      <div class="modal-header"  style="background-color: #0b603a; color: white; border-color: #0b603a;">
-                        <h5 class="modal-title" id="salesModalLabel">Edit Sales</h5>
-                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">&times;</button>
-                      </div>
-                      <div class="modal-body">
-                        <form method="POST">
-                          <input type="hidden" name="id" value="<?= $row->id?>" id="sales-id">
-                          <div class="mb-3">
-                            <label for="product-name" class="form-label">Product Name</label>
-                            <input type="text" class="form-control" id="product-name" value = "<?= $row->product_name?>" name="product_name" required>
-                          </div>
-                          <div class="mb-3">
-                            <label for="quantity" class="form-label">Quantity</label>
-                            <input type="number" class="form-control" id="quantity" value = "<?= $row->quantity?>" name="quantity" required>
-                          </div>
-                          <div class="mb-3">
-                            <label for="price" class="form-label">Price</label>
-                            <input type="number" step="0.01" class="form-control" id="price" value = "<?= $row->price?>" name="price" required>
-                          </div>
-                          <div class="mb-3">
-                            <label for="date" class="form-label">Date</label>
-                            <input type="date" class="form-control" id="date" value = "<?= $row->date?>" name="date" required>
-                          </div>
-                          <button type="submit" name="edit_sales_btn" class="btn btn-primary"  style="background-color: #0b603a; border-color: #0b603a;">Save</button>
-                        </form>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+               
                 <a href="delete_sales.php?id=<?= $row->id?>" class="btn btn-danger btn-sm deleteBtn" data-id="1">Delete</a>
               </td>
             </tr>
@@ -125,22 +107,91 @@ if(isset($_POST['edit_sales_btn'])){
       <div class="modal-body">
         <form method="POST">
           <input type="hidden" name="id" id="sales-id">
-          <div class="mb-3">
-            <label for="product-name" class="form-label">Product Name</label>
-            <input type="text" class="form-control" id="product-name" name="product_name" required>
+
+          <!-- Customer Information -->
+          <h6>Customer Information</h6>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="customer-name" class="form-label">Customer Name</label>
+              <select class="form-select" id="customer-name" name="customer_name" required>
+                <option value="">Select Customer</option>
+                <?php
+                // Assuming $customers array is available from previous code
+                foreach ($customers as $customer) {
+                    echo '<option value="' . htmlspecialchars($customer['name']) . '">' . htmlspecialchars($customer['name']) . '</option>';
+                }
+                ?>
+              </select>
+            </div>
           </div>
-          <div class="mb-3">
-            <label for="quantity" class="form-label">Quantity</label>
-            <input type="number" class="form-control" id="quantity" name="quantity" required>
+
+          <!-- Sale Details -->
+          <h6>Sale Details</h6>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="sale-date" class="form-label">Date of Sale</label>
+              <input type="date" class="form-control" id="sale-date" name="sale_date" required>
+            </div>
+            <div class="col-md-6">
+              <label for="item-sold" class="form-label">Item/Service Sold</label>
+              <select class="form-select" id="item-sold" name="item_sold" required>
+                <option value="burial_plot">Burial Plot</option>
+                <option value="mausoleum_space">Mausoleum Space</option>
+                <option value="memorial_product">Memorial Product</option>
+                <option value="funeral_service">Funeral Service</option>
+              </select>
+            </div>
           </div>
-          <div class="mb-3">
-            <label for="price" class="form-label">Price</label>
-            <input type="number" step="0.01" class="form-control" id="price" name="price" required>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="plot-number" class="form-label">Plot Number</label>
+              <input type="text" class="form-control" id="plot-number" name="plot_number">
+            </div>
+            <div class="col-md-6">
+              <label for="unit-price" class="form-label">Unit Price</label>
+              <input type="number" step="0.01" class="form-control" id="unit-price" name="unit_price" required>
+            </div>
           </div>
-          <div class="mb-3">
-            <label for="date" class="form-label">Date</label>
-            <input type="date" class="form-control" id="date" name="date" required>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="quantity" class="form-label">Quantity</label>
+              <input type="number" class="form-control" id="quantity" name="quantity" required>
+            </div>
+            <div class="col-md-6">
+              <label for="total-price" class="form-label">Total Price</label>
+              <input type="number" step="0.01" class="form-control" id="total-price" name="total_price" readonly required>
+            </div>
           </div>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="payment-method" class="form-label">Payment Method</label>
+              <select class="form-select" id="payment-method" name="payment_method" required>
+                <option value="cash">Cash</option>
+                <option value="credit_card">Credit Card</option>
+                <option value="bank_transfer">Bank Transfer</option>
+                <option value="installment">Installment Plan</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label for="payment-status" class="form-label">Payment Status</label>
+              <select class="form-select" id="payment-status" name="payment_status" required>
+                <option value="paid">Paid</option>
+                <option value="pending">Pending</option>
+                <option value="partially_paid">Partially Paid</option>
+              </select>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="description" class="form-label">Description</label>
+              <textarea class="form-control" id="description" name="description"></textarea>
+            </div>
+            <div class="col-md-6">
+              <label for="notes" class="form-label">Special Requests or Instructions</label>
+              <textarea class="form-control" id="notes" name="notes"></textarea>
+            </div>
+          </div>
+
           <button type="submit" name="add_sales_btn" class="btn btn-primary">Save</button>
         </form>
       </div>
@@ -148,47 +199,31 @@ if(isset($_POST['edit_sales_btn'])){
   </div>
 </div>
 
+
+
+
+
+
+
 <?php include 'footer.php'; ?>
 
-<!-- Include Bootstrap JavaScript Bundle -->
-<!-- Bootstrap JavaScript Bundle -->
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
-<!-- JavaScript for handling form and table actions -->
 <script>
-  // document.addEventListener('DOMContentLoaded', function() {
-  //   // Handle form submission
-  //   document.getElementById('sales-form').addEventListener('submit', function(event) {
-  //     event.preventDefault();
-  //     // Add your form submission logic here
-  //     alert('Form submitted!');
-  //     // Close the modal after submission
-  //     var modal = bootstrap.Modal.getInstance(document.getElementById('salesModal'));
-  //     modal.hide();
-  //   });
+  // JavaScript to calculate the Total Price automatically
+  document.addEventListener('DOMContentLoaded', function () {
+    const unitPriceInput = document.getElementById('unit-price');
+    const quantityInput = document.getElementById('quantity');
+    const totalPriceInput = document.getElementById('total-price');
 
-  //   // Handle edit button clicks
-  //   document.querySelectorAll('.edit-btn').forEach(btn => {
-  //     btn.addEventListener('click', function() {
-  //       document.getElementById('sales-id').value = this.getAttribute('data-id');
-  //       document.getElementById('product-name').value = this.getAttribute('data-name');
-  //       document.getElementById('quantity').value = this.getAttribute('data-quantity');
-  //       document.getElementById('price').value = this.getAttribute('data-price');
-  //       document.getElementById('date').value = this.getAttribute('data-date'); // Set date field
-  //       // Set the modal title to 'Edit Sale'
-  //       document.getElementById('salesModalLabel').innerText = 'Edit Sale';
-  //     });
-  //   });
+    function calculateTotalPrice() {
+      const unitPrice = parseFloat(unitPriceInput.value) || 0;
+      const quantity = parseInt(quantityInput.value) || 0;
+      const totalPrice = (unitPrice * quantity).toFixed(2); // Calculate and fix to two decimals
+      totalPriceInput.value = totalPrice; // Set the value in the total price input
+    }
 
-  //   // Handle delete button clicks
-  //   document.querySelectorAll('.delete-btn').forEach(btn => {
-  //     btn.addEventListener('click', function() {
-  //       if (confirm('Are you sure you want to delete this record?')) {
-  //         const id = this.getAttribute('data-id');
-  //         // Add your deletion logic here
-  //         alert('Record with ID ' + id + ' deleted!');
-  //       }
-  //     });
-  //   });
-  // });
+    // Add event listeners to calculate total price on input change
+    unitPriceInput.addEventListener('input', calculateTotalPrice);
+    quantityInput.addEventListener('input', calculateTotalPrice);
+  });
 </script>

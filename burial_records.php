@@ -61,6 +61,14 @@ if (isset($_POST['edit_burial_record'])) {
 $deceased_id = $dbh->query("SELECT deceased_id, full_name FROM deceased_records");
 $deceased = $deceased_id->fetchAll(PDO::FETCH_OBJ);
 
+$stmt = $dbh->query("SELECT cemetery_id FROM grave_management");
+$cemetery_ids = $stmt->fetchAll(PDO::FETCH_COLUMN); // Fetch only the cemetery_id column
+
+$stmt = $dbh->query("SELECT plot_number FROM grave_management");
+$plot_numbers = $stmt->fetchAll(PDO::FETCH_COLUMN); // Fetch only the plot_number column
+
+$stmt = $dbh->query("SELECT DISTINCT location FROM branch");
+$locations = $stmt->fetchAll(PDO::FETCH_COLUMN); // Fetch only the location column
 ?>
 
 <div class="content-wrapper">
@@ -95,16 +103,17 @@ $deceased = $deceased_id->fetchAll(PDO::FETCH_OBJ);
       <table id="example1" class="table table-bordered table-striped">
       <thead style="background-color: #0b603a; color: white;">
             <tr>
-              <th>ID</th>
+              <th>Burial ID</th>
               <th>Burial Date</th>
               <th>Time of Burial</th>
               <th>Deceased ID</th>
-              <th>Grave Number</th>
+              <th>Plot Number</th>
               <th>Burial Type</th>
               <th>Officiant</th>
+              <th>Funeral Service Details</th>
               <th>Location</th>
               <th>Burial Status</th>
-              <th>Cemetery</th>
+              <th>Cemetery ID</th>
               <th>Remarks</th>
               <th>Actions</th>
             </tr>
@@ -117,19 +126,20 @@ $deceased = $deceased_id->fetchAll(PDO::FETCH_OBJ);
             while ($row = $stmt->fetch(PDO::FETCH_OBJ)) {
             ?>
             <tr>
-              <td><?= $count; ?></td>
+              <td><?= $row->burial_id; ?></td>
               <td><?= $row->burial_date; ?></td>
               <td><?= $row->time_of_burial; ?></td>
               <td><?= $row->deceased_id; ?></td>
               <td><?= $row->grave_number; ?></td>
               <td><?= $row->burial_type; ?></td>
               <td><?= $row->officiant; ?></td>
+               <td><?= $row->funeral_service_details; ?></td>
               <td><?= $row->location; ?></td>
               <td><?= $row->burial_status; ?></td>
               <td><?= $row->cemetery_id; ?></td>
               <td><?= $row->remarks; ?></td>
               <td>
-                <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#viewBurialModal">View</button>
+              
                 <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editBurialModal<?= $row->burial_id?>">Edit</button>
                 <div class="modal fade" id="editBurialModal<?= $row->burial_id?>">
                   <div class="modal-dialog">
@@ -143,7 +153,7 @@ $deceased = $deceased_id->fetchAll(PDO::FETCH_OBJ);
                           <input type="hidden" value="<?= $row->burial_id?>" name="burial_id">
                           <div class="row">
                             <div class="col-md-6 mb-3">
-                              <label for="grave_number" class="form-label">Grave Number</label>
+                              <label for="grave_number" class="form-label">Plot  Number</label>
                               <input type="text" class="form-control" id="grave_number" value="<?= $row->grave_number; ?>" name="grave_number" placeholder="Enter Grave Number" required>
                             </div>
 
@@ -166,10 +176,7 @@ $deceased = $deceased_id->fetchAll(PDO::FETCH_OBJ);
                               <label for="time_of_burial" class="form-label">Time of Burial</label>
                               <input type="time" class="form-control" id="time_of_burial" value="<?= $row->time_of_burial; ?>" name="time_of_burial" required>
                             </div>
-                            <div class="col-md-6 mb-3">
-                              <label for="addPlotID" class="form-label">Plot ID</label>
-                              <input type="text" class="form-control" id="addPlotID" name="plot_id" value="<?= $row->plot_id; ?>" placeholder="Enter Plot ID" required>
-                            </div>
+                           
                             <div class="col-md-6 mb-3">
                               <label for="burial_type" class="form-label">Burial Type</label>
                               <select class="form-control" id="burial_type" name="burial_type" required>
@@ -181,7 +188,7 @@ $deceased = $deceased_id->fetchAll(PDO::FETCH_OBJ);
                                 <option value="Above Ground"  <?= ($row->burial_type == 'Above Ground') ? 'selected' : ''; ?>>Above Ground</option>
                                 <option value="Aquamation"  <?= ($row->burial_type == 'Aquamation') ? 'selected' : ''; ?>>Aquamation</option>
                                 <option value="Burial at Sea"  <?= ($row->burial_type == 'Burial at Sea') ? 'selected' : ''; ?>>Burial at Sea</option>
-                                <option value="Mausoleum"  <?= ($row->burial_type == 'Mausoleum') ? 'selected' : ''; ?>>Mausoleum</option>
+                                <option value="Mausoleum"  <?= ($row->burial_type == 'Moslem') ? 'selected' : ''; ?>>Moslem</option>
                                 <option value="Community Burial"  <?= ($row->burial_type == 'Community Burial') ? 'selected' : ''; ?>>Community Burial</option>
                                 <option value="Home Burial"  <?= ($row->burial_type == 'Home Burial') ? 'selected' : ''; ?>>Home Burial</option>
                                 <option value="Other"  <?= ($row->burial_type == 'Other') ? 'selected' : ''; ?>>Other</option>
@@ -248,26 +255,33 @@ $deceased = $deceased_id->fetchAll(PDO::FETCH_OBJ);
       <div class="modal-body">
         <form method="POST" action="">
           <div class="row">
-            <div class="col-md-6 mb-3">
-              <label for="grave_number" class="form-label">Grave Number</label>
-              <input type="text" class="form-control" id="grave_number" name="grave_number" placeholder="Enter Grave Number" required>
-            </div>
+          <div class="col-md-6 mb-3">
+        <label for="grave_number" class="form-label">Plot Number</label>
+        <select class="form-control" id="grave_number" name="grave_number" required>
+            <option value="" selected disabled>Select Plot Number</option>
+            <?php foreach ($plot_numbers as $plot_number): ?>
+                <option value="<?= htmlspecialchars($plot_number); ?>"><?= htmlspecialchars($plot_number); ?></option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+    <div class="col-md-6 mb-3">
+    <label for="addDeceasedID" class="form-label">Deceased ID</label>
+    <select class="form-control" id="addDeceasedID" name="deceased_id" required>
+        <option value="" disabled selected>Select Deceased ID</option>
+        <?php
+        // Fetch deceased records from the database
+        $deceasedStmt = $dbh->prepare("SELECT deceased_id, full_name FROM deceased_records");
+        $deceasedStmt->execute();
+        
+        while ($deceasedRow = $deceasedStmt->fetch(PDO::FETCH_OBJ)) {
+            echo '<option value="' . htmlspecialchars($deceasedRow->deceased_id) . '">' . htmlspecialchars($deceasedRow->full_name) . ' (ID: ' . htmlspecialchars($deceasedRow->deceased_id) . ')</option>';
+        }
+        ?>
+    </select>
+</div>
 
-            <div class="col-md-6 mb-3">
-              <label for="addDeceasedID" class="form-label">Deceased ID</label>
-              <select class="form-control" id="addDeceasedID" name="deceased_id" required>
-                <option value="" disabled selected>Select Deceased ID</option>
-                <?php
-                // Fetch deceased records from the database
-                $deceasedStmt = $dbh->prepare("SELECT deceased_id, full_name FROM deceased_records");
-                $deceasedStmt->execute();
-                
-                while ($deceasedRow = $deceasedStmt->fetch(PDO::FETCH_OBJ)) {
-                    echo '<option value="' . htmlspecialchars($deceasedRow->deceased_id) . '">' . htmlspecialchars($deceasedRow->full_name) . ' (ID: ' . htmlspecialchars($deceasedRow->deceased_id) . ')</option>';
-                }
-                ?>
-              </select>
-            </div>
+
+
 
             <div class="col-md-6 mb-3">
               <label for="addBurialDate" class="form-label">Date of Burial</label>
@@ -278,10 +292,7 @@ $deceased = $deceased_id->fetchAll(PDO::FETCH_OBJ);
               <label for="time_of_burial" class="form-label">Time of Burial</label>
               <input type="time" class="form-control" id="time_of_burial" name="time_of_burial" required>
             </div>
-            <div class="col-md-6 mb-3">
-              <label for="addPlotID" class="form-label">Plot ID</label>
-              <input type="text" class="form-control" id="addPlotID" name="plot_id" placeholder="Enter Plot ID" required>
-            </div>
+           
             <div class="col-md-6 mb-3">
               <label for="burial_type" class="form-label">Burial Type</label>
               <select class="form-control" id="burial_type" name="burial_type" required>
@@ -303,10 +314,21 @@ $deceased = $deceased_id->fetchAll(PDO::FETCH_OBJ);
               <label for="officiant" class="form-label">Officiant</label>
               <input type="text" class="form-control" id="officiant" name="officiant" placeholder="Enter Officiant Name" required>
             </div>
-            <div class="col-md-6 mb-3">
-              <label for="location" class="form-label">Location</label>
-              <input type="text" class="form-control" id="location" name="location" placeholder="Enter Location" required>
+            <div class="col-md-12 mb-3">
+              <label for="remarks" class="form-label">FUneral Service Details</label>
+              <textarea class="form-control" id="remarks" name="funeral_service_details" rows="3"></textarea>
             </div>
+          </div>
+            <div class="col-md-6 mb-3">
+    <label for="location" class="form-label">Location</label>
+    <select class="form-control" id="location" name="location" required>
+        <option value="" selected disabled>Select Location</option>
+        <?php foreach ($locations as $location): ?>
+            <option value="<?= htmlspecialchars($location); ?>"><?= htmlspecialchars($location); ?></option>
+        <?php endforeach; ?>
+    </select>
+</div>
+
             <div class="col-md-6 mb-3">
               <label for="burial_status" class="form-label">Burial Status</label>
               <select class="form-control" id="burial_status" name="burial_status" required>
@@ -317,9 +339,14 @@ $deceased = $deceased_id->fetchAll(PDO::FETCH_OBJ);
               </select>
             </div>
             <div class="col-md-6 mb-3">
-              <label for="cemetery_id" class="form-label">Cemetery_id</label>
-              <input type="text" class="form-control" id="cemetery_id" name="cemetery_id" placeholder="Enter Cemetery_id" required>
-            </div>
+    <label for="cemetery_id" class="form-label">Cemetery ID</label>
+    <select class="form-control" id="cemetery_id" name="cemetery_id" required>
+        <option value="" selected disabled>Select Cemetery ID</option>
+        <?php foreach ($cemetery_ids as $cemetery_id): ?>
+            <option value="<?= htmlspecialchars($cemetery_id); ?>"><?= htmlspecialchars($cemetery_id); ?></option>
+        <?php endforeach; ?>
+    </select>
+</div>
             <div class="col-md-12 mb-3">
               <label for="remarks" class="form-label">Remarks</label>
               <textarea class="form-control" id="remarks" name="remarks" rows="3"></textarea>
@@ -441,6 +468,16 @@ $deceased = $deceased_id->fetchAll(PDO::FETCH_OBJ);
     document.getElementById('editCemetery').value = cemetery;
     document.getElementById('editRemarks').value = remarks;
   }
+
+
+    // Initialize Select2
+    $(document).ready(function() {
+        $('#addDeceasedID').select2({
+            placeholder: "Select Deceased ID",  // Placeholder text
+            allowClear: true                     // Allow clearing the selection
+        });
+    });
+
 </script>
 
 <?php 

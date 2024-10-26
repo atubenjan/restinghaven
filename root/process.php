@@ -77,6 +77,24 @@ if (isset($_POST['login_btn'])) {
         exit();
     }
 }
+
+if (!isset($_GET['id'])) {
+    die('Invoice ID is missing.');
+}
+
+$sale_id = $_GET['id'];
+
+$stmt = $dbh->prepare("SELECT s.*, c.name AS customer_name 
+                        FROM sales s 
+                        JOIN customers c ON s.customer_name = c.name 
+                        WHERE s.id = :id");
+$stmt->execute([':id' => $sale_id]);
+
+$sale = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$sale) {
+    die('Invoice not found.');
+}
 // User Registration
 // add_branch
 elseif (isset($_POST['add_branch_btn'])) {
@@ -525,37 +543,52 @@ if (isset($_POST['add_deceased_btn'])) {
 
    
 if (isset($_POST['burial_record_btn'])) {
+    // Retrieve the last burial_id and generate the next one
+    $stmt = $dbh->query("SELECT burial_id FROM burial_records ORDER BY burial_id DESC LIMIT 1");
+    $lastBurialId = $stmt->fetchColumn();
+
+    if ($lastBurialId) {
+        // Extract the numeric part and increment it
+        $lastNumber = (int)substr($lastBurialId, 4);
+        $nextNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
+    } else {
+        // If there is no last ID, start with 0001
+        $nextNumber = '0001';
+    }
+    $burial_id = 'BRHC' . $nextNumber;
+
     // Extract and trim POST variables
     $burial_date = trim($_POST['burial_date']);
     $grave_number = trim($_POST['grave_number']);
     $deceased_id = trim($_POST['deceased_id']);
     $cemetery_id = trim($_POST['cemetery_id']);
-  
+    $location = trim($_POST['location']);
+    $funeral_service_details = trim($_POST['funeral_service_details']);
     $time_of_burial = trim($_POST['time_of_burial']);
     $burial_type = trim($_POST['burial_type']);
     $officiant = trim($_POST['officiant']);
     $burial_status = trim($_POST['burial_status']);
     $remarks = trim($_POST['remarks']);
+    $created_at = date('Y-m-d H:i:s');
 
-    // Automatically set the created_at variable to the current date and time
-    $created_at = date('Y-m-d H:i:s'); // Format: YYYY-MM-DD HH:MM:SS
-
-    // Prepare the SQL query
+    // Updated SQL query to include burial_id
     $sql = "INSERT INTO burial_records 
-        (burial_date, grave_number, deceased_id, cemetery_id,  time_of_burial, burial_type, officiant, burial_status, remarks, created_at)
+        (burial_id, burial_date, grave_number, deceased_id, location, cemetery_id, time_of_burial, burial_type, officiant, funeral_service_details, burial_status, remarks, created_at)
         VALUES 
-        (:burial_date, :grave_number, :deceased_id, :cemetery_id, :time_of_burial, :burial_type, :officiant, :burial_status, :remarks, :created_at)";
+        (:burial_id, :burial_date, :grave_number, :deceased_id, :location, :cemetery_id, :time_of_burial, :burial_type, :officiant, :funeral_service_details, :burial_status, :remarks, :created_at)";
 
     // Execute the database query
     $result = dbCreate($sql, [
+        ':burial_id' => $burial_id,
         ':burial_date' => $burial_date,
         ':grave_number' => $grave_number,
         ':deceased_id' => $deceased_id,
-        ':cemetery_id' => $cemetery_id,
-       
+        ':location' => $location,
+        ':cemetery_id' => $cemetery_id,       
         ':time_of_burial' => $time_of_burial,
         ':burial_type' => $burial_type,
         ':officiant' => $officiant,
+        ':funeral_service_details' => $funeral_service_details,
         ':burial_status' => $burial_status,
         ':remarks' => $remarks,
         ':created_at' => $created_at
@@ -569,6 +602,7 @@ if (isset($_POST['burial_record_btn'])) {
     }
     exit();
 }
+
 
 // Add Expense
 elseif (isset($_POST['add_expense_btn'])) {
@@ -682,25 +716,36 @@ elseif (isset($_POST['edit_customer_btn'])) {
         exit();
     }
 }
-// add sales
 elseif (isset($_POST['add_sales_btn'])) {
     trim(extract($_POST));
 
-    $result = dbCreate("INSERT INTO sales (product_name, quantity, price, date) VALUES (:product_name, :quantity, :price, :date)", [
-        ':product_name' => $product_name,
+    // Calculate total price
+    $total_price = $unit_price * $quantity;
+
+    $result = dbCreate("INSERT INTO sales (customer_name, item_sold, quantity, unit_price, total_price, sale_date, description, payment_method, payment_status) VALUES (:customer_name, :item_sold, :quantity, :unit_price, :total_price, :sale_date, :description, :payment_method, :payment_status)", [
+        ':customer_name' => $customer_name,
+        ':item_sold' => $item_sold,
         ':quantity' => $quantity,
-        ':price' => $price,
-        ':date' => $date,
+        ':unit_price' => $unit_price,
+        ':total_price' => $total_price,
+        ':sale_date' => $sale_date,
+        ':description' => $description,
+        ':payment_method' => $payment_method,
+        ':payment_status' => $payment_status,
     ]);
 
-     if ($result == 1) {
-            header("Location: sales.php?status=success&message=Sales added successfully.");
-            exit();
+    if ($result == 1) {
+        // Get the last inserted ID for the invoice
+        $last_id = $dbh->lastInsertId();
+        header("Location: invoice.php?id=" . $last_id);
+        exit();
     } else {
         header("Location: sales.php?status=error&message=Sales addition failed.");
         exit();
     }
 }
+
+
 
 // add grave mappings
 elseif (isset($_POST['grave_mapping_btn'])) {
@@ -727,14 +772,15 @@ if (isset($_POST['add_grave_btn'])) {
     // Safely assign and trim POST values
     $plot_number = trim($_POST['Plot_number'] ?? '');
     $lot = trim($_POST['lot'] ?? '');
-    $size = trim($_POST['size'] ?? '');
+ 
     $section_name = trim($_POST['section_name'] ?? '');
+    $type = trim($_POST['type'] ?? '');
     $availability_status = trim($_POST['Availability_Status'] ?? '');
     $price = trim($_POST['price'] ?? '');
     $coordinates = trim($_POST['coordinates'] ?? '');
 
     // Ensure all required fields are available
-    if ($plot_number && $size && $section_name && $availability_status && $price && $coordinates) {
+    if ($plot_number && $type && $section_name && $availability_status && $price && $coordinates) {
         // Fetch the last cemetery_id and generate a new one
         $stmt = $dbh->query("SELECT cemetery_id FROM grave_management ORDER BY cemetery_id DESC LIMIT 1");
         $last_cemetery = $stmt->fetch(PDO::FETCH_OBJ);
@@ -755,13 +801,14 @@ if (isset($_POST['add_grave_btn'])) {
 
         if ($check->rowCount() == 0) {
             // Proceed with the database query using dbCreate
-            $result = dbCreate("INSERT INTO grave_management (cemetery_id, plot_number,lot, size, section_name, availability_status, price, coordinates) 
-                                VALUES (:cemetery_id, :plot_number,:lot, :size,  :section_name, :availability_status, :price, :coordinates)", [
+            $result = dbCreate("INSERT INTO grave_management (cemetery_id, plot_number,lot,section_name, type,  availability_status, price, coordinates) 
+                                VALUES (:cemetery_id, :plot_number,:lot,   :section_name,:type, :availability_status, :price, :coordinates)", [
                 ':cemetery_id' => $cemetery_id,
                 ':plot_number' => $plot_number,
                 ':lot'=>$lot,
-                ':size' => $size,
                 ':section_name' => $section_name,
+                ':type' => $type,
+                
                 ':availability_status' => $availability_status,
                 ':price' => $price,
                 ':coordinates' => $coordinates,

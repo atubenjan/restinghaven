@@ -1,0 +1,41 @@
+{
+  "descriptions": [
+    "Reservation fees with intent to buy burial lot",
+    "Residents burial plot",
+    "Non Residents burial plot",
+    "Temporary burial plot",
+    "Grave opening and closing",
+    "Hire of gathering hall",
+    "Hire of tent and chairs",
+    "Wall of Remembrance spot",
+    "Urn burial lot",
+    "Grave finishing"
+  ],
+  "sub_descriptions": {
+    "Reservation fees with intent to buy burial lot": [
+      "Residents",
+      "Non Residents"
+    ],
+    "Residents burial plot": [
+      "Adult burial plot",
+      "Child burial plot (1 to 17 years)",
+      "Infant burial plot (0 to 12 months)"
+    ],
+    "Non Residents burial plot": [
+      "Adult burial plot",
+      "Child burial plot (1 to 17 years)",
+      "Infant burial plot (0 to 12 months)"
+    ],
+    "Grave opening and closing": ["Unbuilt", "Constructed"],
+    "Urn burial lot": ["Container spot", "Burial spot"],
+    "Grave finishing": [
+      "Cement",
+      "Tiles",
+      "Terrazzo",
+      "Granite",
+      "Mausoleum",
+      "Headstone placing",
+      "Marker placing"
+    ]
+  }
+}

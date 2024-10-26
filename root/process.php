@@ -3,6 +3,19 @@ require "config.php";
 
 
 $api_key = "TQx3th8uR2R8I8o8858HUos2f37c81Smw1I0DQ470a7b3rk4E3U33GN5cm7L3AHz";
+// Enable error reporting and set a custom error handler
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+function customError($errno, $errstr, $errfile, $errline) {
+    $errorMessage = "Error: [$errno] $errstr in $errfile on line $errline";
+    $_SESSION['error'] = $errorMessage; // Store error in session
+    header("Location: error_page.php"); // Redirect to error page
+    exit();
+}
+set_error_handler("customError");
+
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Retrieve posted username and password
@@ -38,19 +51,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     } 
 }
-// Enable error reporting and set a custom error handler
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-function customError($errno, $errstr, $errfile, $errline) {
-    $errorMessage = "Error: [$errno] $errstr in $errfile on line $errline";
-    $_SESSION['error'] = $errorMessage; // Store error in session
-    header("Location: error_page.php"); // Redirect to error page
-    exit();
-}
-set_error_handler("customError");
-
 
 
 // Login process
@@ -78,25 +78,6 @@ if (isset($_POST['login_btn'])) {
     }
 }
 
-if (!isset($_GET['id'])) {
-    die('Invoice ID is missing.');
-}
-
-$sale_id = $_GET['id'];
-
-$stmt = $dbh->prepare("SELECT s.*, c.name AS customer_name 
-                        FROM sales s 
-                        JOIN customers c ON s.customer_name = c.name 
-                        WHERE s.id = :id");
-$stmt->execute([':id' => $sale_id]);
-
-$sale = $stmt->fetch(PDO::FETCH_ASSOC);
-
-if (!$sale) {
-    die('Invoice not found.');
-}
-// User Registration
-// add_branch
 elseif (isset($_POST['add_branch_btn'])) {
     // Sanitize input
     $branch_name = trim($_POST['branch_name']);

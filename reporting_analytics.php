@@ -70,8 +70,8 @@
         </div>
         <!-- /.card-header -->
         <div class="card-body">
-        <table id="example1" class="table table-bordered table-striped">
-          <thead style="background-color: #0b603a; color: white;">
+          <table id="example1" class="table table-bordered table-striped">
+            <thead style="background-color: #0b603a; color: white;">
               <tr>
                 <th>ID</th>
                 <th>Report Type</th>
@@ -129,6 +129,7 @@
     event.preventDefault();
     // Handle report generation logic
     alert('Report generation form submitted');
+    // Add logic to fetch and render report data based on selected options
   });
 
   // Example function to render a chart (replace with your data and chart type)

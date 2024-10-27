@@ -65,7 +65,7 @@ if (isset($_POST['edit_inventory_btn'])) {
                 <th>Category</th>
                 <th>Description</th>
                 <th>Quantity</th>
-                <th>Unit of Measurement</th>
+            
                 <th>Reorder Level</th>
                 <th>Supplier</th>
                 <th>Cost per Unit</th>
@@ -86,8 +86,8 @@ if (isset($_POST['edit_inventory_btn'])) {
                       <td><?= htmlspecialchars($item['product_name'])?></td>
                       <td><?= htmlspecialchars($item['category'])?></td>
                       <td><?= htmlspecialchars($item['description'])?></td>
-                      <td><?= htmlspecialchars($item['quantity'])?></td>
-                      <td><?= htmlspecialchars($item['unit_of_measurement'])?></td>
+                      <td><?= htmlspecialchars($item['quantity'])?><?= htmlspecialchars($item['unit_of_measurement'])?></td>
+                   
                       <td><?= htmlspecialchars($item['reorder_level'])?></td>
                       <td><?= htmlspecialchars($item['supplier_id'])?></td>
                       <td><?= htmlspecialchars($item['cost_per_unit'])?></td>

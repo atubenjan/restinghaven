@@ -208,6 +208,13 @@ body {
         </a>
     </li>
     <li class="nav-item">
+        <a href="user_activity" class="nav-link <?= ($current_page == 'user_activity.php') ? 'active' : '' ?>"
+            style="<?= ($current_page == 'user_activity.php') ? 'background-color: #0b603a; color: white;' : '' ?>">
+            <i class="nav-icon fas fa-users"></i>
+            <p>UserActivity</p>
+        </a>
+    </li>
+    <li class="nav-item">
         <a href="logout.php" id="logoutBtn" class="nav-link <?= ($current_page == 'logout.php') ? 'active' : '' ?>"
             style="<?= ($current_page == 'logout.php') ? 'background-color: #0b603a; color: white;' : '' ?>">
             <i class="nav-icon fas fa-lock"></i>

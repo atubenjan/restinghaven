@@ -53,7 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 
-// Login process
+/* // Login process
 if (isset($_POST['login_btn'])) {
     trim(extract($_POST));
 
@@ -76,7 +76,71 @@ if (isset($_POST['login_btn'])) {
         header("Location: login.php?status=error&message=Invalid Login credentials");
         exit();
     }
+} */
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Check if login button was clicked
+    if (isset($_POST['login_btn'])) {
+        trim(extract($_POST));
+
+        // Encrypt the password
+        $encrypt_password = sha1($password);
+        $result = $dbh->query("SELECT * FROM users WHERE email = '$email' AND password = '$encrypt_password'");
+
+        if ($result->rowCount() == 1) {
+            $rows = $result->fetch(PDO::FETCH_OBJ);
+
+            // Store user details in session
+            $_SESSION['id'] = $rows->id;
+            $_SESSION['username'] = $rows->username;
+            $_SESSION['email'] = $rows->email;
+            $_SESSION['user_role'] = $rows->user_role;
+
+
+        // Store these values in variables to use them later
+        $userId = $rows->id;
+        $username = $rows->username;
+        $user_role = $rows->user_role; // Assigning the user role here
+
+            // Track user activity
+            $userId = $rows->id;
+            $ipAddress = getUserIpAddress();
+            $location = getLocationFromIp($ipAddress);
+            $loginTime = date('Y-m-d H:i:s');
+            $pageVisited = "login"; // Page visited
+
+            // Insert user activity into the database
+            $result = dbcreate("INSERT INTO user_activity (user_id, username, user_role, login_time, page_visited, visit_time, ip_address, location) VALUES (:user_id, :username, :user_role, :login_time, :page_visited, :visit_time, :ip_address, :location)",
+            [
+                ':user_id' => $userId,
+                ':username' => $username,
+                ':user_role' => $user_role,
+                ':login_time' => $loginTime,
+                ':page_visited' => $pageVisited,
+                ':visit_time' => $loginTime,
+                ':ip_address' => $ipAddress,
+                ':location' => $location
+            ]);
+
+            // Redirect to the homepage
+            if ($result == 1) {
+                echo "
+                    <script>
+                        window.location.href = '".SITE_URL."';
+                    </script>
+                ";
+            } else {
+                header("Location: login.php?status=error&message=Failed to log activity.");
+                exit();
+            }
+        } else {
+            header("Location: login.php?status=error&message=Invalid Login credentials");
+            exit();
+        }
+    }
 }
+
+
 
 elseif (isset($_POST['add_branch_btn'])) {
     // Sanitize input
@@ -813,6 +877,7 @@ if (isset($_POST['add_grave_btn'])) {
         exit();
     }
 }
+// Get POST data
 
 
 ?>

@@ -80,17 +80,7 @@
               </tr>
             </thead>
             <tbody>
-              <!-- Example Row -->
-              <tr>
-                <td>1</td>
-                <td>Sales Report</td>
-                <td>2024-09-06</td>
-                <td>
-                  <a href="view_report.php?id=1" class="btn btn-info btn-sm">View</a>
-                  <a href="download_report.php?id=1" class="btn btn-success btn-sm">Download</a>
-                </td>
-              </tr>
-              <!-- Add more rows as needed -->
+              <!-- Data will be dynamically populated here -->
             </tbody>
           </table>
         </div>
@@ -127,38 +117,81 @@
   // Handle report form submission
   document.getElementById('reportForm').addEventListener('submit', function(event) {
     event.preventDefault();
-    // Handle report generation logic
-    alert('Report generation form submitted');
-    // Add logic to fetch and render report data based on selected options
+    
+    const reportType = document.getElementById('reportType').value;
+    const startDate = document.getElementById('reportStartDate').value;
+    const endDate = document.getElementById('reportEndDate').value;
+
+    // Validate dates
+    if (new Date(startDate) > new Date(endDate)) {
+      alert('Start date must be before end date');
+      return;
+    }
+
+    // Fetch report data
+    const formData = new FormData(this);
+    fetch('generate_report.php', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      // Populate the report table with data
+      const tbody = document.querySelector('#example1 tbody');
+      tbody.innerHTML = ''; // Clear existing rows
+      data.forEach(report => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${report.id}</td>
+            <td>${report.type}</td>
+            <td>${report.date_generated}</td>
+            <td>
+              <a href="view_report.php?id=${report.id}" class="btn btn-info btn-sm">View</a>
+              <a href="download_report.php?id=${report.id}" class="btn btn-success btn-sm">Download</a>
+            </td>
+          </tr>
+        `;
+      });
+
+      // Render the chart
+      renderChart(reportType);
+    })
+    .catch(error => console.error('Error fetching report data:', error));
   });
 
-  // Example function to render a chart (replace with your data and chart type)
-  function renderChart() {
-    var ctx = document.createElement('canvas');
-    document.getElementById('analyticsChartContainer').appendChild(ctx);
-    new Chart(ctx, {
-      type: 'bar', // Example chart type
-      data: {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-        datasets: [{
-          label: 'Monthly Data',
-          data: [12, 19, 3, 5, 2, 3, 7],
-          backgroundColor: 'rgba(75, 192, 192, 0.2)',
-          borderColor: 'rgba(75, 192, 192, 1)',
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: {
-            beginAtZero: true
+  // Function to render the chart based on the report type
+  function renderChart(reportType) {
+    fetch(`get_chart_data.php?report_type=${reportType}`)
+      .then(response => response.json())
+      .then(data => {
+        var ctx = document.createElement('canvas');
+        document.getElementById('analyticsChartContainer').innerHTML = ''; // Clear previous chart
+        document.getElementById('analyticsChartContainer').appendChild(ctx);
+        new Chart(ctx, {
+          type: 'bar', // Change type as needed
+          data: {
+            labels: data.labels,
+            datasets: [{
+              label: 'Report Data',
+              data: data.values,
+              backgroundColor: 'rgba(75, 192, 192, 0.2)',
+              borderColor: 'rgba(75, 192, 192, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
           }
-        }
-      }
-    });
+        });
+      })
+      .catch(error => console.error('Error fetching chart data:', error));
   }
 
-  // Render the chart when the page loads
-  window.onload = renderChart;
+  // Render the chart when the page loads (if applicable)
+  // window.onload = renderChart; // Uncomment if needed
 </script>

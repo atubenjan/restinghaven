@@ -118,7 +118,7 @@
     <div class="modal-content">
       <div class="modal-header" style="background-color: #0b603a; color: white;">
         <h5 class="modal-title" id="addCustomerModalLabel">Add New Customer</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>

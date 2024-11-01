@@ -232,8 +232,8 @@ $plotNumbers = $plotNumbersStmt->fetchAll(PDO::FETCH_COLUMN); // Fetches an arra
                                         </div>
                                        
                                         <div class="col-md-4 mb-3">
-                                          <label for="editPlaceOfDeath" class="form-label">Place of Death</label>
-                                          <input type="text" class="form-control" id="editPlaceOfDeath" name="place_of_death" value="<?= $row->place_of_death; ?>">
+                                          <label for="editPlaceOfDeath" class="form-label">Place of Birth</label>
+                                          <input type="text" class="form-control" id="editPlaceOfDeath" name="place_of_birth" value="<?= $row->place_of_birth; ?>">
                                         </div>
                                         <div class="col-md-4 mb-3">
                                           <label for="editNationality" class="form-label">Nationality/Ethnicity</label>
@@ -253,9 +253,9 @@ $plotNumbers = $plotNumbersStmt->fetchAll(PDO::FETCH_COLUMN); // Fetches an arra
                                           <textarea class="form-control" id="editRemarks" name="remarks" rows="3"><?= $row->remarks; ?></textarea>
                                         </div>
                                         <div class="col-md-6 mb-3">
-                <label for="fileUpload" class="form-label">Upload File</label>
-                <input type="file" class="form-control" id="fileUpload" name="files" required>
-            </div>
+                                          <label for="fileUpload" class="form-label">Upload File</label>
+                                          <input type="file" class="form-control" id="fileUpload" value="<?= $row->files?>" name="files" required>
+                                      </div>
                                       </div>
                                     </div>
                                     <div class="modal-footer">
@@ -324,14 +324,14 @@ $plotNumbers = $plotNumbersStmt->fetchAll(PDO::FETCH_COLUMN); // Fetches an arra
                 <input type="text" class="form-control" id="addCauseOfDeath" name="cause_of_death">
               </div>
               <div class="col-md-4 mb-3">
-    <label for="addPlotNumber" class="form-label">Plot Number</label>
-    <select class="form-control" id="addPlotNumber" name="plot_number" placeholder="Choose a Plot Number ">
-        <option value="" selected disabled>Choose a plot number...</option>
-        <?php foreach ($plotNumbers as $plotNumber): ?>
-            <option value="<?= htmlspecialchars($plotNumber); ?>"><?= htmlspecialchars($plotNumber); ?></option>
-        <?php endforeach; ?>
-    </select>
-</div>
+                  <label for="addPlotNumber" class="form-label">Plot Number</label>
+                  <select class="form-control" id="addPlotNumber" name="plot_number" placeholder="Choose a Plot Number ">
+                      <option value="" selected disabled>Choose a plot number...</option>
+                      <?php foreach ($plotNumbers as $plotNumber): ?>
+                          <option value="<?= htmlspecialchars($plotNumber); ?>"><?= htmlspecialchars($plotNumber); ?></option>
+                      <?php endforeach; ?>
+                  </select>
+              </div>
               <div class="col-md-4 mb-3">
                 <label for="addFamilyLineage" class="form-label">Family Lineage</label>
                 <input type="text" class="form-control" id="addFamilyLineage" name="family_lineage">

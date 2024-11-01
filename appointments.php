@@ -68,9 +68,7 @@
                         <a href="?deleteAppointments=<?= $row->id ?>" class="btn btn-danger btn-sm deleteBtn">
                           <i class="fas fa-trash"></i>
                         </a>
-                        <button type="button" class="btn btn-info btn-sm text-white" data-toggle="modal" data-target="#viewProduct<?= $row->id ?>">
-                          <i class="fas fa-eye"></i>
-                        </button>
+                        
                       </td>
                     </tr>
 

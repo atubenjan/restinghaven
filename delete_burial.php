@@ -1,12 +1,12 @@
 <?php
 include './root/process.php'; // Include your database connection
 
-if (isset($_GET['id'])) {
-    $id = $_GET['id'];
+if (isset($_GET['burial_id'])) {
+    $id = $_GET['burial_id'];
     
     // Prepare the delete statement
-    $stmt = $dbh->prepare("DELETE FROM burial_records WHERE burial_id = :id");
-    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    $stmt = $dbh->prepare("DELETE FROM burial_records WHERE burial_id = :burial_id");
+    $stmt->bindParam(':burial_id', $id, PDO::PARAM_STR);
 
     // Execute the statement
     if ($stmt->execute()) {

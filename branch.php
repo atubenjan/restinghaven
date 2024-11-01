@@ -1,5 +1,34 @@
 <?php include 'header.php'; // Include header and navigation 
 
+if(isset($_POST['edit_branch'])){
+  $branch_id = trim($_POST['branch_id']);
+  $branch_name = trim($_POST['branch_name']);
+  $location = trim($_POST['location']);
+  $branch_manager = trim($_POST['branch_manager']);
+  $contact = trim($_POST['contact']);
+
+  // Prepare the UPDATE statement
+  $stmt = $dbh->prepare("UPDATE branch SET branch_name =:branch_name, location =:location, branch_manager =:branch_manager, contact =:contact WHERE branch_id = :branch_id");
+
+  // Bind the parameters
+  $stmt->bindParam(':branch_name', $branch_name);
+  $stmt->bindParam(':location', $location);
+  $stmt->bindParam(':branch_manager', $branch_manager);
+  $stmt->bindParam(':contact', $contact);
+  $stmt->bindParam(':branch_id', $branch_id);
+
+  // Execute the query
+  if($stmt->execute()){
+    // Redirect to the branch page with success message
+    header("Location: branch.php?status=success&message=Branch updated successfully.");
+    exit;
+  } else {
+    // Redirect to the branch page with error message
+    header("Location: branch.php?status=error&error=Error updating branch.");
+    exit;
+  }
+}
+
 $managerStmt = $dbh->query("SELECT id, username FROM users WHERE user_role = 'manager'");
 $managers = $managerStmt->fetchAll(PDO::FETCH_OBJ);
 
@@ -48,7 +77,7 @@ $managers = $managerStmt->fetchAll(PDO::FETCH_OBJ);
             </thead>
             <tbody>
               <?php 
-              $branchStmt = $dbh->query("SELECT * FROM branch");
+              $branchStmt = $dbh->query("SELECT branch.*,users.username FROM branch LEFT JOIN users ON users.id = branch.branch_manager");
               $count = 1;
               while ($row = $branchStmt->fetch(PDO::FETCH_OBJ)) {
               ?>
@@ -56,7 +85,7 @@ $managers = $managerStmt->fetchAll(PDO::FETCH_OBJ);
                 <td><?= $row->branch_id; ?></td>
                 <td><?= $row->branch_name; ?></td>
                 <td><?= $row->location; ?></td>
-                <td><?= $row->branch_manager; ?></td>
+                <td><?= $row->username; ?></td>
                 <td><?= $row->contact; ?></td>
                 <td>
                   <a href="delete_branch.php?branch_id=<?= $row->branch_id; ?>" class="btn btn-sm btn-danger deleteBtn">
@@ -75,47 +104,46 @@ $managers = $managerStmt->fetchAll(PDO::FETCH_OBJ);
                           </button>
                         </div>
                         <div class="modal-body">
-  <form method="POST">
-    <input type="hidden" name="branch_id" value="<?= $row->branch_id; ?>">
+                          <form method="POST">
+                            <input type="hidden" name="branch_id" value="<?= $row->branch_id; ?>">
 
-    <div class="row">
-      <!-- Left Column -->
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="editBranchName" class="form-label">Branch Name</label>
-          <input type="text" class="form-control" id="editBranchName" name="branch_name" value="<?= $row->branch_name; ?>" required>
-        </div>
+                            <div class="row">
+                              <!-- Left Column -->
+                              <div class="col-md-6">
+                                <div class="mb-3">
+                                  <label for="editBranchName" class="form-label">Branch Name</label>
+                                  <input type="text" class="form-control" id="editBranchName" name="branch_name" value="<?= $row->branch_name; ?>" required>
+                                </div>
 
-        <div class="mb-3">
-          <label for="editBranchManager" class="form-label">Branch Manager</label>
-          <select class="form-control" id="editBranchManager" name="branch_manager" required>
-            <option value="" selected disabled>Select a Manager</option>
-            <?php foreach ($managers as $manager): ?>
-              <option value="<?= $manager->username; ?>" <?= ($row->branch_manager == $manager->username) ? 'selected' : ''; ?>>
-                <?= htmlspecialchars($manager->username); ?>
-              </option>
-            <?php endforeach; ?>
-          </select>
-        </div>
-      </div>
+                                <div class="mb-3">
+                                  <label for="editBranchManager" class="form-label">Branch Manager</label>
+                                  <select class="form-control" id="editBranchManager" name="branch_manager" required>
+                                    <option value="" selected disabled>Select a Manager</option>
+                                    <?php foreach ($managers as $manager): ?>
+                                      <option value="<?= $manager->id; ?>" <?= ($row->branch_manager == $manager->id) ? 'selected' : ''; ?>>
+                                        <?= htmlspecialchars($manager->username); ?>
+                                      </option>
+                                    <?php endforeach; ?>
+                                  </select>
+                                </div>
+                              </div>
 
-      <!-- Right Column -->
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="editBranchLocation" class="form-label">Location</label>
-          <input type="text" class="form-control" id="editBranchLocation" name="location" value="<?= $row->location; ?>" required>
-        </div>
+                              <!-- Right Column -->
+                              <div class="col-md-6">
+                                <div class="mb-3">
+                                  <label for="editBranchLocation" class="form-label">Location</label>
+                                  <input type="text" class="form-control" id="editBranchLocation" name="location" value="<?= $row->location; ?>" required>
+                                </div>
+                                <div class="mb-3">
+                                  <label for="editBranchContact" class="form-label">Contact</label>
+                                  <input type="text" class="form-control" id="editBranchContact" name="contact" value="<?= $row->contact; ?>" required>
+                                </div>
+                              </div>
+                            </div>
 
-        <div class="mb-3">
-          <label for="editBranchContact" class="form-label">Contact</label>
-          <input type="text" class="form-control" id="editBranchContact" name="contact" value="<?= $row->contact; ?>" required>
-        </div>
-      </div>
-    </div>
-
-    <button type="submit" name="edit_branch" class="btn btn-primary" style="background-color: #0b603a; color: white;">Update Branch</button>
-  </form>
-</div>
+                            <button type="submit" name="edit_branch" class="btn btn-primary" style="background-color: #0b603a; color: white;">Update Branch</button>
+                          </form>
+                        </div>
 
                       </div>
                     </div>

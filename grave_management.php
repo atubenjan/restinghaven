@@ -3,36 +3,36 @@
 include 'header.php';
 
 if (isset($_POST['edit_grave_btn'])) {
-    $id = trim($_POST['id']); // Assuming the form sends the auto-incrementing id
     $cemetery_id = trim($_POST['cemetery_id']);
     $plot_number = trim($_POST['plot_number']);
-    $size = trim($_POST['size']);
+    $lot = trim($_POST['lot']);
+    $type = trim($_POST['type']);
     $availability_status = trim($_POST['availability_status']);
     $section_name = trim($_POST['section_name']);
     $price = trim($_POST['price']);
     $coordinates = trim($_POST['coordinates']);
 
     // Prepare SQL update statement
+ // Prepare SQL update statement
     $stmt = $dbh->prepare("UPDATE grave_management SET 
-        cemetery_id = ?, 
-        plot_number = ?, 
-        size = ?, 
-        availability_status = ?, 
-        section_name = ?, 
-        price = ?, 
-        coordinates = ? 
-        WHERE id = ?"); // Use id for the condition
+    plot_number = ?, 
+    availability_status = ?, 
+    section_name = ?, 
+    price = ?, 
+    lot = ?, 
+    type = ?, 
+    coordinates = ? 
+    WHERE cemetery_id = ?");
 
-    // Bind parameters
-    $stmt->bindParam(1, $cemetery_id);
-    $stmt->bindParam(2, $plot_number);
-    $stmt->bindParam(3, $size);
-    $stmt->bindParam(4, $availability_status);
-    $stmt->bindParam(5, $section_name);
-    $stmt->bindParam(6, $price);
+    // Bind parameters in the correct order
+    $stmt->bindParam(1, $plot_number);
+    $stmt->bindParam(2, $availability_status);
+    $stmt->bindParam(3, $section_name);
+    $stmt->bindParam(4, $price);
+    $stmt->bindParam(5, $lot);
+    $stmt->bindParam(6, $type);
     $stmt->bindParam(7, $coordinates);
-    $stmt->bindParam(8, $id); // Bind the id for the WHERE clause
-
+    $stmt->bindParam(8, $cemetery_id);
     // Execute the statement
     if ($stmt->execute()) {
         header("Location: grave_management.php?status=success&message=Grave details updated successfully");
@@ -118,10 +118,6 @@ if (isset($_POST['edit_grave_btn'])) {
                                         <i class="fas fa-edit"></i>
                                     </button>
 
-
-                                  
-
-
                                     <div class="modal fade" id="edit-modal<?= $row->cemetery_id ?>">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
@@ -131,72 +127,77 @@ if (isset($_POST['edit_grave_btn'])) {
                                                         <span aria-hidden="true">&times;</span>
                                                     </button>
                                                 </div>
-
-
-
-
-
-
-
                                                 <div class="modal-body">
                                                 <form method="POST">
-    <input type="hidden" name="cemetery_id" value="<?= $row->cemetery_id; ?>">
+                                                    <input type="hidden" name="cemetery_id" value="<?= $row->cemetery_id; ?>">
 
-    <div class="row">
-        <div class="col-md-6">
-            <div class="mb-3">
-                <label for="editPlotNumber" class="form-label">Plot Number</label>
-                <input type="text" class="form-control" id="editPlotNumber" name="plot_number" value="<?= $row->plot_number; ?>" required>
-            </div>
-            <div class="mb-3">
-                <label for="editPlotNumber" class="form-label">Lot</label>
-                <input type="text" class="form-control" id="editPlotNumber" name="lot" value="<?= $row->lot; ?>" required>
-            </div>
-            <div class="mb-3">
-                <label for="editSize" class="form-label">Category</label>
-                <select class="form-control" id="editSize" name="tye" required>
-                    <option value="" selected disabled>Choose category...</option>
-                   
-                </select>
-            </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label for="editPlotNumber" class="form-label">Plot Number</label>
+                                                                <input type="text" class="form-control" id="editPlotNumber" name="plot_number" value="<?= $row->plot_number; ?>" required>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="editPlotNumber" class="form-label">Lot</label>
+                                                                <input type="text" class="form-control" id="editPlotNumber" name="lot" value="<?= $row->lot; ?>" required>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="editSize" class="form-label">Category</label>
+                                                                <select class="form-control" id="editSize" name="type" required>
+                                                                    <option value="" selected disabled>Choose category...</option>
+                                                                    <option value="resident_adult" <?= $row->type == 'resident_adult' ? 'selected' : '' ?>>Resident-Adult</option>
+                                                                    <option value="resident_child" <?= $row->type == 'resident_child' ? 'selected' : '' ?>>Resident-Child</option>
+                                                                    <option value="resident_infant" <?= $row->type == 'resident_infant' ? 'selected' : '' ?>>Resident-Infant</option>
+                                                                    <option value="non_resident_adult" <?= $row->type == 'non_resident_adult' ? 'selected' : '' ?>>Non Resident-Adult</option>
+                                                                    <option value="non_resident_child" <?= $row->type == 'non_resident_child' ? 'selected' : '' ?>>Non Resident-Child</option>
+                                                                    <option value="non_resident_infant" <?= $row->type == 'non_resident_infant' ? 'selected' : '' ?>>Non Resident-Infant</option>
+                                                                    <option value="temporary_burial" <?= $row->type == 'temporary_burial' ? 'selected' : '' ?>>Temporary Burial</option>
+                                                                    <option value="wall_of_remembrance" <?= $row->type == 'wall_of_remembrance' ? 'selected' : '' ?>>Wall of Remembrance</option>
+                                                                    <option value="urn_container_spot" <?= $row->type == 'urn_container_spot' ? 'selected' : '' ?>>Urn-Container Spot</option>
+                                                                    <option value="urn_burial_spot" <?= $row->type == 'urn_burial_spot' ? 'selected' : '' ?>>Urn-Burial Spot</option>
+                                                                    <option value="reservation_non_reservation" <?= $row->type == 'reservation_non_reservation' ? 'selected' : '' ?>>Reservation-Non_Reservation</option>
+                                                                    <option value="reservation_resident" <?= $row->type == 'reservation_resident' ? 'selected' : '' ?>>Reservation-Resident</option>
+                                                                
+                                                                </select>
+                                                            </div>
 
-            <div class="mb-3">
-                <label for="editAvailabilityStatus" class="form-label">Availability Status</label>
-                <select class="form-control" id="editAvailabilityStatus" name="availability_status" required>
-                    <option value="" selected disabled>Choose status...</option>
-                    <option value="available" <?= ($row->availability_status == 'available') ? 'selected' : ''; ?>>Available</option>
-                    <option value="occupied" <?= ($row->availability_status == 'occupied') ? 'selected' : ''; ?>>Occupied</option>
-                    <option value="reserved" <?= ($row->availability_status == 'reserved') ? 'selected' : ''; ?>>Reserved</option>
-                </select>
-            </div>
-        </div>
+                                                            <div class="mb-3">
+                                                                <label for="editAvailabilityStatus" class="form-label">Availability Status</label>
+                                                                <select class="form-control" id="editAvailabilityStatus" name="availability_status" required>
+                                                                    <option value="" selected disabled>Choose status...</option>
+                                                                    <option value="available" <?= ($row->availability_status == 'available') ? 'selected' : ''; ?>>Available</option>
+                                                                    <option value="occupied" <?= ($row->availability_status == 'occupied') ? 'selected' : ''; ?>>Occupied</option>
+                                                                    <option value="reserved" <?= ($row->availability_status == 'reserved') ? 'selected' : ''; ?>>Reserved</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
 
-        <div class="col-md-6">
-            <div class="mb-3">
-                <label for="editSectionName" class="form-label">Section Name</label>
-                <input type="text" class="form-control" id="editSectionName" name="section_name" value="<?= $row->section_name; ?>" required>
-            </div>
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label for="editSectionName" class="form-label">Section Name</label>
+                                                                <input type="text" class="form-control" id="editSectionName" name="section_name" value="<?= $row->section_name; ?>" required>
+                                                            </div>
 
-            <div class="mb-3">
-                <label for="editPrice" class="form-label">Price</label>
-                <input type="text" class="form-control" id="editPrice" name="price" value="<?= $row->price; ?>" required>
-            </div>
+                                                            <div class="mb-3">
+                                                                <label for="editPrice" class="form-label">Price</label>
+                                                                <input type="text" class="form-control" id="editPrice" name="price" value="<?= $row->price; ?>" required>
+                                                            </div>
 
-            <div class="mb-3">
-                <label for="editCoordinates" class="form-label">Coordinates</label>
-                <input type="text" class="form-control" id="editCoordinates" name="coordinates" value="<?= $row->coordinates; ?>" required>
-            </div>
-        </div>
-    </div>
+                                                            <div class="mb-3">
+                                                                <label for="editCoordinates" class="form-label">Coordinates</label>
+                                                                <input type="text" class="form-control" id="editCoordinates" name="coordinates" value="<?= $row->coordinates; ?>" required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
 
-    <button type="submit" name="edit_grave_btn" class="btn btn-primary" style="background-color: #0b603a; color: white;">Update Grave</button>
-</form>
+                                                    <button type="submit" name="edit_grave_btn" class="btn btn-primary" style="background-color: #0b603a; color: white;">Update Grave</button>
+                                                </form>
 
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <a href="delete_lot.php?id=<?= $row->cemetery_id; ?>" class="btn btn-danger btn-sm deleteBtn">
+                                    <a href="delete_lot.php?cemetery_id=<?= $row->cemetery_id; ?>" class="btn btn-danger btn-sm deleteBtn">
                                         <i class="fas fa-trash"></i>
                                     </a>
                                 </td>
@@ -270,9 +271,9 @@ if (isset($_POST['edit_grave_btn'])) {
                             <div class="mb-3">
                                 <label for="addStatus" class="form-label">Availability Status</label>
                                 <select class="form-control" id="addStatus" name="Availability_Status" required>
-                                    <option value="Available">Available</option>
-                                    <option value="Occupied">Occupied</option>
-                                    <option value="Reserved">Reserved</option>
+                                    <option value="available">Available</option>
+                                    <option value="occupied">Occupied</option>
+                                    <option value="reserved">Reserved</option>
                                 </select>
                             </div>
                             <div class="mb-3">

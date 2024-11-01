@@ -6,7 +6,7 @@ if (isset($_GET['branch_id'])) {
     
     // Prepare the delete statement
     $stmt = $dbh->prepare("DELETE FROM branch WHERE branch_id = :branch_id");
-    $stmt->bindParam(':branch_id', $branch_id, PDO::PARAM_INT);
+    $stmt->bindParam(':branch_id', $branch_id, PDO::PARAM_STR);
 
     // Execute the statement
     if ($stmt->execute()) {

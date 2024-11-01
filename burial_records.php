@@ -7,7 +7,6 @@ if (isset($_POST['edit_burial_record'])) {
   $grave_number = trim($_POST['grave_number']);
   $deceased_id = trim($_POST['deceased_id']);
   $cemetery_id = trim($_POST['cemetery_id']);
-  $plot_id = trim($_POST['plot_id']);
   $time_of_burial = trim($_POST['time_of_burial']);
   $burial_type = trim($_POST['burial_type']);
   $officiant = trim($_POST['officiant']);
@@ -22,7 +21,6 @@ if (isset($_POST['edit_burial_record'])) {
       grave_number = :grave_number, 
       deceased_id = :deceased_id, 
       cemetery_id = :cemetery_id, 
-      plot_id = :plot_id, 
       time_of_burial = :time_of_burial, 
       burial_type = :burial_type, 
       officiant = :officiant, 
@@ -36,7 +34,6 @@ if (isset($_POST['edit_burial_record'])) {
   $stmt->bindParam(':grave_number', $grave_number);
   $stmt->bindParam(':deceased_id', $deceased_id);
   $stmt->bindParam(':cemetery_id', $cemetery_id);
-  $stmt->bindParam(':plot_id', $plot_id);
   $stmt->bindParam(':time_of_burial', $time_of_burial);
   $stmt->bindParam(':burial_type', $burial_type);
   $stmt->bindParam(':officiant', $officiant);
@@ -226,7 +223,7 @@ $locations = $stmt->fetchAll(PDO::FETCH_COLUMN); // Fetch only the location colu
                     </div>
                   </div>
                 </div>
-                <a href="delete_burial.php?id=<?= $row->burial_id; ?>" class="btn btn-danger btn-sm deleteBtn">Delete</a>
+                <a href="delete_burial.php?burial_id=<?= $row->burial_id; ?>" class="btn btn-danger btn-sm deleteBtn">Delete</a>
               </td>
             </tr>
             <?php $count++; } ?>

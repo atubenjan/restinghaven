@@ -1,5 +1,34 @@
 <?php include 'header.php'; // Include header and navigation 
 
+if(isset($_POST['edit_branch'])){
+  $branch_id = trim($_POST['branch_id']);
+  $branch_name = trim($_POST['branch_name']);
+  $location = trim($_POST['location']);
+  $branch_manager = trim($_POST['branch_manager']);
+  $contact = trim($_POST['contact']);
+
+  // Prepare the UPDATE statement
+  $stmt = $dbh->prepare("UPDATE branch SET branch_name =:branch_name, location =:location, branch_manager =:branch_manager, contact =:contact WHERE branch_id = :branch_id");
+
+  // Bind the parameters
+  $stmt->bindParam(':branch_name', $branch_name);
+  $stmt->bindParam(':location', $location);
+  $stmt->bindParam(':branch_manager', $branch_manager);
+  $stmt->bindParam(':contact', $contact);
+  $stmt->bindParam(':branch_id', $branch_id);
+
+  // Execute the query
+  if($stmt->execute()){
+    // Redirect to the branch page with success message
+    header("Location: branch.php?status=success&message=Branch updated successfully.");
+    exit;
+  } else {
+    // Redirect to the branch page with error message
+    header("Location: branch.php?status=error&error=Error updating branch.");
+    exit;
+  }
+}
+
 $managerStmt = $dbh->query("SELECT id, username FROM users WHERE user_role = 'manager'");
 $managers = $managerStmt->fetchAll(PDO::FETCH_OBJ);
 

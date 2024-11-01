@@ -142,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
 
-elseif (isset($_POST['add_branch_btn'])) {
+if (isset($_POST['add_branch_btn'])) {
     // Sanitize input
     $branch_name = trim($_POST['branch_name']);
     $location = trim($_POST['location']);
@@ -190,77 +190,6 @@ elseif (isset($_POST['add_branch_btn'])) {
     }
 }
 
-
-// edit_branch
-elseif (isset($_POST['edit_branch'])) {
-    // Extract and trim all POST variables
-    $branch_id = trim($_POST['branch_id']);
-    $branch_name = trim($_POST['branch_name']);
-    $branch_manager = trim($_POST['branch_manager']);
-    $location = trim($_POST['location']);
-    $contact = trim($_POST['contact']);
-
-    // Sanitize input
-    $branch_name = addslashes($branch_name);
-    $branch_manager = addslashes($branch_manager);
-    $location = addslashes($location);
-    $contact = addslashes($contact);
-
-    // Update the properties in the database
-    $sql = $dbh->prepare("UPDATE branch 
-                        SET 
-                           branch_name = ?, 
-                           branch_manager = ?, 
-                           location = ?, 
-                           contact = ? 
-                        WHERE 
-                            branch_id = ?");
-    $result = $sql->execute([
-        $branch_name,
-        $branch_manager,
-        $location,
-        $contact,
-        $branch_id
-    ]);
-
-    // Check if the SQL query was successful
-    if ($result) {
-        header("Location: branch.php?status=success&message=Branch edited successfully.");
-        exit();
-    } else {
-        header("Location: branch.php?status=error&message=Branch edition failed.");
-        exit();
-    }
-} elseif (isset($_REQUEST['delete-branch'])) {
-    $branch_id = $_REQUEST['delete-branch'];
-
-    // Check if branch exists
-    $stmt = $dbh->prepare("SELECT * FROM branch WHERE branch_id = :branch_id");
-    $stmt->bindParam(':branch_id', $branch_id);
-    $stmt->execute();
-    $branch = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if ($branch) {
-        // Delete the branch from the database
-        $stmt = $dbh->prepare("DELETE FROM branch WHERE branch_id = :branch_id");
-        $stmt->bindParam(':branch_id', $branch_id);
-        $stmt->execute();
-
-        if ($stmt->rowCount()) {
-            echo "<script>
-            document.addEventListener('DOMContentLoaded', function() {
-                showToast('Branch deleted successfully!', 'success');
-            });
-        </script>";
-        } else {
-            echo "<script>
-            document.addEventListener('DOMContentLoaded', function() {
-                showToast('Failed to delete branch.', 'error');
-            });
-        </script>";
-        }
-    }
-}
 
 elseif (isset($_POST['register_btn'])) {
     trim(extract($_POST));
